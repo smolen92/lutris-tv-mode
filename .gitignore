@@ -1,0 +1,4 @@
+doc/
+obj/
+*.db
+*.out
