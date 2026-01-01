@@ -1,6 +1,6 @@
 CXX = g++
 
-CXXFLAGS = -Wall -g -lSDL3
+CXXFLAGS = -Wall -g -lSDL3 -lsqlite3
 
 lutris-tvmode.out: ./obj/main.o 
 	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/main.o 

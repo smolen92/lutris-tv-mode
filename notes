@@ -1,0 +1,16 @@
+list tables:
+SELECT name FROM sqlite_master WHERE type='table'
+
+tables:
+name = games
+
+name = service_games
+
+name = sources
+
+name = categories
+
+name = games_categories
+
+name = saved_searches
+
