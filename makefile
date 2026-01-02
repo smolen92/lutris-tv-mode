@@ -14,7 +14,10 @@ lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o
 ./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o
 	$(CXX) $(CXXFLAGS) -c ./src/sql.cpp -o ./obj/sql.o
 
-.PHONY: clean 
+.PHONY: clean doc 
 
 clean:
 	rm -f ./obj/*.o
+
+doc:
+	doxygen lutris-tv-mode.dox

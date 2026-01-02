@@ -1,11 +1,14 @@
 #include "game.h"
 
-Game::Game(const uint64_t id, const char* name, const char* slug ) {
+Game::Game(const uint64_t id, const char* name, const char* slug, SDL_Texture* cover_art, SDL_Texture* banner) {
 	this->id = id;
 	
-	std::strcpy(this->name, name);
+	this->name = name;
+	this->slug = slug;
 
-	std::strcpy(this->slug, slug);
+	this->cover_art = cover_art;
+	this->banner = banner;
+
 }
 
 void Game::print() {
@@ -13,5 +16,6 @@ void Game::print() {
 }
 
 Game::~Game() {
-	//nothing to do yet
+	cover_art = nullptr;
+	banner = nullptr;
 }

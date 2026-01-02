@@ -1,7 +1,8 @@
 #include "sql.h"
 
-#include <cstring>
+/// \file
 
+/// \todo check for throw exceptions while creating the game vector
 int main(int argc, char** argv) {
 
 	if(argc != 2) {

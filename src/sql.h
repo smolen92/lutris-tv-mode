@@ -2,10 +2,10 @@
 #define _SQL_H_
 
 #include <sqlite3.h> //https://www.sqlite.org/cintro.html
-#include <iostream>
 #include <vector>
 
 #include "game.h"
+
 
 class SQL {
 	public:
@@ -17,9 +17,7 @@ class SQL {
 
 	private:
 		sqlite3 *db;
-		char *zErrMsg;
-		int rc;
-		static int callback(void *not_used, int argc, char **argv, char **az_col_name);
+		char *error_message;
 		static int callback_load_data(void* data_vector, int argc, char** argv, char **az_col_name);
 
 };
