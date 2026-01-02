@@ -14,3 +14,305 @@ name = games_categories
 
 name = saved_searches
 
+----------------games table--------------------------------------------
+cid = 0
+name = id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 1
+
+cid = 1
+name = name
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 2
+name = sortname
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 3
+name = slug
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 4
+name = installer_slug
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 5
+name = parent_slug
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 6
+name = platform
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 7
+name = runner
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 8
+name = executable
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 9
+name = directory
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 10
+name = updated
+type = DATETIME
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 11
+name = lastplayed
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 12
+name = installed
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 13
+name = installed_at
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 14
+name = year
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 15
+name = configpath
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 16
+name = has_custom_banner
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 17
+name = has_custom_icon
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 18
+name = has_custom_coverart_big
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 19
+name = playtime
+type = REAL
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 20
+name = service
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 21
+name = service_id
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 22
+name = discord_id
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+
+----------------service_games table--------------------------------------
+cid = 0
+name = id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 1
+
+cid = 1
+name = service
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 2
+name = appid
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 3
+name = name
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 4
+name = slug
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 5
+name = icon
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 6
+name = logo
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 7
+name = url
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 8
+name = details
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 9
+name = lutris_slug
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+----------sources table---------------------------------------------------
+cid = 0
+name = id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 1
+
+cid = 1
+name = uri
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+------------categories table----------------------------------------------
+cid = 0
+name = id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 1
+
+cid = 1
+name = name
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+--------------games_categories table---------------------------------------
+cid = 0
+name = game_id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 1
+name = category_id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+--------------saved_searches-----------------------------------------------
+cid = 0
+name = id
+type = INTEGER
+notnull = 0
+dflt_value = NULL
+pk = 1
+
+cid = 1
+name = name
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+cid = 2
+name = search
+type = TEXT
+notnull = 0
+dflt_value = NULL
+pk = 0
+
+
