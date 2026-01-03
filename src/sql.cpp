@@ -34,8 +34,8 @@ int SQL::callback_load_data(void* data_vector, int argc, char** argv, char **az_
 		if( std::string("name").compare(az_col_name[i]) == 0) temp_name = argv[i];
 		if( std::string("slug").compare(az_col_name[i]) == 0) temp_slug = argv[i];
 	}
-
-	game_ptr->push_back(Game(temp_id, temp_name.c_str(), temp_slug.c_str(), nullptr, nullptr));
+	
+	game_ptr->push_back(Game(temp_id, temp_name.c_str(), temp_slug.c_str()));
 
 	return 0;
 }

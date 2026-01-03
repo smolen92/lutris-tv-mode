@@ -1,21 +1,18 @@
 #include "game.h"
 
-Game::Game(const uint64_t id, const char* name, const char* slug, SDL_Texture* cover_art, SDL_Texture* banner) {
+Game::Game(const uint64_t id, const char* name, const char* slug) {
 	this->id = id;
 	
 	this->name = name;
 	this->slug = slug;
 
-	this->cover_art = cover_art;
-	this->banner = banner;
-
 }
 
-void Game::print() {
-	std::cout << "id: " << this->id << " ;name: " << this->name << " ;slug: " << this->slug << "\n";
+void Game::set_images_indexes(uint64_t cover_art_index, uint64_t banner_index) {
+	this->cover_art_index = cover_art_index;
+	this->banner_index = banner_index;
 }
 
 Game::~Game() {
-	cover_art = nullptr;
-	banner = nullptr;
+	//nothing to do yet
 }

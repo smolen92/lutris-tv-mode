@@ -4,20 +4,20 @@
 #include <cstdint>
 #include <string>
 #include <iostream>
-#include <SDL3_image/SDL_image.h>
 
 class Game {
 	public:
-		Game(const uint64_t id, const char* name, const char* slug, SDL_Texture* cover_art, SDL_Texture* banner);
-		
-		void print();
+		Game(const uint64_t id, const char* name, const char* slug);
+	
+		void set_images_indexes(uint64_t cover_art, uint64_t banner);
 
 		~Game();
+		
+		std::string slug;
 	private:
 		uint64_t id;
 		std::string name;
-		std::string slug;
-		SDL_Texture *cover_art, *banner;
+		uint64_t cover_art_index, banner_index;
 };
 
 #endif
