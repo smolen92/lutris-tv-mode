@@ -1,6 +1,8 @@
 #include "gui.h"
 
 int Gui::gui_init() {
+	
+	settings.load_settings(nullptr);
 
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS) ) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
@@ -12,7 +14,7 @@ int Gui::gui_init() {
 		return 1;
 	}
 
-	window = SDL_CreateWindow("Lutris TV Mode", WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+	window = SDL_CreateWindow("Lutris TV Mode", settings.window_width, settings.window_height, 0);
 	if( window == NULL) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
@@ -24,18 +26,21 @@ int Gui::gui_init() {
 		return 1;
 	}
 
+	vertical_offset = 0;
+	horizontal_offset = 0;
+
 	return 0;
 }
 
 void Gui::load_texture(const char* slug) {
 	SDL_Texture* temp_texture;
 
-	temp_texture = IMG_LoadTexture(this->renderer, std::string(std::string("./test-data/coverart/") + std::string(slug) + std::string(".jpg")).c_str());
+	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings.cover_art_path + std::string(slug) + std::string(".jpg")).c_str());
 	cover_art.push_back(temp_texture);
 
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " cover art texture\n";
 
-	temp_texture = IMG_LoadTexture(this->renderer, std::string(std::string("./test-data/banners/") + std::string(slug) + std::string(".jpg")).c_str());
+	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings.banner_path + std::string(slug) + std::string(".jpg")).c_str());
 	banner.push_back(temp_texture);
 	
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " banner texture\n";
@@ -50,6 +55,25 @@ void Gui::input(bool *running) {
 		if(input.type == SDL_EVENT_QUIT) {
 			*running = false;
 		}
+
+		if(input.type == SDL_EVENT_KEY_DOWN) {
+			if(input.key.scancode == SDL_SCANCODE_DOWN) {
+				vertical_offset -= 5;
+			}
+
+			if(input.key.scancode == SDL_SCANCODE_UP) {
+				vertical_offset += 5;
+			}
+
+			if(input.key.scancode == SDL_SCANCODE_RIGHT) {
+				horizontal_offset += 5;
+			}
+
+			if(input.key.scancode == SDL_SCANCODE_LEFT) {
+				horizontal_offset -= 5;
+			}
+		}
+
 	}
 		
 }
@@ -59,23 +83,25 @@ void Gui::logic() {
 }
 
 void Gui::render() {
-	static uint64_t old_time = 0, index = 0;
-	uint64_t current_time = SDL_GetTicks();
-
-	if( current_time - old_time < 1000) return;
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
 	SDL_RenderClear(renderer);
 
-	if(cover_art[index] != nullptr) SDL_RenderTexture(this->renderer, cover_art[index], nullptr, nullptr);
+	SDL_FRect temp = {horizontal_offset,vertical_offset,(float)settings.game_tile_width,(float)settings.game_tile_height};
+	for(uint64_t i=0; i < cover_art.size(); i++) {
+		
+		if(cover_art[i] != nullptr) SDL_RenderTexture(this->renderer, cover_art[i], nullptr, &temp);
+		
+		temp.x += settings.game_tile_width + settings.horizontal_padding;
 
-	index++;
+		if(temp.x >= (settings.window_width - settings.game_tile_width)) {
+			temp.x = horizontal_offset;
+			temp.y += settings.game_tile_height + settings.vertical_padding;
+		}
 
-	index %= cover_art.size();
-
+	}
 
 	SDL_RenderPresent(renderer);
-	old_time = current_time;
 }
 
 Gui::~Gui() {

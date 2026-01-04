@@ -21,8 +21,6 @@ int main(int argc, char** argv) {
 	
 	lutris_db.load_data(&games);
 	
-	std::cout << games.size() << "\n";
-
 	for(uint64_t i=0; i < games.size(); i++) {
 		gui.load_texture(games[i].slug.c_str());
 		games[i].set_images_indexes(i,i);

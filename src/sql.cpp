@@ -8,7 +8,7 @@ SQL::SQL(const char* database) {
 }
 
 void SQL::load_data(std::vector<Game> *game_vec) {
-	if( sqlite3_exec(this->db, "SELECT * FROM games", this->callback_load_data, game_vec, &error_message) != SQLITE_OK) {
+	if( sqlite3_exec(this->db, "SELECT * FROM games ORDER BY name", this->callback_load_data, game_vec, &error_message) != SQLITE_OK) {
 		std::clog << "SQL error: " << error_message << "\n";
 	}
 

@@ -8,10 +8,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-/// \cond
-#define WINDOW_WIDTH 800
-#define WINDOW_HEIGHT 600
-/// \endcond
+#include "settings.h"
 
 /**
  * @brief class for handling gui using sdl
@@ -50,6 +47,10 @@ class Gui {
 	private:
 		SDL_Window* window;
 		SDL_Renderer* renderer;
+
+		Settings settings;
+
+		float vertical_offset, horizontal_offset;
 };
 
 #endif
