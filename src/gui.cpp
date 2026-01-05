@@ -1,6 +1,6 @@
 #include "gui.h"
 
-int Gui::gui_init() {
+int Gui::gui_init(std::vector<Game> *games) {
 	
 	settings.load_settings(nullptr);
 
@@ -15,19 +15,28 @@ int Gui::gui_init() {
 	}
 
 	window = SDL_CreateWindow("Lutris TV Mode", settings.window_width, settings.window_height, 0);
-	if( window == NULL) {
+	if( window == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
 	}
 
 	renderer = SDL_CreateRenderer(window, NULL);
-	if(renderer == NULL) {
+	if(renderer == nullptr) {
+		std::clog << "Error: " << SDL_GetError() << "\n";
+		return 1;
+	}
+	
+	font = TTF_OpenFont("Montserrat-Regular.ttf",FONT_SIZE);
+	if(font == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
 	}
 
 	vertical_offset = 0;
 	horizontal_offset = 0;
+
+	this->games = games;
+	current_game = 0;
 
 	return 0;
 }
@@ -72,6 +81,13 @@ void Gui::input(bool *running) {
 			if(input.key.scancode == SDL_SCANCODE_LEFT) {
 				horizontal_offset -= 5;
 			}
+
+			if(input.key.scancode == SDL_SCANCODE_R) {
+				if(current_game == 0) continue;
+
+				std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(current_game);
+				process_handler.run_process(command.c_str());
+			}
 		}
 
 	}
@@ -79,7 +95,7 @@ void Gui::input(bool *running) {
 }
 
 void Gui::logic() {
-
+	process_handler.check_and_clean_zombie_processes();
 }
 
 void Gui::render() {
@@ -88,15 +104,19 @@ void Gui::render() {
 	SDL_RenderClear(renderer);
 
 	SDL_FRect temp = {horizontal_offset,vertical_offset,(float)settings.game_tile_width,(float)settings.game_tile_height};
-	for(uint64_t i=0; i < cover_art.size(); i++) {
+	for(uint64_t i=0; i < games->size(); i++) {
 		
-		if(cover_art[i] != nullptr) SDL_RenderTexture(this->renderer, cover_art[i], nullptr, &temp);
+		if(cover_art[games->at(i).cover_art_index] != nullptr) {
+			SDL_RenderTexture(this->renderer, cover_art[games->at(i).cover_art_index], nullptr, &temp);
+		}
+
+		this->render_text(temp.x, temp.y + settings.game_tile_height, games->at(i).name.c_str());
 		
 		temp.x += settings.game_tile_width + settings.horizontal_padding;
 
 		if(temp.x >= (settings.window_width - settings.game_tile_width)) {
 			temp.x = horizontal_offset;
-			temp.y += settings.game_tile_height + settings.vertical_padding;
+			temp.y += settings.game_tile_height + settings.vertical_padding + FONT_SIZE;
 		}
 
 	}
@@ -104,7 +124,27 @@ void Gui::render() {
 	SDL_RenderPresent(renderer);
 }
 
+void Gui::render_text(uint64_t x, uint64_t y, const char* text) {
+	SDL_Surface *text_surface;
+
+	text_surface = TTF_RenderText_Blended(font, text, 0, {255,255,255,255});
+	if(text_surface) {
+		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(this->renderer, text_surface);
+		if( text_texture ) {
+			SDL_FRect text_rect = {(float)x,(float)y,(float)settings.game_tile_width, FONT_SIZE};
+			SDL_RenderTexture(this->renderer, text_texture, NULL, &text_rect); 
+			SDL_DestroyTexture(text_texture);
+			text_texture = nullptr;
+		}
+	}
+
+	SDL_DestroySurface(text_surface);
+	text_surface = nullptr;
+
+}
+
 Gui::~Gui() {
+
 	while(!cover_art.empty()) {
 		SDL_DestroyTexture(cover_art.back());
 		cover_art.pop_back();
@@ -114,12 +154,15 @@ Gui::~Gui() {
 		SDL_DestroyTexture(banner.back());
 		banner.pop_back();
 	}
+	
+	TTF_CloseFont(font);
+	font = nullptr;
 
 	SDL_DestroyRenderer(renderer);
-	renderer = NULL;
+	renderer = nullptr;
 
 	SDL_DestroyWindow(window);
-	window = NULL;
+	window = nullptr;
 
 	TTF_Quit();
 	SDL_Quit();

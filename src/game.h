@@ -13,11 +13,11 @@ class Game {
 
 		~Game();
 		
+		std::string name;
 		std::string slug;
+		uint64_t cover_art_index, banner_index;
 	private:
 		uint64_t id;
-		std::string name;
-		uint64_t cover_art_index, banner_index;
 };
 
 #endif

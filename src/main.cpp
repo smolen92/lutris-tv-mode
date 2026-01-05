@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
 	std::vector<Game> games;
 	Gui gui;
 
-	if( gui.gui_init() != 0 ) {
+	if( gui.gui_init(&games) != 0 ) {
 		return 1;
 	}
 	
