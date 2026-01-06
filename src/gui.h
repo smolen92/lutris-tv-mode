@@ -1,6 +1,8 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
+#include <sstream>
+
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -39,8 +41,9 @@ class Gui {
 		 */
 		void render();
 	
-		/// \todo don't squish text with large char count - render multiple lines of text
-		void render_text(uint64_t x, uint64_t y, const char* text);
+		void render_one_line_of_text(uint64_t x, uint64_t y, const char* text);
+		
+		uint32_t render_multi_line_text(uint64_t x, uint64_t y, const char* text);
 
 		~Gui();
 		

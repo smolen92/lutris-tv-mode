@@ -9,12 +9,12 @@ Settings::Settings(const char* path) {
 	window_width = 800;
 	window_height = 600;
 	
-	game_tile_width = 100;
-	game_tile_height = 133;
+	game_tile_width = 120;
+	game_tile_height = 160;
 	vertical_padding = 5;
 	horizontal_padding = 5;
 
-	font_size = 16;
+	font_size = 12;
 
 }
 

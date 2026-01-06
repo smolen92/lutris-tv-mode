@@ -104,6 +104,8 @@ void Gui::render() {
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
 	SDL_RenderClear(renderer);
 
+	uint32_t max_rendered_height = 0;
+
 	SDL_FRect temp = {horizontal_offset,vertical_offset,(float)settings->game_tile_width,(float)settings->game_tile_height};
 	for(uint64_t i=0; i < games->size(); i++) {
 		
@@ -111,13 +113,16 @@ void Gui::render() {
 			SDL_RenderTexture(this->renderer, cover_art[games->at(i).cover_art_index], nullptr, &temp);
 		}
 
-		this->render_text(temp.x, temp.y + settings->game_tile_height, games->at(i).name.c_str());
+		uint32_t rendered_height = this->render_multi_line_text(temp.x, temp.y + settings->game_tile_height, games->at(i).name.c_str());
 		
+		if(rendered_height > max_rendered_height) max_rendered_height = rendered_height;
+
 		temp.x += settings->game_tile_width + settings->horizontal_padding;
 
 		if(temp.x >= (settings->window_width - settings->game_tile_width)) {
 			temp.x = horizontal_offset;
-			temp.y += settings->game_tile_height + settings->vertical_padding + settings->font_size;
+			temp.y += settings->game_tile_height + settings->vertical_padding + max_rendered_height;
+			max_rendered_height = 0;
 		}
 
 	}
@@ -125,19 +130,25 @@ void Gui::render() {
 	SDL_RenderPresent(renderer);
 }
 
-void Gui::render_text(uint64_t x, uint64_t y, const char* text) {
+void Gui::render_one_line_of_text(uint64_t x, uint64_t y, const char* text) {
 	SDL_Surface *text_surface;
 
 	text_surface = TTF_RenderText_Blended(this->font, text, 0, {255,255,255,255});
 	if(text_surface) {
 		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(this->renderer, text_surface);
 		if( text_texture ) {
-			SDL_FRect text_rect = {	(text_texture->w < settings->game_tile_width) ? (float)(settings->game_tile_width-text_texture->w)/2 + x: (float)x,
-						(float)y,
-						(text_texture->w < settings->game_tile_width) ? text_texture->w : (float)settings->game_tile_width, 
-						(float)settings->font_size};
+			SDL_FRect dst_text_rect = {	(text_texture->w < settings->game_tile_width) ? (float)((settings->game_tile_width-text_texture->w)/2 + x) : (float)x,
+							(float)y,
+							(text_texture->w > this->settings->game_tile_width) ? (float)this->settings->game_tile_width : (float)text_texture->w,
+							(float)text_texture->h};
 			
-			SDL_RenderTexture(this->renderer, text_texture, NULL, &text_rect); 
+			SDL_FRect src_text_rect = {	0.0,
+							0.0,
+							(text_texture->w > this->settings->game_tile_width) ? (float)this->settings->game_tile_width : (float)text_texture->w,
+							(float)text_texture->h};
+
+
+			SDL_RenderTexture(this->renderer, text_texture, &src_text_rect, &dst_text_rect); 
 			SDL_DestroyTexture(text_texture);
 			text_texture = nullptr;
 		}
@@ -146,6 +157,46 @@ void Gui::render_text(uint64_t x, uint64_t y, const char* text) {
 	SDL_DestroySurface(text_surface);
 	text_surface = nullptr;
 
+}
+
+uint32_t Gui::render_multi_line_text(uint64_t x, uint64_t y, const char *text) {
+
+	std::stringstream temp_string_stream(text);
+	std::string temp_element;
+	std::vector<std::string> elements;
+	
+	while(getline(temp_string_stream,temp_element,' ')) {
+		elements.push_back(temp_element);
+	}
+	
+	std::string string_to_render = elements[0] + " ";
+	int32_t total_string_width;
+	TTF_GetStringSize(this->font, string_to_render.c_str(), 0, &total_string_width, nullptr);
+	uint32_t return_height = this->settings->font_size;
+	uint32_t offset = 0;
+
+	for(uint64_t i=1; i < elements.size(); i++) {
+		int32_t current_string_width;
+		if(i != elements.size() - 1) elements[i] += " ";
+
+		TTF_GetStringSize(this->font, elements[i].c_str(), 0, &current_string_width, nullptr);
+
+		if(total_string_width + current_string_width > this->settings->game_tile_width) {
+			this->render_one_line_of_text(x,y+offset, string_to_render.c_str());
+			string_to_render = elements[i];
+			TTF_GetStringSize(this->font, string_to_render.c_str(), 0, &total_string_width, nullptr);
+			return_height += this->settings->font_size;
+			offset += this->settings->font_size;
+		}
+		else {
+			string_to_render += elements[i];
+			total_string_width += current_string_width;
+		}
+	}
+
+	this->render_one_line_of_text(x,y+offset, string_to_render.c_str());
+	
+	return return_height;
 }
 
 Gui::~Gui() {
