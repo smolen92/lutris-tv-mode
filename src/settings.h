@@ -6,12 +6,13 @@
 
 class Settings {
 	public:
-		void load_settings(const char* path);
+		Settings(const char* path);
 
 		std::string cover_art_path, banner_path, database_path;
 		uint32_t window_width, window_height;
-		uint32_t game_tile_width, game_tile_height;
+		int32_t game_tile_width, game_tile_height;
 		uint32_t vertical_padding, horizontal_padding; 
+		uint32_t font_size;
 };
 
 #endif

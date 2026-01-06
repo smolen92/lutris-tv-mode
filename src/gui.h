@@ -9,11 +9,8 @@
 #include "process.h"
 #include "game.h"
 
-#define FONT_SIZE 16
-
 /**
  * @brief class for handling gui using sdl
- * \todo FONT_SIZE shoudl be read from settings
  * \todo read font from data
  */
 class Gui {
@@ -21,7 +18,7 @@ class Gui {
 		/**
 		 * @param font poitner to font, that will be used for text
 		 */
-		int gui_init(std::vector<Game> *games);
+		int gui_init(Settings *settings, std::vector<Game> *games);
 		
 		void load_texture(const char* slug);
 
@@ -42,7 +39,7 @@ class Gui {
 		 */
 		void render();
 	
-		/// \todo don't strech text with low char count, don't squish text with large char count
+		/// \todo don't squish text with large char count - render multiple lines of text
 		void render_text(uint64_t x, uint64_t y, const char* text);
 
 		~Gui();
@@ -56,7 +53,7 @@ class Gui {
 		
 		TTF_Font* font;
 
-		Settings settings;
+		Settings* settings;
 
 		float vertical_offset, horizontal_offset;
 		

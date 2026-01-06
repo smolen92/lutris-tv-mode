@@ -6,16 +6,13 @@
 /// \todo check for throw exceptions while creating the game vector
 int main(int argc, char** argv) {
 
-	if(argc != 2) {
-		std::clog << "Usage: " << argv[0] << " DATABASE SQL-STATEMENT\n";
-		return 1;
-	}
-	
-	SQL lutris_db(argv[1]);
+	Settings settings(nullptr);
+
+	SQL lutris_db(settings.database_path.c_str());
 	std::vector<Game> games;
 	Gui gui;
 
-	if( gui.gui_init(&games) != 0 ) {
+	if( gui.gui_init(&settings,&games) != 0 ) {
 		return 1;
 	}
 	

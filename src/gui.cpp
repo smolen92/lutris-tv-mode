@@ -1,8 +1,9 @@
 #include "gui.h"
 
-int Gui::gui_init(std::vector<Game> *games) {
+int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	
-	settings.load_settings(nullptr);
+
+	this->settings = settings;
 
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS) ) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
@@ -14,7 +15,7 @@ int Gui::gui_init(std::vector<Game> *games) {
 		return 1;
 	}
 
-	window = SDL_CreateWindow("Lutris TV Mode", settings.window_width, settings.window_height, 0);
+	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, 0);
 	if( window == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
@@ -26,7 +27,7 @@ int Gui::gui_init(std::vector<Game> *games) {
 		return 1;
 	}
 	
-	font = TTF_OpenFont("Montserrat-Regular.ttf",FONT_SIZE);
+	font = TTF_OpenFont("Montserrat-Regular.ttf",settings->font_size);
 	if(font == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
@@ -44,12 +45,12 @@ int Gui::gui_init(std::vector<Game> *games) {
 void Gui::load_texture(const char* slug) {
 	SDL_Texture* temp_texture;
 
-	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings.cover_art_path + std::string(slug) + std::string(".jpg")).c_str());
+	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings->cover_art_path + std::string(slug) + std::string(".jpg")).c_str());
 	cover_art.push_back(temp_texture);
 
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " cover art texture\n";
 
-	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings.banner_path + std::string(slug) + std::string(".jpg")).c_str());
+	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings->banner_path + std::string(slug) + std::string(".jpg")).c_str());
 	banner.push_back(temp_texture);
 	
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " banner texture\n";
@@ -103,20 +104,20 @@ void Gui::render() {
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
 	SDL_RenderClear(renderer);
 
-	SDL_FRect temp = {horizontal_offset,vertical_offset,(float)settings.game_tile_width,(float)settings.game_tile_height};
+	SDL_FRect temp = {horizontal_offset,vertical_offset,(float)settings->game_tile_width,(float)settings->game_tile_height};
 	for(uint64_t i=0; i < games->size(); i++) {
 		
 		if(cover_art[games->at(i).cover_art_index] != nullptr) {
 			SDL_RenderTexture(this->renderer, cover_art[games->at(i).cover_art_index], nullptr, &temp);
 		}
 
-		this->render_text(temp.x, temp.y + settings.game_tile_height, games->at(i).name.c_str());
+		this->render_text(temp.x, temp.y + settings->game_tile_height, games->at(i).name.c_str());
 		
-		temp.x += settings.game_tile_width + settings.horizontal_padding;
+		temp.x += settings->game_tile_width + settings->horizontal_padding;
 
-		if(temp.x >= (settings.window_width - settings.game_tile_width)) {
+		if(temp.x >= (settings->window_width - settings->game_tile_width)) {
 			temp.x = horizontal_offset;
-			temp.y += settings.game_tile_height + settings.vertical_padding + FONT_SIZE;
+			temp.y += settings->game_tile_height + settings->vertical_padding + settings->font_size;
 		}
 
 	}
@@ -127,11 +128,15 @@ void Gui::render() {
 void Gui::render_text(uint64_t x, uint64_t y, const char* text) {
 	SDL_Surface *text_surface;
 
-	text_surface = TTF_RenderText_Blended(font, text, 0, {255,255,255,255});
+	text_surface = TTF_RenderText_Blended(this->font, text, 0, {255,255,255,255});
 	if(text_surface) {
 		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(this->renderer, text_surface);
 		if( text_texture ) {
-			SDL_FRect text_rect = {(float)x,(float)y,(float)settings.game_tile_width, FONT_SIZE};
+			SDL_FRect text_rect = {	(text_texture->w < settings->game_tile_width) ? (float)(settings->game_tile_width-text_texture->w)/2 + x: (float)x,
+						(float)y,
+						(text_texture->w < settings->game_tile_width) ? text_texture->w : (float)settings->game_tile_width, 
+						(float)settings->font_size};
+			
 			SDL_RenderTexture(this->renderer, text_texture, NULL, &text_rect); 
 			SDL_DestroyTexture(text_texture);
 			text_texture = nullptr;
@@ -163,6 +168,9 @@ Gui::~Gui() {
 
 	SDL_DestroyWindow(window);
 	window = nullptr;
+
+	games = nullptr;
+	settings = nullptr;
 
 	TTF_Quit();
 	SDL_Quit();
