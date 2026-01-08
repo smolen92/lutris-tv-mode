@@ -14,6 +14,7 @@
 /**
  * @brief class for handling gui using sdl
  * \todo read font from data
+ * \todo fullscreen and resizeable window
  */
 class Gui {
 	public:

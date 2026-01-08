@@ -12,11 +12,12 @@ int main(int argc, char** argv) {
 	std::vector<Game> games;
 	Gui gui;
 
+	lutris_db.load_data(&games);
+	
 	if( gui.gui_init(&settings,&games) != 0 ) {
 		return 1;
 	}
 	
-	lutris_db.load_data(&games);
 	
 	for(uint64_t i=0; i < games.size(); i++) {
 		gui.load_texture(games[i].slug.c_str());

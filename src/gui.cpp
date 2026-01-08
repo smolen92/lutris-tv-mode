@@ -26,7 +26,9 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
 	}
-	
+
+	SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
+
 	font = TTF_OpenFont("Montserrat-Regular.ttf",settings->font_size);
 	if(font == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
@@ -37,6 +39,7 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	horizontal_offset = 0;
 
 	this->games = games;
+
 	current_game = 0;
 
 	return 0;
@@ -68,25 +71,39 @@ void Gui::input(bool *running) {
 
 		if(input.type == SDL_EVENT_KEY_DOWN) {
 			if(input.key.scancode == SDL_SCANCODE_DOWN) {
-				vertical_offset -= 5;
+				if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
 			}
 
 			if(input.key.scancode == SDL_SCANCODE_UP) {
-				vertical_offset += 5;
+				if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
 			}
 
 			if(input.key.scancode == SDL_SCANCODE_RIGHT) {
-				horizontal_offset += 5;
+				if( this->current_game != this->games->size()-1) this->current_game += 1;
 			}
 
 			if(input.key.scancode == SDL_SCANCODE_LEFT) {
+				if( this->current_game != 0) this->current_game -= 1;
+			}
+
+			if(input.key.scancode == SDL_SCANCODE_D) {
+				horizontal_offset += 5;
+			}
+
+			if(input.key.scancode == SDL_SCANCODE_A) {
 				horizontal_offset -= 5;
 			}
 
-			if(input.key.scancode == SDL_SCANCODE_R) {
-				if(current_game == 0) continue;
+			if(input.key.scancode == SDL_SCANCODE_PAGEDOWN) {
+				vertical_offset -= 5;
+			}
 
-				std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(current_game);
+			if(input.key.scancode == SDL_SCANCODE_PAGEUP) {
+				vertical_offset += 5;
+			}
+
+			if(input.key.scancode == SDL_SCANCODE_RETURN) {
+				std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
 				process_handler.run_process(command.c_str());
 			}
 		}
@@ -99,35 +116,54 @@ void Gui::logic() {
 	process_handler.check_and_clean_zombie_processes();
 }
 
+/// \todo rewrite this with settings->games_per_row in mind
 void Gui::render() {
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
 	SDL_RenderClear(renderer);
 
-	uint32_t max_rendered_height = 0;
+	uint32_t max_renderer_font_height = 0;
 
-	SDL_FRect temp = {horizontal_offset,vertical_offset,(float)settings->game_tile_width,(float)settings->game_tile_height};
+	//initial cover art rect calculation
+	SDL_FRect cover_art_rect = {this->horizontal_offset + this->settings->horizontal_padding, this->vertical_offset + this->settings->vertical_padding,(float)settings->game_tile_width,(float)settings->game_tile_height};
+
 	for(uint64_t i=0; i < games->size(); i++) {
+		SDL_FRect selection_box;
+
+		//selection box rect calculation
+		if( i == current_game) {
+			selection_box = {cover_art_rect.x - this->settings->horizontal_padding, cover_art_rect.y - this->settings->vertical_padding, cover_art_rect.w + 2*this->settings->horizontal_padding, cover_art_rect.h + 2*this->settings->vertical_padding};
+		}
 		
-		if(cover_art[games->at(i).cover_art_index] != nullptr) {
-			SDL_RenderTexture(this->renderer, cover_art[games->at(i).cover_art_index], nullptr, &temp);
+		//font rendering
+		uint32_t rendered_height = this->render_multi_line_text(cover_art_rect.x, cover_art_rect.y + settings->game_tile_height, games->at(i).name.c_str());
+		
+		if(rendered_height > max_renderer_font_height) max_renderer_font_height = rendered_height;
+
+		//selection box rendering
+		if( i == this->current_game ) {
+			selection_box.h += rendered_height;
+			SDL_SetRenderDrawColor(this->renderer, 0,0,255,0x6F);
+			SDL_RenderFillRect(this->renderer, &selection_box);
 		}
 
-		uint32_t rendered_height = this->render_multi_line_text(temp.x, temp.y + settings->game_tile_height, games->at(i).name.c_str());
-		
-		if(rendered_height > max_rendered_height) max_rendered_height = rendered_height;
+		//cover art rendering
+		if(cover_art[games->at(i).cover_art_index] != nullptr) {
+			SDL_RenderTexture(this->renderer, cover_art[games->at(i).cover_art_index], nullptr, &cover_art_rect);
+		}
 
-		temp.x += settings->game_tile_width + settings->horizontal_padding;
+		//new cover art rect calculation
+		cover_art_rect.x += settings->game_tile_width + settings->horizontal_padding;
 
-		if(temp.x >= (settings->window_width - settings->game_tile_width)) {
-			temp.x = horizontal_offset;
-			temp.y += settings->game_tile_height + settings->vertical_padding + max_rendered_height;
-			max_rendered_height = 0;
+		if(cover_art_rect.x >= (settings->window_width - settings->game_tile_width)) {
+			cover_art_rect.x = horizontal_offset;
+			cover_art_rect.y += settings->game_tile_height + settings->vertical_padding + max_renderer_font_height;
+			max_renderer_font_height = 0;
 		}
 
 	}
 
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(this->renderer);
 }
 
 void Gui::render_one_line_of_text(uint64_t x, uint64_t y, const char* text) {

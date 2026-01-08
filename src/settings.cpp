@@ -13,7 +13,9 @@ Settings::Settings(const char* path) {
 	game_tile_height = 160;
 	vertical_padding = 5;
 	horizontal_padding = 5;
-
+	
+	games_per_row = (uint64_t)(window_width - horizontal_padding)/(int64_t)(game_tile_width + horizontal_padding);
+	
 	font_size = 12;
 
 }
