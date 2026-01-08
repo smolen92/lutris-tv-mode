@@ -5,7 +5,7 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 
 	this->settings = settings;
 
-	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS) ) {
+	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
 	}
@@ -41,6 +41,13 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	this->games = games;
 
 	current_game = 0;
+	
+	int32_t gamepad_count;
+	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
+	
+	this->gamepad = SDL_OpenGamepad(joysticks[0]);
+
+	SDL_free(joysticks);
 
 	return 0;
 }
@@ -60,6 +67,8 @@ void Gui::load_texture(const char* slug) {
 
 }
 
+/// \bug doesn't detect if gamepad button/axis is down
+/// \todo repeat code, get rid of it
 void Gui::input(bool *running) {
 	SDL_Event input;
 
@@ -108,8 +117,47 @@ void Gui::input(bool *running) {
 			}
 		}
 
+		if(input.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
+			
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_DOWN) {
+				if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
+			}
+
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_UP) {
+				if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
+			}
+
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) {
+				if( this->current_game != this->games->size()-1) this->current_game += 1;
+			}
+
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) {
+				if( this->current_game != 0) this->current_game -= 1;
+			}
+
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) {
+				std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
+				process_handler.run_process(command.c_str());
+			}		
+
+		}
+
+		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
+			
+			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTX) {
+				if(input.gaxis.value < -this->settings->gamepad_deadzone) horizontal_offset += 5;
+				if(input.gaxis.value > this->settings->gamepad_deadzone) horizontal_offset -= 5;
+			}
+			
+			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTY) {
+				if(input.gaxis.value < -this->settings->gamepad_deadzone) vertical_offset += 5;
+				if(input.gaxis.value > this->settings->gamepad_deadzone) vertical_offset -= 5;
+			}
+
+		}
+
 	}
-		
+
 }
 
 void Gui::logic() {
@@ -117,6 +165,7 @@ void Gui::logic() {
 }
 
 /// \todo rewrite this with settings->games_per_row in mind
+/// \todo scroll screen based on selection not manually
 void Gui::render() {
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
@@ -236,6 +285,8 @@ uint32_t Gui::render_multi_line_text(uint64_t x, uint64_t y, const char *text) {
 }
 
 Gui::~Gui() {
+	
+	SDL_CloseGamepad(this->gamepad);
 
 	while(!cover_art.empty()) {
 		SDL_DestroyTexture(cover_art.back());

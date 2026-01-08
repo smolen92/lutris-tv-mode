@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <string>
-#include <iostream>
 
 class Settings {
 	public:
@@ -18,6 +17,8 @@ class Settings {
 	        uint64_t games_per_row;
 
 		uint32_t font_size;
+
+		int16_t gamepad_deadzone;
 };
 
 #endif

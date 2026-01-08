@@ -66,6 +66,8 @@ class Gui {
 		std::vector<Game> *games;
 		uint64_t current_game;
 
+		SDL_Gamepad* gamepad;
+
 };
 
 #endif

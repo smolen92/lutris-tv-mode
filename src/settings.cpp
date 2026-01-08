@@ -18,5 +18,6 @@ Settings::Settings(const char* path) {
 	
 	font_size = 12;
 
+	gamepad_deadzone = 1000;
 }
 
