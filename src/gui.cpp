@@ -35,9 +35,6 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 		return 1;
 	}
 
-	vertical_offset = 0;
-	horizontal_offset = 0;
-
 	this->games = games;
 
 	current_game = 0;
@@ -52,6 +49,7 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	return 0;
 }
 
+/// \todo don't push nullptr to vec
 void Gui::load_texture(const char* slug) {
 	SDL_Texture* temp_texture;
 
@@ -67,10 +65,14 @@ void Gui::load_texture(const char* slug) {
 
 }
 
-/// \bug doesn't detect if gamepad button/axis is down
-/// \todo repeat code, get rid of it
+/// \bug doesn't detect if gamepad button is down
+/// \bug gamepad axis too sensitive, take input even when returning to center
 void Gui::input(bool *running) {
 	SDL_Event input;
+
+	for(uint8_t i=0; i < TOTAL_BUTTONS; i++) {
+		buttons_pressed[i] = false;
+	}
 
 	while(SDL_PollEvent(&input)) {
 		
@@ -79,79 +81,31 @@ void Gui::input(bool *running) {
 		}
 
 		if(input.type == SDL_EVENT_KEY_DOWN) {
-			if(input.key.scancode == SDL_SCANCODE_DOWN) {
-				if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_UP) {
-				if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_RIGHT) {
-				if( this->current_game != this->games->size()-1) this->current_game += 1;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_LEFT) {
-				if( this->current_game != 0) this->current_game -= 1;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_D) {
-				horizontal_offset += 5;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_A) {
-				horizontal_offset -= 5;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_PAGEDOWN) {
-				vertical_offset -= 5;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_PAGEUP) {
-				vertical_offset += 5;
-			}
-
-			if(input.key.scancode == SDL_SCANCODE_RETURN) {
-				std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
-				process_handler.run_process(command.c_str());
-			}
+			if(input.key.scancode == SDL_SCANCODE_DOWN) buttons_pressed[DOWN] = true;
+			if(input.key.scancode == SDL_SCANCODE_UP) buttons_pressed[UP] = true;
+			if(input.key.scancode == SDL_SCANCODE_RIGHT) buttons_pressed[RIGHT] = true;
+			if(input.key.scancode == SDL_SCANCODE_LEFT) buttons_pressed[LEFT] = true;
+			if(input.key.scancode == SDL_SCANCODE_RETURN) buttons_pressed[RUN] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
-			
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_DOWN) {
-				if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
-			}
-
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_UP) {
-				if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
-			}
-
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) {
-				if( this->current_game != this->games->size()-1) this->current_game += 1;
-			}
-
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) {
-				if( this->current_game != 0) this->current_game -= 1;
-			}
-
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) {
-				std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
-				process_handler.run_process(command.c_str());
-			}		
-
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_DOWN) buttons_pressed[DOWN] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_UP) buttons_pressed[UP] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) buttons_pressed[RIGHT] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) buttons_pressed[LEFT] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) buttons_pressed[RUN] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
 			
 			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTX) {
-				if(input.gaxis.value < -this->settings->gamepad_deadzone) horizontal_offset += 5;
-				if(input.gaxis.value > this->settings->gamepad_deadzone) horizontal_offset -= 5;
+				if(input.gaxis.value < -this->settings->gamepad_deadzone) buttons_pressed[LEFT] = true;
+				if(input.gaxis.value > this->settings->gamepad_deadzone) buttons_pressed[RIGHT] = true;
 			}
 			
 			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTY) {
-				if(input.gaxis.value < -this->settings->gamepad_deadzone) vertical_offset += 5;
-				if(input.gaxis.value > this->settings->gamepad_deadzone) vertical_offset -= 5;
+				if(input.gaxis.value < -this->settings->gamepad_deadzone) buttons_pressed[UP] = true;
+				if(input.gaxis.value > this->settings->gamepad_deadzone) buttons_pressed[DOWN] = true;
 			}
 
 		}
@@ -162,10 +116,18 @@ void Gui::input(bool *running) {
 
 void Gui::logic() {
 	process_handler.check_and_clean_zombie_processes();
+
+	if( buttons_pressed[UP] ) if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
+	if( buttons_pressed[DOWN] ) if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
+	if( buttons_pressed[RIGHT] ) if( this->current_game != this->games->size()-1) this->current_game += 1;
+	if( buttons_pressed[LEFT] ) if( this->current_game != 0) this->current_game -= 1;
+	if( buttons_pressed[RUN] ) { 
+		std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
+		process_handler.run_process(command.c_str());
+	}
+
 }
 
-/// \todo rewrite this with settings->games_per_row in mind
-/// \todo scroll screen based on selection not manually
 void Gui::render() {
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
@@ -174,9 +136,9 @@ void Gui::render() {
 	uint32_t max_renderer_font_height = 0;
 
 	//initial cover art rect calculation
-	SDL_FRect cover_art_rect = {this->horizontal_offset + this->settings->horizontal_padding, this->vertical_offset + this->settings->vertical_padding,(float)settings->game_tile_width,(float)settings->game_tile_height};
+	SDL_FRect cover_art_rect = {(float)this->settings->horizontal_padding,(float)this->settings->vertical_padding,(float)settings->game_tile_width,(float)settings->game_tile_height};
 
-	for(uint64_t i=0; i < games->size(); i++) {
+	for(uint64_t i=(this->current_game/this->settings->games_per_row*this->settings->games_per_row); i < games->size(); i++) {
 		SDL_FRect selection_box;
 
 		//selection box rect calculation
@@ -204,9 +166,10 @@ void Gui::render() {
 		//new cover art rect calculation
 		cover_art_rect.x += settings->game_tile_width + settings->horizontal_padding;
 
-		if(cover_art_rect.x >= (settings->window_width - settings->game_tile_width)) {
-			cover_art_rect.x = horizontal_offset;
+		if( i%this->settings->games_per_row == (this->settings->games_per_row-1)) {
+			cover_art_rect.x = this->settings->horizontal_padding;
 			cover_art_rect.y += settings->game_tile_height + settings->vertical_padding + max_renderer_font_height;
+			if(cover_art_rect.y > this->settings->window_height) break;
 			max_renderer_font_height = 0;
 		}
 

@@ -11,6 +11,16 @@
 #include "process.h"
 #include "game.h"
 
+
+enum Buttons {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	RUN,
+	TOTAL_BUTTONS
+};
+
 /**
  * @brief class for handling gui using sdl
  * \todo read font from data
@@ -59,14 +69,14 @@ class Gui {
 
 		Settings* settings;
 
-		float vertical_offset, horizontal_offset;
-		
 		ProcessHandler process_handler;
 
 		std::vector<Game> *games;
 		uint64_t current_game;
 
 		SDL_Gamepad* gamepad;
+		
+		bool buttons_pressed[TOTAL_BUTTONS];
 
 };
 
