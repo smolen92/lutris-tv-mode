@@ -2,6 +2,10 @@
 
 /// \todo load settings from file
 Settings::Settings(const char* path) {
+	//cover_art_path = "/home/bazzite/.local/share/lutris/coverart/";
+	//banner_path = "/home/bazzite/.local/share/lutris/banners/";
+	//database_path = "/home/bazzite/.local/share/lutris/pga.db";
+
 	cover_art_path = "./test-data/coverart/";
 	banner_path = "./test-data/banners/";
 	database_path = "./test-data/pga.db";

@@ -115,14 +115,13 @@ void Gui::input(bool *running) {
 }
 
 void Gui::logic() {
-	process_handler.check_and_clean_zombie_processes();
 
 	if( buttons_pressed[UP] ) if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
 	if( buttons_pressed[DOWN] ) if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
 	if( buttons_pressed[RIGHT] ) if( this->current_game != this->games->size()-1) this->current_game += 1;
 	if( buttons_pressed[LEFT] ) if( this->current_game != 0) this->current_game -= 1;
 	if( buttons_pressed[RUN] ) { 
-		std::string command = std::string("env LUTRIS_SKIP_INIT=1 lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
+		std::string command = std::to_string(this->games->at(this->current_game).id);
 		process_handler.run_process(command.c_str());
 	}
 
