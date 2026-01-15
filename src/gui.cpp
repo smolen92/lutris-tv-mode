@@ -121,7 +121,7 @@ void Gui::logic() {
 	if( buttons_pressed[RIGHT] ) if( this->current_game != this->games->size()-1) this->current_game += 1;
 	if( buttons_pressed[LEFT] ) if( this->current_game != 0) this->current_game -= 1;
 	if( buttons_pressed[RUN] ) { 
-		std::string command = std::to_string(this->games->at(this->current_game).id);
+		std::string command = std::string("lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
 		process_handler.run_process(command.c_str());
 	}
 

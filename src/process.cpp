@@ -8,9 +8,24 @@ bool ProcessHandler::run_process(const char* command) {
 		return false;
 	}
 	else if(pid == 0) { 
-		std::string game = std::string("lutris:rungameid/") + std::string(command);
+		const char* args[MAX_ARGS+1];
+		
+		std::stringstream input_string(command);
+		std::string temp_string;
+		std::vector<std::string> temp_vec;
+		
+		temp_vec.reserve(MAX_ARGS);
+		
+		uint8_t args_index=0;
+		while(std::getline(input_string,temp_string,' ') && (args_index < MAX_ARGS)) {
+			temp_vec.push_back(temp_string);
+			args[args_index] = temp_vec.back().c_str();
+			args_index++;
+		}
 
-		execlp("lutris", "lutris", game.c_str(), NULL);
+		args[args_index] = NULL;
+
+		execvp(args[0],(char* const*)args);
 	} else {
 		pid_list.push_back(pid);
 	}

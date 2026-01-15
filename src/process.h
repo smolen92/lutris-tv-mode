@@ -6,6 +6,9 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sstream>
+
+#define MAX_ARGS 32
 
 class ProcessHandler {
 	public:
