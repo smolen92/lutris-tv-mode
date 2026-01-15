@@ -1,6 +1,7 @@
 #include "settings.h"
 
 /// \todo load settings from file
+/// \todo save current settings when quitting the app
 Settings::Settings(const char* path) {
 	//cover_art_path = "/home/bazzite/.local/share/lutris/coverart/";
 	//banner_path = "/home/bazzite/.local/share/lutris/banners/";
@@ -12,12 +13,12 @@ Settings::Settings(const char* path) {
 
 	window_width = 800;
 	window_height = 600;
-	
+	window_maximized = true;
+
 	game_tile_width = 120;
 	game_tile_height = 160;
 	vertical_padding = 5;
 	horizontal_padding = 5;
-	
 	
 	font_size = 12;
 

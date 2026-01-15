@@ -14,7 +14,11 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 		return 1;
 	}
 
-	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, SDL_WINDOW_RESIZABLE);
+	uint64_t window_flags = SDL_WINDOW_RESIZABLE;
+
+	if(this->settings->window_maximized) window_flags |= SDL_WINDOW_MAXIMIZED;
+
+	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, window_flags);
 	if( window == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;

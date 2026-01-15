@@ -24,7 +24,6 @@ enum Buttons {
 /**
  * @brief class for handling gui using sdl
  * \todo read font from data
- * \todo fullscreen 
  */
 class Gui {
 	public:
