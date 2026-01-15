@@ -10,8 +10,19 @@
 
 #define MAX_ARGS 32
 
+/**
+ * @brief class that handles creating processes
+ */
 class ProcessHandler {
 	public:
+		/**
+		 * @brief run system command
+		 *
+		 * @param command comand to run
+		 *
+		 * @details
+		 * this function will create a child process where the command will be run
+		 */
 		bool run_process(const char* command);	
 
 		~ProcessHandler();

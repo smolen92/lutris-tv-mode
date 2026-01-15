@@ -13,6 +13,3 @@ void Game::set_images_indexes(uint64_t cover_art_index, uint64_t banner_index) {
 	this->banner_index = banner_index;
 }
 
-Game::~Game() {
-	//nothing to do yet
-}

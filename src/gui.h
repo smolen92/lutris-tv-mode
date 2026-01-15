@@ -1,8 +1,6 @@
 #ifndef _GUI_H_
 #define _GUI_H_
 
-#include <sstream>
-
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -29,10 +27,20 @@ enum Buttons {
 class Gui {
 	public:
 		/**
-		 * @param font poitner to font, that will be used for text
+		 * @brief initialize the gui
+		 *
+		 * @param settings pointer to settings
+		 * @param games pointer to game vector
+		 *
+		 * @return 0 on success, 1 on error
 		 */
 		int gui_init(Settings *settings, std::vector<Game> *games);
-		
+	
+		/**
+		 * @brief try to open images for covert art and banner
+		 *
+		 * @param slug slug of a game, slug should be obtain from game vector 
+		 */
 		void load_texture(const char* slug);
 
 		/**
@@ -52,32 +60,29 @@ class Gui {
 		 */
 		void render();
 	
-		void render_one_line_of_text(uint64_t x, uint64_t y, const char* text);
-		
-		uint32_t render_multi_line_text(uint64_t x, uint64_t y, const char* text);
-
 		~Gui();
 		
-		std::vector<SDL_Texture*> cover_art;
-		std::vector<SDL_Texture*> banner;
-
 	private:
+		void render_one_line_of_text(uint64_t x, uint64_t y, const char* text);
+		uint32_t render_multi_line_text(uint64_t x, uint64_t y, const char* text);
+		
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 		
+		std::vector<SDL_Texture*> cover_art;
+		std::vector<SDL_Texture*> banner;
+		
 		TTF_Font* font;
 
+		SDL_Gamepad* gamepad;
+		bool buttons_pressed[TOTAL_BUTTONS];
+		
 		Settings* settings;
 
 		ProcessHandler process_handler;
 
 		std::vector<Game> *games;
 		uint64_t current_game;
-
-		SDL_Gamepad* gamepad;
-		
-		bool buttons_pressed[TOTAL_BUTTONS];
-
 };
 
 #endif

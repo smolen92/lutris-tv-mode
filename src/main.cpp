@@ -18,7 +18,8 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 	
-	
+
+	/// \todo move to gui_init??
 	for(uint64_t i=0; i < games.size(); i++) {
 		gui.load_texture(games[i].slug.c_str());
 		games[i].set_images_indexes(i,i);

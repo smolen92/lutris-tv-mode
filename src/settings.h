@@ -4,10 +4,19 @@
 #include <cstdint>
 #include <string>
 
+/**
+ * @brief class that stores settings for the app
+ */
 class Settings {
 	public:
+		/**
+		 * @brief load settings
+		 *
+		 * @param path path to file with settings
+		 */
 		Settings(const char* path);
 
+		/// \cond
 		std::string cover_art_path, banner_path, database_path;
 		
 		uint32_t window_width, window_height;
@@ -19,6 +28,7 @@ class Settings {
 		uint32_t font_size;
 
 		int16_t gamepad_deadzone;
+		/// \endcond
 };
 
 #endif

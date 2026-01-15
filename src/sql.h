@@ -6,11 +6,25 @@
 
 #include "game.h"
 
-
+/**
+ * @brief class for managing sql
+ */
 class SQL {
 	public:
-		SQL(const char* database);
-		
+		/**
+		 * \todo throw an error when database file cannot be opened
+		 *
+		 * @brief open the database file
+		 *
+		 * @param database_path path to sqlite database file
+		 */
+		SQL(const char* database_path);
+	
+		/**
+		 * @brief load info about games to game vector from database
+		 *
+		 * @param game_vec pointer to a vector of game
+		 */
 		void load_data(std::vector<Game> *game_vec);
 
 		~SQL();
