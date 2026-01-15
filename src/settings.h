@@ -16,6 +16,13 @@ class Settings {
 		 */
 		Settings(const char* path);
 
+		/**
+		 * @brief recalculate settings that depend on another settings
+		 *
+		 * @details this function should be called every time any setting is changed, it is automatically called in constructor
+		 */
+		void calculate_settings();
+
 		/// \cond
 		std::string cover_art_path, banner_path, database_path;
 		
@@ -23,7 +30,7 @@ class Settings {
 		
 		int32_t game_tile_width, game_tile_height;
 		uint32_t vertical_padding, horizontal_padding; 
-	        uint64_t games_per_row;
+	        uint64_t games_per_row; //this settings shouldn't be set manually, it is calculate in calculate_settings
 
 		uint32_t font_size;
 

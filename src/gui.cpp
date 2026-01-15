@@ -2,7 +2,6 @@
 
 int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	
-
 	this->settings = settings;
 
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
@@ -15,11 +14,13 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 		return 1;
 	}
 
-	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, 0);
+	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, SDL_WINDOW_RESIZABLE);
 	if( window == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;
 	}
+	
+	SDL_SetWindowMinimumSize(this->window, MINIMUM_WINDOW_WIDTH, MINIMUM_WINDOW_HEIGHT);
 
 	renderer = SDL_CreateRenderer(window, NULL);
 	if(renderer == nullptr) {
@@ -108,6 +109,12 @@ void Gui::input(bool *running) {
 				if(input.gaxis.value > this->settings->gamepad_deadzone) buttons_pressed[DOWN] = true;
 			}
 
+		}
+
+		if( input.type == SDL_EVENT_WINDOW_RESIZED ) {
+			settings->window_width = input.window.data1;
+			settings->window_height = input.window.data2;
+			settings->calculate_settings();
 		}
 
 	}

@@ -9,6 +9,8 @@
 #include "process.h"
 #include "game.h"
 
+#define MINIMUM_WINDOW_WIDTH 640
+#define MINIMUM_WINDOW_HEIGHT 480
 
 enum Buttons {
 	UP,
@@ -22,7 +24,7 @@ enum Buttons {
 /**
  * @brief class for handling gui using sdl
  * \todo read font from data
- * \todo fullscreen and resizeable window
+ * \todo fullscreen 
  */
 class Gui {
 	public:
