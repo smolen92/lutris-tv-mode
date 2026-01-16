@@ -14,7 +14,7 @@ lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/setti
 ./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o
 	$(CXX) $(CXXFLAGS) -c ./src/sql.cpp -o ./obj/sql.o
 
-./obj/gui.o: ./src/gui.h ./src/gui.cpp ./obj/settings.o ./obj/process.o
+./obj/gui.o: ./src/gui.h ./src/gui.cpp ./src/font.h ./obj/settings.o ./obj/process.o
 	$(CXX) $(CXXFLAGS) -c ./src/gui.cpp -o ./obj/gui.o
 
 ./obj/settings.o: ./src/settings.h ./src/settings.cpp

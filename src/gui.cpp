@@ -34,7 +34,13 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 
 	SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 
-	font = TTF_OpenFont("Montserrat-Regular.ttf",settings->font_size);
+	SDL_IOStream *temp_font = SDL_IOFromConstMem(embedded_font_data, embedded_font_size);
+	if(temp_font == nullptr) {
+		std::clog << "Error: " << SDL_GetError() << "\n";
+		return 1;
+	}
+
+	font = TTF_OpenFontIO(temp_font, true, settings->font_size);
 	if(font == nullptr) {
 		std::clog << "Error: " << SDL_GetError() << "\n";
 		return 1;

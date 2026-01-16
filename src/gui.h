@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "process.h"
 #include "game.h"
+#include "font.h"
 
 #define MINIMUM_WINDOW_WIDTH 640
 #define MINIMUM_WINDOW_HEIGHT 480
@@ -23,7 +24,6 @@ enum Buttons {
 
 /**
  * @brief class for handling gui using sdl
- * \todo read font from data
  */
 class Gui {
 	public:
