@@ -6,27 +6,25 @@
 /// \todo check for throw exceptions while creating the game vector
 int main(int argc, char** argv) {
 
+	//Setup
+	
+	//settings
 	Settings settings(nullptr);
 
+	//database and reading data to game vector
 	SQL lutris_db(settings.database_path.c_str());
 	std::vector<Game> games;
-	Gui gui;
-
 	lutris_db.load_data(&games);
 	
+	//gui initialization
+	Gui gui;
 	if( gui.gui_init(&settings,&games) != 0 ) {
 		return 1;
 	}
 	
-
-	/// \todo move to gui_init??
-	for(uint64_t i=0; i < games.size(); i++) {
-		gui.load_texture(games[i].slug.c_str());
-		games[i].set_images_indexes(i,i);
-	}
-
 	bool running = true;
 
+	//Main loop
 	while(running) {
 		gui.input(&running);
 

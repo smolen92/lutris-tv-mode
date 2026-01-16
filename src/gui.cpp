@@ -48,6 +48,11 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 
 	this->games = games;
 
+	for(uint64_t i=0; i < this->games->size(); i++) {
+		this->load_texture(this->games->at(i).slug.c_str());
+		this->games->at(i).set_images_indexes(i,i);
+	}
+
 	current_game = 0;
 	
 	int32_t gamepad_count;

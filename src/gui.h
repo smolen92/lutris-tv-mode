@@ -36,14 +36,6 @@ class Gui {
 		 * @return 0 on success, 1 on error
 		 */
 		int gui_init(Settings *settings, std::vector<Game> *games);
-	
-		/**
-		 * @brief try to open images for covert art and banner
-		 *
-		 * @param slug slug of a game, slug should be obtain from game vector 
-		 */
-		void load_texture(const char* slug);
-
 		/**
 		 * @brief checks the input
 		 *
@@ -64,7 +56,38 @@ class Gui {
 		~Gui();
 		
 	private:
+		
+		/**
+		 * @brief try to open images for covert art and banner
+		 *
+		 * @param slug slug of a game, slug should be obtain from game vector 
+		 */
+		void load_texture(const char* slug);
+		
+		/**
+		 * @brief render one line of centerd text
+		 *
+		 * @param x x-position of the text
+		 * @param y y-position of the text
+		 * @param text text to render
+		 *
+		 * \todo create parameters for area width now it is centered to game_tile_width
+		 *
+		 * @details this function is called internally by render_multi_line_text and shouldn't be called by itself
+		 */
 		void render_one_line_of_text(uint64_t x, uint64_t y, const char* text);
+		
+		/**
+		 *
+		 * @brief render text on multiple lines, all lines are centered
+		 *
+		 * @param x x-position of the text
+		 * @param y y-position of the text
+		 * @param text text to render
+		 *
+		 * @return height that the text used for rendering
+		 *
+		 */
 		uint32_t render_multi_line_text(uint64_t x, uint64_t y, const char* text);
 		
 		SDL_Window* window;

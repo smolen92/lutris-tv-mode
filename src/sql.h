@@ -32,6 +32,12 @@ class SQL {
 	private:
 		sqlite3 *db;
 		char *error_message;
+		
+		/**
+		 * @brief called function for loading read data from database
+		 *
+		 * @details more info https://www.sqlite.org/c3ref/exec.html 
+		 */
 		static int callback_load_data(void* data_vector, int argc, char** argv, char **az_col_name);
 
 };
