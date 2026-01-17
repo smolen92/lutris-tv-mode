@@ -5,6 +5,9 @@
 #include <vector>
 #include <cstdint>
 
+/**
+ * @brief class for storing info about categories
+ */
 class Category {
 	public:
 		/**

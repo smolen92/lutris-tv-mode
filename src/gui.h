@@ -34,6 +34,7 @@ class Gui {
 		 *
 		 * @param settings pointer to settings
 		 * @param games pointer to game vector
+		 * @param categories pointer to category vector
 		 *
 		 * @return 0 on success, 1 on error
 		 */
