@@ -7,11 +7,10 @@ SQL::SQL(const char* database) {
 	error_message = nullptr;
 }
 
-void SQL::load_data(std::vector<Game> *game_vec) {
-	if( sqlite3_exec(this->db, "SELECT * FROM games ORDER BY name", this->callback_load_data, game_vec, &error_message) != SQLITE_OK) {
+void SQL::load_data(void *data_ptr, const char* sql_statement, int (*callback_function)(void*,int,char**,char**)) {
+	if( sqlite3_exec(db, sql_statement, callback_function, data_ptr, &error_message) != SQLITE_OK) {
 		std::clog << "SQL error: " << error_message << "\n";
 	}
-
 }
 
 SQL::~SQL() {
@@ -21,7 +20,7 @@ SQL::~SQL() {
 	db = nullptr;
 }
 
-int SQL::callback_load_data(void* data_vector, int argc, char** argv, char **az_col_name) {
+int SQL::callback_load_games(void* data_vector, int argc, char** argv, char **az_col_name) {
 	std::vector<Game>* game_ptr;
 	game_ptr = (std::vector<Game>*)data_vector;
 	
@@ -39,3 +38,44 @@ int SQL::callback_load_data(void* data_vector, int argc, char** argv, char **az_
 
 	return 0;
 }
+
+int SQL::callback_load_categories(void* data_vector, int argc, char** argv, char **az_col_name) {
+	std::vector<Category>* category_ptr;
+	category_ptr = (std::vector<Category>*)data_vector;
+	
+
+	uint64_t temp_id;
+	std::string temp_name;
+	
+	for(int i=0; i < argc; i++) {
+		if( std::string("id").compare(az_col_name[i]) == 0) temp_id = atoi(argv[i]);
+		if( std::string("name").compare(az_col_name[i]) == 0) temp_name = argv[i];
+	}
+
+	category_ptr->push_back(Category(temp_id, temp_name.c_str()));
+
+	return 0;
+}
+
+int SQL::callback_load_games_categories(void* data_vector, int argc, char** argv, char **az_col_name) {
+	std::vector<Category>* category_ptr;
+	category_ptr = (std::vector<Category>*)data_vector;
+
+	uint64_t temp_game_id;
+	uint64_t temp_category_id;
+
+	for(int i=0; i < argc; i++) {
+		if( std::string("game_id").compare(az_col_name[i]) == 0 ) temp_game_id = atoi(argv[i]);
+		if( std::string("category_id").compare(az_col_name[i]) == 0 ) temp_category_id = atoi(argv[i]);
+	}
+
+	for(uint64_t i=0; i < category_ptr->size(); i++) {
+		if(category_ptr->at(i).id == temp_category_id) {
+			category_ptr->at(i).games_indexes.push_back(temp_game_id);
+			break;
+		}
+	}
+
+	return 0;
+}
+

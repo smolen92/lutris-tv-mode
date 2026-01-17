@@ -2,8 +2,8 @@ CXX = g++
 
 CXXFLAGS = -Wall -g 
 
-lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o
-	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
+lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o ./obj/category.o
+	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o ./obj/category.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
 
 ./obj/main.o: ./src/main.cpp ./obj/sql.o ./obj/gui.o
 	$(CXX) $(CXXFLAGS) -c ./src/main.cpp -o ./obj/main.o
@@ -22,6 +22,10 @@ lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/setti
 
 ./obj/process.o: ./src/process.h ./src/process.cpp
 	$(CXX) $(CXXFLAGS) -c ./src/process.cpp -o ./obj/process.o
+
+./obj/category.o: ./src/category.h ./src/category.cpp
+	$(CXX) $(CXXFLAGS) -c ./src/category.cpp -o ./obj/category.o
+
 .PHONY: clean doc 
 
 clean:

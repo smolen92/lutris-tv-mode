@@ -8,6 +8,7 @@
 #include "settings.h"
 #include "process.h"
 #include "game.h"
+#include "category.h"
 #include "font.h"
 
 #define MINIMUM_WINDOW_WIDTH 640
@@ -19,6 +20,7 @@ enum Buttons {
 	LEFT,
 	RIGHT,
 	RUN,
+	CATEGORIES,
 	TOTAL_BUTTONS
 };
 
@@ -35,7 +37,7 @@ class Gui {
 		 *
 		 * @return 0 on success, 1 on error
 		 */
-		int gui_init(Settings *settings, std::vector<Game> *games);
+		int gui_init(Settings *settings, std::vector<Game> *games, std::vector<Category> * categories);
 		/**
 		 * @brief checks the input
 		 *
@@ -106,7 +108,10 @@ class Gui {
 		ProcessHandler process_handler;
 
 		std::vector<Game> *games;
+		std::vector<Category> *categories;
 		uint64_t current_game;
+
+		bool render_categories;
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "process.h"
 
+/// \todo quit/kill child process if exec failed
 bool ProcessHandler::run_process(const char* command) {
 	int32_t pid = fork();
 
@@ -26,6 +27,10 @@ bool ProcessHandler::run_process(const char* command) {
 		args[args_index] = NULL;
 
 		execvp(args[0],(char* const*)args);
+		
+		//only when exec failed
+		std::clog << "exec failed\n";
+		return false; 
 	} else {
 		pid_list.push_back(pid);
 	}

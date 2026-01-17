@@ -1,6 +1,6 @@
 #include "gui.h"
 
-int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
+int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Category> *categories) {
 	
 	this->settings = settings;
 
@@ -47,6 +47,7 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	}
 
 	this->games = games;
+	this->categories = categories;
 
 	for(uint64_t i=0; i < this->games->size(); i++) {
 		this->load_texture(this->games->at(i).slug.c_str());
@@ -61,6 +62,8 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games) {
 	this->gamepad = SDL_OpenGamepad(joysticks[0]);
 
 	SDL_free(joysticks);
+	
+	render_categories = false;
 
 	return 0;
 }
@@ -102,6 +105,7 @@ void Gui::input(bool *running) {
 			if(input.key.scancode == SDL_SCANCODE_RIGHT) buttons_pressed[RIGHT] = true;
 			if(input.key.scancode == SDL_SCANCODE_LEFT) buttons_pressed[LEFT] = true;
 			if(input.key.scancode == SDL_SCANCODE_RETURN) buttons_pressed[RUN] = true;
+			if(input.key.scancode == SDL_SCANCODE_C) buttons_pressed[CATEGORIES] = true; 
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
@@ -110,6 +114,7 @@ void Gui::input(bool *running) {
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) buttons_pressed[RIGHT] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) buttons_pressed[LEFT] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) buttons_pressed[RUN] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) buttons_pressed[CATEGORIES] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
@@ -146,9 +151,14 @@ void Gui::logic() {
 		std::string command = std::string("lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
 		process_handler.run_process(command.c_str());
 	}
+	
+	if( buttons_pressed[CATEGORIES] ) {
+		render_categories = !render_categories;
+	}
 
 }
 
+/// \todo improve categories rendering
 void Gui::render() {
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
@@ -194,6 +204,12 @@ void Gui::render() {
 			max_renderer_font_height = 0;
 		}
 
+	}
+
+	if(render_categories) {
+		for(uint64_t i=0; i < categories->size(); i++) {
+			render_one_line_of_text(0,i*settings->font_size,categories->at(i).name.c_str());
+		}
 	}
 
 	SDL_RenderPresent(this->renderer);
