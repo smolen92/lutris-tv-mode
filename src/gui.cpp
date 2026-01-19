@@ -86,6 +86,7 @@ void Gui::load_texture(const char* slug) {
 
 /// \bug doesn't detect if gamepad button is down
 /// \bug gamepad axis too sensitive, take input even when returning to center
+/// \todo mouse input
 void Gui::input(bool *running) {
 	SDL_Event input;
 
@@ -141,6 +142,7 @@ void Gui::input(bool *running) {
 
 }
 
+/// \todo category selection
 void Gui::logic() {
 
 	if( buttons_pressed[UP] ) if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
@@ -159,6 +161,7 @@ void Gui::logic() {
 }
 
 /// \todo improve categories rendering
+/// \todo move rendering of games's grid to its own function
 void Gui::render() {
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
@@ -207,9 +210,7 @@ void Gui::render() {
 	}
 
 	if(render_categories) {
-		for(uint64_t i=0; i < categories->size(); i++) {
-			render_one_line_of_text(0,i*settings->font_size,categories->at(i).name.c_str());
-		}
+		this->render_categories_menu();
 	}
 
 	SDL_RenderPresent(this->renderer);
@@ -218,7 +219,7 @@ void Gui::render() {
 void Gui::render_one_line_of_text(uint64_t x, uint64_t y, const char* text) {
 	SDL_Surface *text_surface;
 
-	text_surface = TTF_RenderText_Blended(this->font, text, 0, {255,255,255,255});
+	text_surface = TTF_RenderText_Shaded(this->font, text, 0, {255,255,255,255},{0,0,0,255});
 	if(text_surface) {
 		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(this->renderer, text_surface);
 		if( text_texture ) {
@@ -282,6 +283,30 @@ uint32_t Gui::render_multi_line_text(uint64_t x, uint64_t y, const char *text) {
 	this->render_one_line_of_text(x,y+offset, string_to_render.c_str());
 	
 	return return_height;
+}
+
+void Gui::render_categories_menu() {
+	SDL_Rect category_viewport = {	(int)settings->category_menu_x,
+					(int)settings->category_menu_y,
+					(int)settings->category_menu_width,
+					(int)settings->category_menu_height};
+	
+	SDL_FRect clear_rect = { 	(float)category_viewport.x,
+					(float)category_viewport.y,
+					(float)category_viewport.w,
+					(float)category_viewport.h};
+
+	SDL_SetRenderViewport(renderer, &category_viewport);
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
+	SDL_RenderFillRect(renderer, &clear_rect);
+
+	for(uint64_t i=0; i < categories->size(); i++) {
+		render_one_line_of_text(0,i*settings->font_size,categories->at(i).name.c_str());
+	}
+	
+	SDL_SetRenderViewport(renderer, nullptr);
+
 }
 
 Gui::~Gui() {

@@ -35,6 +35,8 @@ class Settings {
 		uint32_t font_size;
 
 		int16_t gamepad_deadzone;
+
+		uint32_t category_menu_x, category_menu_y, category_menu_width, category_menu_height;
 		/// \endcond
 };
 
