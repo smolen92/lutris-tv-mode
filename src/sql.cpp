@@ -2,7 +2,7 @@
 
 SQL::SQL(const char* database) {
 	if( sqlite3_open(database, &db) != SQLITE_OK) {
-		std::clog << "Can't open database: " << sqlite3_errmsg(db) << "\n";
+		throw std::runtime_error(sqlite3_errmsg(db));
 	}
 	error_message = nullptr;
 }

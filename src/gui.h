@@ -35,6 +35,8 @@ class Gui {
 		 * @param categories pointer to category vector
 		 *
 		 * @return 0 on success, 1 on error
+		 *
+		 * \todo change this into constructor and throw exceptions
 		 */
 		int gui_init(Settings *settings, std::vector<Game> *games, std::vector<Category> * categories);
 		/**

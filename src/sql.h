@@ -13,7 +13,6 @@
 class SQL {
 	public:
 		/**
-		 * \todo throw an error when database file cannot be opened
 		 *
 		 * @brief open the database file
 		 *
