@@ -3,6 +3,7 @@
 
 /// \file
 
+/// \todo when category change delete game vector and load it again from database
 int main(int argc, char** argv) {
 
 	//Setup

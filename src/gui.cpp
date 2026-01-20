@@ -144,8 +144,9 @@ void Gui::input(bool *running) {
 
 }
 
-/// \todo category selection - enter/RUN key
 void Gui::logic() {
+	
+	process_handler.check_and_clean_zombie_processes();
 
 	if( buttons_pressed[UP] ) {
 		if(render_categories) {

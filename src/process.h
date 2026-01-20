@@ -25,6 +25,13 @@ class ProcessHandler {
 		 */
 		bool run_process(const char* command);	
 
+		/**
+		 *
+		 * @brief check for zombie processes and clean them if necessary
+		 *
+		 */
+		void check_and_clean_zombie_processes();
+		
 		~ProcessHandler();
 	private:
 		std::vector<uint32_t> pid_list;
