@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
 	//Setup
 	std::vector<Game> games;
 	std::vector<Category> categories;
-
+	
 	//settings
 	Settings settings(nullptr);
 

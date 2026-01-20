@@ -119,6 +119,7 @@ class Gui {
 		std::vector<Category> *categories;
 		uint64_t current_game;
 		uint64_t current_category;
+		bool render_all_games;
 
 		bool render_categories;
 };

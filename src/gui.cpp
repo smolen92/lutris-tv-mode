@@ -56,6 +56,7 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Cate
 
 	current_game = 0;
 	current_category = 0;
+	render_all_games = true;
 
 	int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
@@ -165,9 +166,14 @@ void Gui::logic() {
 
 	if( buttons_pressed[RIGHT] ) if( this->current_game != this->games->size()-1) this->current_game += 1;
 	if( buttons_pressed[LEFT] ) if( this->current_game != 0) this->current_game -= 1;
-	if( buttons_pressed[RUN] ) { 
-		std::string command = std::string("lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
-		process_handler.run_process(command.c_str());
+	if( buttons_pressed[RUN] ) {
+		if(render_categories) {
+			current_game = 0;
+			render_all_games = false;
+		} else {
+			std::string command = std::string("lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
+			process_handler.run_process(command.c_str());
+		}
 	}
 	
 	if( buttons_pressed[CATEGORIES] ) {
@@ -184,51 +190,56 @@ void Gui::render() {
 	uint32_t max_renderer_font_height = 0;
 
 	//initial cover art rect calculation
-	SDL_FRect cover_art_rect = {(float)this->settings->horizontal_padding,(float)this->settings->vertical_padding,(float)settings->game_tile_width,(float)settings->game_tile_height};
+	SDL_FRect cover_art_rect = {(float)settings->horizontal_padding,(float)settings->vertical_padding,(float)settings->game_tile_width,(float)settings->game_tile_height};
 
-	for(uint64_t i=(this->current_game/this->settings->games_per_row*this->settings->games_per_row); i < games->size(); i++) {
-		SDL_FRect selection_box;
+	uint64_t temp_games_start_index = current_game/settings->games_per_row*settings->games_per_row;
+	uint64_t temp_games_length;
 
-		//selection box rect calculation
-		if( i == current_game) {
-			selection_box = {cover_art_rect.x - this->settings->horizontal_padding, cover_art_rect.y - this->settings->vertical_padding, cover_art_rect.w + 2*this->settings->horizontal_padding, cover_art_rect.h + 2*this->settings->vertical_padding};
-		}
-		
+	(render_all_games) ? temp_games_length = games->size() : temp_games_length = categories->at(current_category).games_indexes.size();
+
+	for(uint64_t i=temp_games_start_index; i < temp_games_length; i++) {
+		uint64_t temp_game_index;
+		(render_all_games) ? temp_game_index = i : temp_game_index = categories->at(current_category).games_indexes[i];
+
 		//font rendering
-		uint32_t rendered_height = this->render_multi_line_text(cover_art_rect.x, cover_art_rect.y + settings->game_tile_height, games->at(i).name.c_str());
+		uint32_t rendered_height = render_multi_line_text(cover_art_rect.x, cover_art_rect.y + settings->game_tile_height, games->at(temp_game_index).name.c_str());
 		
 		if(rendered_height > max_renderer_font_height) max_renderer_font_height = rendered_height;
 
 		//selection box rendering
-		if( i == this->current_game ) {
+		if( i == current_game ) {
+			SDL_FRect selection_box = {	cover_art_rect.x - settings->horizontal_padding, 
+							cover_art_rect.y - settings->vertical_padding,
+							cover_art_rect.w + 2*settings->horizontal_padding,
+							cover_art_rect.h + 2*settings->vertical_padding};
+
 			selection_box.h += rendered_height;
-			SDL_SetRenderDrawColor(this->renderer, 0,0,255,0x6F);
-			SDL_RenderFillRect(this->renderer, &selection_box);
+			SDL_SetRenderDrawColor(renderer, 0,0,255,0x6F);
+			SDL_RenderFillRect(renderer, &selection_box);
 		}
 
 		//cover art rendering
-		if(cover_art[games->at(i).cover_art_index] != nullptr) {
-			SDL_RenderTexture(this->renderer, cover_art[games->at(i).cover_art_index], nullptr, &cover_art_rect);
+		if(cover_art[temp_game_index] != nullptr) {
+			SDL_RenderTexture(renderer, cover_art[temp_game_index], nullptr, &cover_art_rect);
 		}
 
 		//new cover art rect calculation
 		cover_art_rect.x += settings->game_tile_width + settings->horizontal_padding;
 
-		if( i%this->settings->games_per_row == (this->settings->games_per_row-1)) {
-			cover_art_rect.x = this->settings->horizontal_padding;
+		if( i%settings->games_per_row == (settings->games_per_row-1)) {
+			cover_art_rect.x = settings->horizontal_padding;
 			cover_art_rect.y += settings->game_tile_height + settings->vertical_padding + max_renderer_font_height;
-			if(cover_art_rect.y > this->settings->window_height) break;
+			if(cover_art_rect.y > settings->window_height) break;
 			max_renderer_font_height = 0;
 		}
 
 	}
-
+	
+	//category selection box rendering
 	if(render_categories) {
 		render_categories_menu();
 	}
 	
-	render_one_line_of_text(100, 400, std::string(std::string("current category: ") + std::to_string(current_category)).c_str(), 1920);
-
 	SDL_RenderPresent(renderer);
 }
 
