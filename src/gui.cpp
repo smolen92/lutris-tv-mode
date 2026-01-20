@@ -1,17 +1,15 @@
 #include "gui.h"
 
-int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Category> *categories) {
+Gui::Gui(Settings *settings, std::vector<Game> *games, std::vector<Category> *categories) {
 	
 	this->settings = settings;
 
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
-		std::clog << "Error: " << SDL_GetError() << "\n";
-		return 1;
+		throw std::runtime_error(SDL_GetError());
 	}
 
 	if(!TTF_Init()) {
-		std::clog << "Error: " << SDL_GetError() << "\n";
-		return 1;
+		throw std::runtime_error(SDL_GetError());
 	}
 
 	uint64_t window_flags = SDL_WINDOW_RESIZABLE;
@@ -20,30 +18,26 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Cate
 
 	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, window_flags);
 	if( window == nullptr) {
-		std::clog << "Error: " << SDL_GetError() << "\n";
-		return 1;
+		throw std::runtime_error(SDL_GetError());
 	}
 	
 	SDL_SetWindowMinimumSize(this->window, settings->min_window_width, settings->min_window_height);
 
 	renderer = SDL_CreateRenderer(window, NULL);
 	if(renderer == nullptr) {
-		std::clog << "Error: " << SDL_GetError() << "\n";
-		return 1;
+		throw std::runtime_error(SDL_GetError());
 	}
 
 	SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 
 	SDL_IOStream *temp_font = SDL_IOFromConstMem(embedded_font_data, embedded_font_size);
 	if(temp_font == nullptr) {
-		std::clog << "Error: " << SDL_GetError() << "\n";
-		return 1;
+		throw std::runtime_error(SDL_GetError());
 	}
 
 	font = TTF_OpenFontIO(temp_font, true, settings->font_size);
 	if(font == nullptr) {
-		std::clog << "Error: " << SDL_GetError() << "\n";
-		return 1;
+		throw std::runtime_error(SDL_GetError());
 	}
 
 	this->games = games;
@@ -66,8 +60,6 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Cate
 	SDL_free(joysticks);
 	
 	render_categories = false;
-
-	return 0;
 }
 
 /// \todo don't push nullptr to vec

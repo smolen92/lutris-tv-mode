@@ -4,6 +4,7 @@
 /// \file
 
 /// \todo when category change delete game vector and load it again from database
+/// \todo std::clog into exceptions and handle them in main
 int main(int argc, char** argv) {
 
 	//Setup
@@ -33,26 +34,25 @@ int main(int argc, char** argv) {
 				}
 			}
 		}
+
+		//gui initialization
+		Gui gui(&settings,&games,&categories);
+		
+		bool running = true;
+
+		//Main loop
+		while(running) {
+			gui.input(&running);
+
+			gui.logic();
+
+			gui.render();
+		}
+
+
 	}
 	catch (const std::runtime_error & error) {
 		std::clog << "Exception: " << error.what() << "\n";
-	}
-
-	//gui initialization
-	Gui gui;
-	if( gui.gui_init(&settings,&games,&categories) != 0 ) {
-		return 1;
-	}
-	
-	bool running = true;
-
-	//Main loop
-	while(running) {
-		gui.input(&running);
-
-		gui.logic();
-
-		gui.render();
 	}
 
 	return 0;
