@@ -2,7 +2,6 @@
 
 /// \todo load settings from file
 /// \todo save current settings when quitting the app
-/// \todo max category menu width
 Settings::Settings(const char* path) {
 	//cover_art_path = "/home/bazzite/.local/share/lutris/coverart/";
 	//banner_path = "/home/bazzite/.local/share/lutris/banners/";
@@ -14,6 +13,10 @@ Settings::Settings(const char* path) {
 
 	window_width = 800;
 	window_height = 600;
+
+	min_window_width = 640;
+	min_window_height = 480;
+
 	window_maximized = true;
 
 	game_tile_width = 120;
@@ -33,6 +36,9 @@ Settings::Settings(const char* path) {
 
 void Settings::calculate_settings() {
 	games_per_row = (uint64_t)(window_width - horizontal_padding)/(int64_t)(game_tile_width + horizontal_padding);
-	category_menu_width = window_width>>2;
+	category_menu_width = window_width>>3;
 	category_menu_height = window_height;
+	
+	min_category_menu_width = min_window_width>>2;
+	max_category_menu_width = window_width>>2;
 }

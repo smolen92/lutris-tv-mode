@@ -24,7 +24,7 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Cate
 		return 1;
 	}
 	
-	SDL_SetWindowMinimumSize(this->window, MINIMUM_WINDOW_WIDTH, MINIMUM_WINDOW_HEIGHT);
+	SDL_SetWindowMinimumSize(this->window, settings->min_window_width, settings->min_window_height);
 
 	renderer = SDL_CreateRenderer(window, NULL);
 	if(renderer == nullptr) {
@@ -55,7 +55,8 @@ int Gui::gui_init(Settings *settings, std::vector<Game> *games, std::vector<Cate
 	}
 
 	current_game = 0;
-	
+	current_category = 0;
+
 	int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
 	
@@ -142,11 +143,26 @@ void Gui::input(bool *running) {
 
 }
 
-/// \todo category selection
+/// \todo category selection - enter/RUN key
 void Gui::logic() {
 
-	if( buttons_pressed[UP] ) if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
-	if( buttons_pressed[DOWN] ) if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
+	if( buttons_pressed[UP] ) {
+		if(render_categories) {
+			if( current_category != 0) current_category -= 1;
+		} else {
+			if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
+		}
+	}
+
+	if( buttons_pressed[DOWN] ) {
+		if(render_categories) {
+			if(current_category != categories->size()-1) current_category += 1;
+		}
+		else {
+			if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
+		}
+	}
+
 	if( buttons_pressed[RIGHT] ) if( this->current_game != this->games->size()-1) this->current_game += 1;
 	if( buttons_pressed[LEFT] ) if( this->current_game != 0) this->current_game -= 1;
 	if( buttons_pressed[RUN] ) { 
@@ -160,8 +176,6 @@ void Gui::logic() {
 
 }
 
-/// \todo improve categories rendering
-/// \todo move rendering of games's grid to its own function
 void Gui::render() {
 
 	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
@@ -210,31 +224,33 @@ void Gui::render() {
 	}
 
 	if(render_categories) {
-		this->render_categories_menu();
+		render_categories_menu();
 	}
+	
+	render_one_line_of_text(100, 400, std::string(std::string("current category: ") + std::to_string(current_category)).c_str(), 1920);
 
-	SDL_RenderPresent(this->renderer);
+	SDL_RenderPresent(renderer);
 }
 
-void Gui::render_one_line_of_text(uint64_t x, uint64_t y, const char* text) {
+void Gui::render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width) {
 	SDL_Surface *text_surface;
 
-	text_surface = TTF_RenderText_Shaded(this->font, text, 0, {255,255,255,255},{0,0,0,255});
+	text_surface = TTF_RenderText_Blended(font, text, 0, {255,255,255,255});
 	if(text_surface) {
-		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(this->renderer, text_surface);
+		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 		if( text_texture ) {
-			SDL_FRect dst_text_rect = {	(text_texture->w < settings->game_tile_width) ? (float)((settings->game_tile_width-text_texture->w)/2 + x) : (float)x,
+			SDL_FRect dst_text_rect = {	(text_texture->w < area_width) ? (float)((area_width-text_texture->w)/2 + x) : (float)x,
 							(float)y,
-							(text_texture->w > this->settings->game_tile_width) ? (float)this->settings->game_tile_width : (float)text_texture->w,
+							(text_texture->w > area_width) ? (float)area_width : (float)text_texture->w,
 							(float)text_texture->h};
 			
 			SDL_FRect src_text_rect = {	0.0,
 							0.0,
-							(text_texture->w > this->settings->game_tile_width) ? (float)this->settings->game_tile_width : (float)text_texture->w,
+							(text_texture->w > area_width) ? (float)area_width: (float)text_texture->w,
 							(float)text_texture->h};
 
 
-			SDL_RenderTexture(this->renderer, text_texture, &src_text_rect, &dst_text_rect); 
+			SDL_RenderTexture(renderer, text_texture, &src_text_rect, &dst_text_rect); 
 			SDL_DestroyTexture(text_texture);
 			text_texture = nullptr;
 		}
@@ -268,7 +284,7 @@ uint32_t Gui::render_multi_line_text(uint64_t x, uint64_t y, const char *text) {
 		TTF_GetStringSize(this->font, elements[i].c_str(), 0, &current_string_width, nullptr);
 
 		if(total_string_width + current_string_width > this->settings->game_tile_width) {
-			this->render_one_line_of_text(x,y+offset, string_to_render.c_str());
+			this->render_one_line_of_text(x,y+offset, string_to_render.c_str(), settings->game_tile_width);
 			string_to_render = elements[i];
 			TTF_GetStringSize(this->font, string_to_render.c_str(), 0, &total_string_width, nullptr);
 			return_height += this->settings->font_size;
@@ -280,7 +296,7 @@ uint32_t Gui::render_multi_line_text(uint64_t x, uint64_t y, const char *text) {
 		}
 	}
 
-	this->render_one_line_of_text(x,y+offset, string_to_render.c_str());
+	this->render_one_line_of_text(x,y+offset, string_to_render.c_str(), settings->game_tile_width);
 	
 	return return_height;
 }
@@ -290,19 +306,33 @@ void Gui::render_categories_menu() {
 					(int)settings->category_menu_y,
 					(int)settings->category_menu_width,
 					(int)settings->category_menu_height};
+
+	if(category_viewport.w > (int)settings->max_category_menu_width) category_viewport.w = settings->max_category_menu_width;
+	if(category_viewport.w < (int)settings->min_category_menu_width) category_viewport.w = settings->min_category_menu_width;
 	
 	SDL_FRect clear_rect = { 	(float)category_viewport.x,
 					(float)category_viewport.y,
 					(float)category_viewport.w,
 					(float)category_viewport.h};
+	
+	SDL_FRect category_selection = {	(float)category_viewport.x,
+						(float)(current_category*settings->font_size),
+						(float)category_viewport.w,
+						(float)settings->font_size};
 
 	SDL_SetRenderViewport(renderer, &category_viewport);
 
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xFF);
 	SDL_RenderFillRect(renderer, &clear_rect);
 
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderRect(renderer, &clear_rect);
+
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0xFF, 0x6F);
+	SDL_RenderFillRect(renderer, &category_selection);
+
 	for(uint64_t i=0; i < categories->size(); i++) {
-		render_one_line_of_text(0,i*settings->font_size,categories->at(i).name.c_str());
+		render_one_line_of_text(0,i*settings->font_size,categories->at(i).name.c_str(),category_viewport.w);
 	}
 	
 	SDL_SetRenderViewport(renderer, nullptr);
@@ -311,7 +341,7 @@ void Gui::render_categories_menu() {
 
 Gui::~Gui() {
 	
-	SDL_CloseGamepad(this->gamepad);
+	SDL_CloseGamepad(gamepad);
 
 	while(!cover_art.empty()) {
 		SDL_DestroyTexture(cover_art.back());

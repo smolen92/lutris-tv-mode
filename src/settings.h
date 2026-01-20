@@ -27,6 +27,7 @@ class Settings {
 		std::string cover_art_path, banner_path, database_path;
 		
 		uint32_t window_width, window_height;
+		uint32_t min_window_width, min_window_height;
 		bool window_maximized;
 
 		int32_t game_tile_width, game_tile_height;
@@ -37,6 +38,7 @@ class Settings {
 		int16_t gamepad_deadzone;
 
 		uint32_t category_menu_x, category_menu_y, category_menu_width, category_menu_height;
+		uint32_t max_category_menu_width, min_category_menu_width;
 		/// \endcond
 };
 

@@ -11,9 +11,6 @@
 #include "category.h"
 #include "font.h"
 
-#define MINIMUM_WINDOW_WIDTH 640
-#define MINIMUM_WINDOW_HEIGHT 480
-
 enum Buttons {
 	UP,
 	DOWN,
@@ -26,7 +23,7 @@ enum Buttons {
 
 /**
  * @brief class for handling gui using sdl
- * \todo create parameters for area width now it is centered to game_tile_width for render_one_line_of_text 
+ * \todo move category menu and games's grid into its own class
  */
 class Gui {
 	public:
@@ -74,11 +71,12 @@ class Gui {
 		 * @param x x-position of the text
 		 * @param y y-position of the text
 		 * @param text text to render
+		 * @param area_width width of the area
 		 *
 		 *
 		 * @details this function is called internally by render_multi_line_text and shouldn't be called by itself
 		 */
-		void render_one_line_of_text(uint64_t x, uint64_t y, const char* text);
+		void render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width);
 		
 		/**
 		 *
@@ -118,6 +116,7 @@ class Gui {
 		std::vector<Game> *games;
 		std::vector<Category> *categories;
 		uint64_t current_game;
+		uint64_t current_category;
 
 		bool render_categories;
 };

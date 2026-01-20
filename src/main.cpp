@@ -15,8 +15,9 @@ int main(int argc, char** argv) {
 	SQL lutris_db(settings.database_path.c_str());
 	std::vector<Game> games;
 	std::vector<Category> categories;
-	
+
 	lutris_db.load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", lutris_db.callback_load_games);
+	/// \todo combine this with LEFT JOIN
 	lutris_db.load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", lutris_db.callback_load_categories);
 	lutris_db.load_data(&categories, "SELECT * FROM games_categories", lutris_db.callback_load_games_categories);
 
@@ -31,6 +32,9 @@ int main(int argc, char** argv) {
 			}
 		}
 	}
+
+	categories.push_back(Category(1,"test"));
+	categories.push_back(Category(2,"ewrewrwerew"));
 
 	//gui initialization
 	Gui gui;
