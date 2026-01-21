@@ -57,25 +57,3 @@ int SQL::callback_load_categories(void* data_vector, int argc, char** argv, char
 	return 0;
 }
 
-int SQL::callback_load_games_categories(void* data_vector, int argc, char** argv, char **az_col_name) {
-	std::vector<Category>* category_ptr;
-	category_ptr = (std::vector<Category>*)data_vector;
-
-	uint64_t temp_game_id;
-	uint64_t temp_category_id;
-
-	for(int i=0; i < argc; i++) {
-		if( std::string("game_id").compare(az_col_name[i]) == 0 ) temp_game_id = atoi(argv[i]);
-		if( std::string("category_id").compare(az_col_name[i]) == 0 ) temp_category_id = atoi(argv[i]);
-	}
-
-	for(uint64_t i=0; i < category_ptr->size(); i++) {
-		if(category_ptr->at(i).id == temp_category_id) {
-			category_ptr->at(i).games_indexes.push_back(temp_game_id);
-			break;
-		}
-	}
-
-	return 0;
-}
-

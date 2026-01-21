@@ -1,8 +1,9 @@
 #include "gui.h"
 
-Gui::Gui(Settings *settings, std::vector<Game> *games, std::vector<Category> *categories) {
+Gui::Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Category> *categories) {
 	
 	this->settings = settings;
+	this->sql = sql;
 
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
 		throw std::runtime_error(SDL_GetError());
@@ -43,14 +44,10 @@ Gui::Gui(Settings *settings, std::vector<Game> *games, std::vector<Category> *ca
 	this->games = games;
 	this->categories = categories;
 
-	for(uint64_t i=0; i < this->games->size(); i++) {
-		this->load_texture(this->games->at(i).slug.c_str());
-		this->games->at(i).set_images_indexes(i,i);
-	}
+	load_images();
 
 	current_game = 0;
 	current_category = 0;
-	render_all_games = true;
 
 	int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
@@ -76,6 +73,13 @@ void Gui::load_texture(const char* slug) {
 	
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " banner texture\n";
 
+}
+
+void Gui::load_images() {
+	for(uint64_t i=0; i < this->games->size(); i++) {
+		this->load_texture(this->games->at(i).slug.c_str());
+		this->games->at(i).set_images_indexes(i,i);
+	}
 }
 
 /// \bug doesn't detect if gamepad button is down
@@ -162,7 +166,13 @@ void Gui::logic() {
 	if( buttons_pressed[RUN] ) {
 		if(render_categories) {
 			current_game = 0;
-			render_all_games = false;
+			games->clear();
+			clear_images();
+			std::string sql_statement = std::string("SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = ")
+				+ std::to_string(categories->at(current_category).id) 
+				+ std::string(" ORDER BY games.name COLLATE NOCASE");
+			sql->load_data(games,sql_statement.c_str(), sql->callback_load_games);
+			load_images();	
 		} else {
 			std::string command = std::string("lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
 			process_handler.run_process(command.c_str());
@@ -185,17 +195,9 @@ void Gui::render() {
 	//initial cover art rect calculation
 	SDL_FRect cover_art_rect = {(float)settings->horizontal_padding,(float)settings->vertical_padding,(float)settings->game_tile_width,(float)settings->game_tile_height};
 
-	uint64_t temp_games_start_index = current_game/settings->games_per_row*settings->games_per_row;
-	uint64_t temp_games_length;
-
-	(render_all_games) ? temp_games_length = games->size() : temp_games_length = categories->at(current_category).games_indexes.size();
-
-	for(uint64_t i=temp_games_start_index; i < temp_games_length; i++) {
-		uint64_t temp_game_index;
-		(render_all_games) ? temp_game_index = i : temp_game_index = categories->at(current_category).games_indexes[i];
-
+	for(uint64_t i=current_game/settings->games_per_row*settings->games_per_row; i < games->size(); i++) {
 		//font rendering
-		uint32_t rendered_height = render_multi_line_text(cover_art_rect.x, cover_art_rect.y + settings->game_tile_height, games->at(temp_game_index).name.c_str());
+		uint32_t rendered_height = render_multi_line_text(cover_art_rect.x, cover_art_rect.y + settings->game_tile_height, games->at(i).name.c_str());
 		
 		if(rendered_height > max_renderer_font_height) max_renderer_font_height = rendered_height;
 
@@ -212,8 +214,8 @@ void Gui::render() {
 		}
 
 		//cover art rendering
-		if(cover_art[temp_game_index] != nullptr) {
-			SDL_RenderTexture(renderer, cover_art[temp_game_index], nullptr, &cover_art_rect);
+		if(cover_art[i] != nullptr) {
+			SDL_RenderTexture(renderer, cover_art[i], nullptr, &cover_art_rect);
 		}
 
 		//new cover art rect calculation
@@ -343,19 +345,25 @@ void Gui::render_categories_menu() {
 
 }
 
-Gui::~Gui() {
-	
-	SDL_CloseGamepad(gamepad);
-
+void Gui::clear_images() {
 	while(!cover_art.empty()) {
 		SDL_DestroyTexture(cover_art.back());
+		cover_art.back() = nullptr;
 		cover_art.pop_back();
 	}
 	
 	while(!banner.empty()) {
 		SDL_DestroyTexture(banner.back());
+		banner.back() = nullptr;
 		banner.pop_back();
 	}
+}
+
+Gui::~Gui() {
+	
+	SDL_CloseGamepad(gamepad);
+
+	clear_images();
 	
 	TTF_CloseFont(font);
 	font = nullptr;

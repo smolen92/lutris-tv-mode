@@ -22,8 +22,6 @@ class Category {
 		/// \cond
 		uint64_t id;
 		std::string name;
-
-		std::vector<uint64_t> games_indexes;
 		/// \endcond
 };
 

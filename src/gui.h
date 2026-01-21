@@ -10,6 +10,7 @@
 #include "game.h"
 #include "category.h"
 #include "font.h"
+#include "sql.h"
 
 enum Buttons {
 	UP,
@@ -24,6 +25,7 @@ enum Buttons {
 /**
  * @brief class for handling gui using sdl
  * \todo move category menu and games's grid into its own class
+ * \todo switching back to rendering all games after category is selected
  */
 class Gui {
 	public:
@@ -31,11 +33,12 @@ class Gui {
 		 * @brief initialize the gui
 		 *
 		 * @param settings pointer to settings
+		 * @param sql pointer to sql class, where database file is opened
 		 * @param games pointer to game vector
 		 * @param categories pointer to category vector
 		 *
 		 */
-		Gui(Settings *settings, std::vector<Game> *games, std::vector<Category> * categories);
+		Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Category> * categories);
 		/**
 		 * @brief checks the input
 		 *
@@ -63,7 +66,12 @@ class Gui {
 		 * @param slug slug of a game, slug should be obtain from game vector 
 		 */
 		void load_texture(const char* slug);
-		
+	
+		/**
+		 * @brief load all images
+		 */
+		void load_images();
+
 		/**
 		 * @brief render one line of centerd text
 		 *
@@ -96,6 +104,13 @@ class Gui {
 		 *
 		 */
 		void render_categories_menu();
+	
+		/**
+		 *
+		 * @brief destroys the textures
+		 *
+		 */
+		void clear_images();
 
 		SDL_Window* window;
 		SDL_Renderer* renderer;
@@ -109,6 +124,8 @@ class Gui {
 		bool buttons_pressed[TOTAL_BUTTONS];
 		
 		Settings* settings;
+		
+		SQL* sql;
 
 		ProcessHandler process_handler;
 
@@ -116,7 +133,6 @@ class Gui {
 		std::vector<Category> *categories;
 		uint64_t current_game;
 		uint64_t current_category;
-		bool render_all_games;
 
 		bool render_categories;
 };

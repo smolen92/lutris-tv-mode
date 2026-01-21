@@ -44,13 +44,6 @@ class SQL {
 		 */
 		static int callback_load_categories(void* data_vector, int argc, char** argv, char **az_col_name);
 
-		/**
-		 * @brief callback fuction for loading categories data from database
-		 *
-		 * @details more info https://www.sqlite.org/c3ref/exec.html 
-		 */
-		static int callback_load_games_categories(void* data_vector, int argc, char** argv, char **az_col_name);
-
 		~SQL();
 
 	private:
