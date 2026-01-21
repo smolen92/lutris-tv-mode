@@ -9,7 +9,7 @@ SQL::SQL(const char* database) {
 
 void SQL::load_data(void *data_ptr, const char* sql_statement, int (*callback_function)(void*,int,char**,char**)) {
 	if( sqlite3_exec(db, sql_statement, callback_function, data_ptr, &error_message) != SQLITE_OK) {
-		std::clog << "SQL error: " << error_message << "\n";
+		throw std::runtime_error(error_message);
 	}
 }
 

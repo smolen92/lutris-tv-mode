@@ -4,7 +4,7 @@ bool ProcessHandler::run_process(const char* command) {
 	int32_t pid = fork();
 
 	if(pid == -1) {
-		std::clog << "Unable to create child process\n";
+		throw std::runtime_error("Unable to create child process");
 		return false;
 	}
 	else if(pid == 0) { 
