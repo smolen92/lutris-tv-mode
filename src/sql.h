@@ -3,6 +3,7 @@
 
 #include <sqlite3.h> //https://www.sqlite.org/cintro.html
 #include <vector>
+#include <stdexcept>
 
 #include "game.h"
 #include "category.h"

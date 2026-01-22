@@ -7,8 +7,6 @@
 
 #include "settings.h"
 #include "process.h"
-#include "game.h"
-#include "category.h"
 #include "font.h"
 #include "sql.h"
 

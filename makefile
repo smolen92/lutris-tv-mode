@@ -5,16 +5,16 @@ CXXFLAGS = -Wall -g
 lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o ./obj/category.o
 	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o ./obj/category.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
 
-./obj/main.o: ./src/main.cpp ./obj/sql.o ./obj/gui.o
+./obj/main.o: ./src/main.cpp ./obj/gui.o
 	$(CXX) $(CXXFLAGS) -c ./src/main.cpp -o ./obj/main.o
 
 ./obj/game.o: ./src/game.cpp ./src/game.h
 	$(CXX) $(CXXFLAGS) -c ./src/game.cpp -o ./obj/game.o
 
-./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o
+./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o ./obj/category.o
 	$(CXX) $(CXXFLAGS) -c ./src/sql.cpp -o ./obj/sql.o
 
-./obj/gui.o: ./src/gui.h ./src/gui.cpp ./src/font.h ./obj/settings.o ./obj/process.o
+./obj/gui.o: ./src/gui.h ./src/gui.cpp ./src/font.h ./obj/settings.o ./obj/process.o ./obj/sql.o
 	$(CXX) $(CXXFLAGS) -c ./src/gui.cpp -o ./obj/gui.o
 
 ./obj/settings.o: ./src/settings.h ./src/settings.cpp

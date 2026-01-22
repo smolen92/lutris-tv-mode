@@ -4,6 +4,8 @@ Gui::Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Cat
 	
 	this->settings = settings;
 	this->sql = sql;
+	this->games = games;
+	this->categories = categories;
 
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
 		throw std::runtime_error(SDL_GetError());
@@ -41,9 +43,6 @@ Gui::Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Cat
 		throw std::runtime_error(SDL_GetError());
 	}
 
-	this->games = games;
-	this->categories = categories;
-
 	load_images();
 
 	current_game = 0;
@@ -52,7 +51,7 @@ Gui::Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Cat
 	int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
 	
-	this->gamepad = SDL_OpenGamepad(joysticks[0]);
+	gamepad = SDL_OpenGamepad(joysticks[0]);
 
 	SDL_free(joysticks);
 	
@@ -63,12 +62,12 @@ Gui::Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Cat
 void Gui::load_texture(const char* slug) {
 	SDL_Texture* temp_texture;
 
-	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings->cover_art_path + std::string(slug) + std::string(".jpg")).c_str());
+	temp_texture = IMG_LoadTexture(renderer, std::string(settings->cover_art_path + std::string(slug) + std::string(".jpg")).c_str());
 	cover_art.push_back(temp_texture);
 
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " cover art texture\n";
 
-	temp_texture = IMG_LoadTexture(this->renderer, std::string(settings->banner_path + std::string(slug) + std::string(".jpg")).c_str());
+	temp_texture = IMG_LoadTexture(renderer, std::string(settings->banner_path + std::string(slug) + std::string(".jpg")).c_str());
 	banner.push_back(temp_texture);
 	
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " banner texture\n";
@@ -76,9 +75,9 @@ void Gui::load_texture(const char* slug) {
 }
 
 void Gui::load_images() {
-	for(uint64_t i=0; i < this->games->size(); i++) {
-		this->load_texture(this->games->at(i).slug.c_str());
-		this->games->at(i).set_images_indexes(i,i);
+	for(uint64_t i=0; i < games->size(); i++) {
+		load_texture(games->at(i).slug.c_str());
+		games->at(i).set_images_indexes(i,i);
 	}
 }
 
@@ -119,13 +118,13 @@ void Gui::input(bool *running) {
 		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
 			
 			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTX) {
-				if(input.gaxis.value < -this->settings->gamepad_deadzone) buttons_pressed[LEFT] = true;
-				if(input.gaxis.value > this->settings->gamepad_deadzone) buttons_pressed[RIGHT] = true;
+				if(input.gaxis.value < -settings->gamepad_deadzone) buttons_pressed[LEFT] = true;
+				if(input.gaxis.value > settings->gamepad_deadzone) buttons_pressed[RIGHT] = true;
 			}
 			
 			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTY) {
-				if(input.gaxis.value < -this->settings->gamepad_deadzone) buttons_pressed[UP] = true;
-				if(input.gaxis.value > this->settings->gamepad_deadzone) buttons_pressed[DOWN] = true;
+				if(input.gaxis.value < -settings->gamepad_deadzone) buttons_pressed[UP] = true;
+				if(input.gaxis.value > settings->gamepad_deadzone) buttons_pressed[DOWN] = true;
 			}
 
 		}
@@ -148,7 +147,7 @@ void Gui::logic() {
 		if(render_categories) {
 			if( current_category != 0) current_category -= 1;
 		} else {
-			if(this->current_game >= this->settings->games_per_row) this->current_game -= this->settings->games_per_row;
+			if(current_game >= settings->games_per_row) current_game -= settings->games_per_row;
 		}
 	}
 
@@ -157,12 +156,12 @@ void Gui::logic() {
 			if(current_category != categories->size()-1) current_category += 1;
 		}
 		else {
-			if( (this->current_game + this->settings->games_per_row) < this->games->size() ) this->current_game += this->settings->games_per_row;
+			if( (current_game + settings->games_per_row) < games->size() ) current_game += settings->games_per_row;
 		}
 	}
 
-	if( buttons_pressed[RIGHT] ) if( this->current_game != this->games->size()-1) this->current_game += 1;
-	if( buttons_pressed[LEFT] ) if( this->current_game != 0) this->current_game -= 1;
+	if( buttons_pressed[RIGHT] ) if( current_game != games->size()-1) current_game += 1;
+	if( buttons_pressed[LEFT] ) if( current_game != 0) current_game -= 1;
 	if( buttons_pressed[RUN] ) {
 		if(render_categories) {
 			current_game = 0;
@@ -174,7 +173,7 @@ void Gui::logic() {
 			sql->load_data(games,sql_statement.c_str(), sql->callback_load_games);
 			load_images();	
 		} else {
-			std::string command = std::string("lutris lutris:rungameid/") + std::to_string(this->games->at(this->current_game).id);
+			std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games->at(current_game).id);
 			process_handler.run_process(command.c_str());
 		}
 	}
@@ -279,22 +278,22 @@ uint32_t Gui::render_multi_line_text(uint64_t x, uint64_t y, const char *text) {
 	
 	std::string string_to_render = elements[0] + " ";
 	int32_t total_string_width;
-	TTF_GetStringSize(this->font, string_to_render.c_str(), 0, &total_string_width, nullptr);
-	uint32_t return_height = this->settings->font_size;
+	TTF_GetStringSize(font, string_to_render.c_str(), 0, &total_string_width, nullptr);
+	uint32_t return_height = settings->font_size;
 	uint32_t offset = 0;
 
 	for(uint64_t i=1; i < elements.size(); i++) {
 		int32_t current_string_width;
 		if(i != elements.size() - 1) elements[i] += " ";
 
-		TTF_GetStringSize(this->font, elements[i].c_str(), 0, &current_string_width, nullptr);
+		TTF_GetStringSize(font, elements[i].c_str(), 0, &current_string_width, nullptr);
 
-		if(total_string_width + current_string_width > this->settings->game_tile_width) {
+		if(total_string_width + current_string_width > settings->game_tile_width) {
 			this->render_one_line_of_text(x,y+offset, string_to_render.c_str(), settings->game_tile_width);
 			string_to_render = elements[i];
-			TTF_GetStringSize(this->font, string_to_render.c_str(), 0, &total_string_width, nullptr);
-			return_height += this->settings->font_size;
-			offset += this->settings->font_size;
+			TTF_GetStringSize(font, string_to_render.c_str(), 0, &total_string_width, nullptr);
+			return_height += settings->font_size;
+			offset += settings->font_size;
 		}
 		else {
 			string_to_render += elements[i];

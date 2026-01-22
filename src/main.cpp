@@ -1,8 +1,6 @@
-#include "sql.h"
 #include "gui.h"
 
 /// \file
-
 int main(int argc, char** argv) {
 
 	try {

@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <string>
-#include <iostream>
 
 /**
  * @brief class for storing info about a game

@@ -2,7 +2,6 @@
 #define _CATEGORIES_H_
 
 #include <string>
-#include <vector>
 #include <cstdint>
 
 /**

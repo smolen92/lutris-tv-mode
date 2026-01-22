@@ -31,7 +31,7 @@ Settings::Settings(const char* path) {
 	category_menu_x = 0;
 	category_menu_y = 0;
 
-	this->calculate_settings();
+	calculate_settings();
 }
 
 void Settings::calculate_settings() {
