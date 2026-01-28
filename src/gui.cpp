@@ -58,7 +58,6 @@ Gui::Gui(Settings *settings, SQL *sql, std::vector<Game> *games, std::vector<Cat
 	render_categories = false;
 }
 
-/// \todo don't push nullptr to vec
 void Gui::load_texture(const char* slug) {
 	SDL_Texture* temp_texture;
 

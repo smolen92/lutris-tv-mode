@@ -3,9 +3,11 @@
 
 #include <cstdint>
 #include <string>
+#include <fstream>
 
 /**
  * @brief class that stores settings for the app
+ * \todo default path should be user home dir + suffix
  */
 class Settings {
 	public:
@@ -15,7 +17,7 @@ class Settings {
 		 * @param path path to file with settings
 		 */
 		Settings(const char* path);
-
+	
 		/**
 		 * @brief recalculate settings that depend on another settings
 		 *
@@ -32,14 +34,35 @@ class Settings {
 
 		int32_t game_tile_width, game_tile_height;
 		uint32_t vertical_padding, horizontal_padding; 
-	        uint64_t games_per_row; //this settings shouldn't be set manually, it is calculate in calculate_settings
 		uint32_t font_size;
 
 		int16_t gamepad_deadzone;
 
-		uint32_t category_menu_x, category_menu_y, category_menu_width, category_menu_height;
-		uint32_t max_category_menu_width, min_category_menu_width;
+		uint32_t category_menu_x, category_menu_y;
+
+		//these settings shouldn't be set manually, it is calculate in calculate_settings
+	        uint64_t games_per_row;
+		uint32_t category_menu_width, category_menu_height, max_category_menu_width, min_category_menu_width;
 		/// \endcond
+	private:
+		/**
+		 * @brief load default settings
+		 */
+		void load_defaults();
 };
+
+/**
+ *
+ * \defgroup settings_file Settings File
+ *
+ * \ingroup settings_file
+ *  
+ *  - based on ini file structure\n
+ *  - comments are lines that begin with ; or # symbol\n
+ *  - the rest lines are key=value pair devided with = sign e.g. window_width=800, : as divider are not supported\n
+ *  - white space are not ignored\n
+ *  - lines without = sign are ignored\n
+ *  - if there are key with multiple entries, the last one is used
+ */
 
 #endif

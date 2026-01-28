@@ -9,7 +9,7 @@ int main(int argc, char** argv) {
 		std::vector<Category> categories;
 		
 		//settings
-		Settings settings(nullptr);
+		Settings settings("settings.ini");
 
 		//database and reading data to game vector
 		SQL lutris_db(settings.database_path.c_str());

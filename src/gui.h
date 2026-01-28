@@ -24,6 +24,7 @@ enum Buttons {
  * @brief class for handling gui using sdl
  * \todo move category menu and games's grid into its own class
  * \todo switching back to rendering all games after category is selected
+ * \todo don't push nullptr to vec
  */
 class Gui {
 	public:
