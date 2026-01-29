@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 #include <fstream>
+#include <iostream>
 
 /**
  * @brief class that stores settings for the app
@@ -24,6 +25,8 @@ class Settings {
 		 * @details this function should be called every time any setting is changed, it is automatically called in constructor
 		 */
 		void calculate_settings();
+		
+		~Settings();
 
 		/// \cond
 		std::string cover_art_path, banner_path, database_path;
@@ -49,6 +52,8 @@ class Settings {
 		 * @brief load default settings
 		 */
 		void load_defaults();
+
+		std::string settings_file_path;
 };
 
 /**

@@ -1,13 +1,14 @@
 #include "settings.h"
 
-/// \todo save current settings when quitting the app
 Settings::Settings(const char* path) {
 	
+	settings_file_path = path;
+
 	std::fstream settings_file;
 	settings_file.open(path, std::fstream::in);
 
 	load_defaults();
-	
+		
 	if(settings_file) {
 		std::string line;
 		while(std::getline(settings_file, line)) {
@@ -108,4 +109,39 @@ void Settings::load_defaults() {
 	
 	category_menu_x = 0;
 	category_menu_y = 0;
+}
+
+Settings::~Settings() {
+	std::fstream output_file(settings_file_path,std::fstream::out);
+
+	if(!output_file) {
+		std::clog << "Unable to save settings\n";
+		return;
+	}
+
+	output_file 	<< "[path]"
+			<< "\ncover_art_path=" << cover_art_path.c_str() 
+			<< "\nbanner_path=" << banner_path.c_str()
+			<< "\ndatabase_path=" << database_path.c_str()
+			<< "\n\n[window]"
+			<< "\nwindow_width=" << window_width 
+			<< "\nwindow_height=" << window_height
+			<< "\nmin_window_width=" << min_window_width
+			<< "\nmin_window_height=" << min_window_height
+			<< "\nwindow_maximized=";
+
+	(window_maximized) ? (output_file << "true") : (output_file << "false");
+
+	output_file	<< "\n\n[game-tile]" 
+			<< "\ngame_tile_width=" << game_tile_width
+			<< "\ngame_tile_height=" << game_tile_height
+			<< "\nvertical_padding=" << vertical_padding
+			<< "\nhorizontal_padding=" << horizontal_padding
+			<< "\nfont_size=" << font_size
+			<< "\n\n[gamepad]"
+			<< "\ngamepad_deadzone=" << gamepad_deadzone
+			<< "\n\n[category]" 
+			<< "\ncategory_menu_x=" << category_menu_x
+			<< "\ncategory_menu_y=" << category_menu_y;
+
 }
