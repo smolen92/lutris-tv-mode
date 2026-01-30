@@ -2,8 +2,8 @@ CXX = g++
 
 CXXFLAGS = -Wall -g 
 
-lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o ./obj/category.o
-	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/settings.o ./obj/process.o ./obj/category.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
+lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/settings.o ./obj/process.o ./obj/category.o
+	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/settings.o ./obj/process.o ./obj/category.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
 
 ./obj/main.o: ./src/main.cpp ./obj/gui.o
 	$(CXX) $(CXXFLAGS) -c ./src/main.cpp -o ./obj/main.o
@@ -14,9 +14,6 @@ lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/setti
 ./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o ./obj/category.o
 	$(CXX) $(CXXFLAGS) -c ./src/sql.cpp -o ./obj/sql.o
 
-./obj/gui.o: ./src/gui.h ./src/gui.cpp ./src/font.h ./obj/settings.o ./obj/process.o ./obj/sql.o
-	$(CXX) $(CXXFLAGS) -c ./src/gui.cpp -o ./obj/gui.o
-
 ./obj/settings.o: ./src/settings.h ./src/settings.cpp
 	$(CXX) $(CXXFLAGS) -c ./src/settings.cpp -o ./obj/settings.o
 
@@ -25,6 +22,15 @@ lutris-tvmode.out: ./obj/main.o ./obj/sql.o ./obj/game.o ./obj/gui.o ./obj/setti
 
 ./obj/category.o: ./src/category.h ./src/category.cpp
 	$(CXX) $(CXXFLAGS) -c ./src/category.cpp -o ./obj/category.o
+
+./obj/node_renderer.o: ./src/node_renderer.cpp ./src/node_renderer.h
+	$(CXX) $(CXXFLAGS) -c ./src/node_renderer.cpp -o ./obj/node_renderer.o
+
+./obj/node_games_grid.o: ./src/node_games_grid.cpp ./src/node_games_grid.h
+	$(CXX) $(CXXFLAGS) -c ./src/node_games_grid.cpp -o ./obj/node_games_grid.o
+
+./obj/node_category_menu.o: ./src/node_category_menu.cpp ./src/node_category_menu.h
+	$(CXX) $(CXXFLAGS) -c ./src/node_category_menu.cpp -o ./obj/node_category_menu.o
 
 .PHONY: clean doc 
 

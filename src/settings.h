@@ -60,7 +60,6 @@ class Settings {
  *
  * \defgroup settings_file Settings File
  *
- * \ingroup settings_file
  *  
  *  - based on ini file structure\n
  *  - comments are lines that begin with ; or # symbol\n

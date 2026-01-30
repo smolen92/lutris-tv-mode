@@ -1,8 +1,8 @@
 #include "gui.h"
 
 /// \file
+/// \cond
 int main(int argc, char** argv) {
-
 	try {
 		//Setup
 		std::vector<Game> games;
@@ -41,4 +41,4 @@ int main(int argc, char** argv) {
 	return 0;
 
 }
-
+/// \endcond
