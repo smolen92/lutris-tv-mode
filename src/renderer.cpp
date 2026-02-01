@@ -1,11 +1,9 @@
-#include "node_renderer.h"
+#include "renderer.h"
 
 /// \bug doesn't detect if gamepad button is down
 /// \bug gamepad axis too sensitive, take input even when returning to center
 /// \todo mouse input
-bool Node_renderer::logic(void* data) {
-	bool *buttons_pressed = (bool*) data;
-
+bool Renderer::check_input(bool* buttons_pressed) {
 	SDL_Event input;
 
 	for(uint8_t i=0; i < TOTAL_BUTTONS; i++) {
@@ -57,18 +55,20 @@ bool Node_renderer::logic(void* data) {
 		}
 
 	}
-
-	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
-	SDL_RenderClear(renderer);
-
+	
 	return true;
 }
 
-void Node_renderer::render() {
+void Renderer::clear_screen() {
+	SDL_SetRenderDrawColor(renderer, 0,0,0, 0xFF);
+	SDL_RenderClear(renderer);
+}
+
+void Renderer::draw_screen() {
 	SDL_RenderPresent(renderer);
 }
 
-Node_renderer::Node_renderer(Settings* settings) {
+Renderer::Renderer(Settings* settings) {
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
 		throw std::runtime_error(SDL_GetError());
 	}
@@ -113,9 +113,10 @@ Node_renderer::Node_renderer(Settings* settings) {
 	SDL_free(joysticks);
 
 	this->settings = settings;
+
 }
 		
-Node_renderer::~Node_renderer() {
+Renderer::~Renderer() {
 	SDL_CloseGamepad(gamepad);
 
 	clear_images();
@@ -135,7 +136,7 @@ Node_renderer::~Node_renderer() {
 	settings = nullptr;
 }
 		
-void Node_renderer::load_texture(const char* slug) {
+void Renderer::load_texture(const char* slug) {
 	SDL_Texture* temp_texture;
 
 	temp_texture = IMG_LoadTexture(renderer, std::string(settings->cover_art_path + std::string(slug) + std::string(".jpg")).c_str());
@@ -144,7 +145,7 @@ void Node_renderer::load_texture(const char* slug) {
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " cover art texture\n";
 }
 
-void Node_renderer::render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width) {
+void Renderer::render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width) {
 	SDL_Surface *text_surface;
 
 	text_surface = TTF_RenderText_Blended(font, text, 0, {255,255,255,255});
@@ -173,7 +174,7 @@ void Node_renderer::render_one_line_of_text(const uint64_t x, const uint64_t y, 
 
 }
 
-uint32_t Node_renderer::render_multi_line_text(uint64_t x, uint64_t y, const char* text) {
+uint32_t Renderer::render_multi_line_text(uint64_t x, uint64_t y, const char* text) {
 	std::stringstream temp_string_stream(text);
 	std::string temp_element;
 	std::vector<std::string> elements;
@@ -213,7 +214,7 @@ uint32_t Node_renderer::render_multi_line_text(uint64_t x, uint64_t y, const cha
 }
 
 
-void Node_renderer::clear_images() {
+void Renderer::clear_images() {
 	while(!cover_art.empty()) {
 		SDL_DestroyTexture(cover_art.back());
 		cover_art.back() = nullptr;
@@ -221,7 +222,7 @@ void Node_renderer::clear_images() {
 	}
 }
 
-void Node_renderer::render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled) {
+void Renderer::render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled) {
 	SDL_FRect temp = {(float)x, (float)y, (float) w, (float) h};
 
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);
@@ -229,11 +230,17 @@ void Node_renderer::render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, 
 	(filled) ? SDL_RenderFillRect(renderer, &temp) : SDL_RenderRect(renderer, &temp);
 }
 		
-void Node_renderer::render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h) {
+void Renderer::render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h) {
 	if(cover_art.at(index) == nullptr) return;
 
 	SDL_FRect temp = {(float) x, (float) y, (float) w, (float) h};
 
 	SDL_RenderTexture(renderer, cover_art.at(index), nullptr, &temp);
+}
+
+void Renderer::set_viewport(int32_t x, int32_t y, int32_t w, int32_t h) {
+	SDL_Rect temp = {x,y,w,h};
+
+	( (w == 0) || (h == 0) ) ? SDL_SetRenderViewport(renderer, nullptr) : SDL_SetRenderViewport(renderer, &temp);
 }
 

@@ -8,20 +8,28 @@
 #include "settings.h"
 #include "process.h"
 
+/**
+ * @brief handle input and render the games grid
+ */
 class Node_games_grid : public Node {
 	public:
 		/// inherited from Node
-		bool logic(void* data) override;
+		void logic(void* global_data) override;
 		/// inherited from Node
 		void render() override;
 		
-		Node_games_grid(Settings* settings, Node_renderer* renderer, std::vector<Game> *games);
+		/**
+		 * @param renderer pointer to renderer node
+		 * @param settings pointer to settings
+		 * @param games pointer to game vector
+		 */	
+		Node_games_grid(Settings* settings, Renderer* renderer, std::vector<Game> *games);
 
 		~Node_games_grid();
 
 
 	private:
-		Node_renderer* renderer;
+		Renderer* renderer;
 
 		Settings* settings;
 		

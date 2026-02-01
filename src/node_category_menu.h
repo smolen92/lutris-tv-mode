@@ -3,23 +3,34 @@
 
 #include <vector>
 
-#include "node_renderer.h"
+#include "renderer.h"
 #include "settings.h"
 #include "category.h"
 
+/**
+ *
+ * @brief handle input and render the category menu
+ *
+ * \todo switching back to rendering all games after category is selected
+ */
 class Node_category_menu : public Node {
 	public:
 		/// inherited from Node
-		bool logic(void* data) override;
+		void logic(void* global_data) override;
 		/// inherited from Node
 		void render() override;
-
-		Node_category_menu(Node_renderer* renderer, Settings* settings, std::vector<Category> *categories);
+		
+		/**
+		 * @param renderer pointer to renderer node
+		 * @param settings pointer to settings
+		 * @param categories pointer to category vector
+		 */
+		Node_category_menu(Renderer* renderer, Settings* settings, std::vector<Category> *categories);
 
 		~Node_category_menu();
 	private:
 
-		Node_renderer* renderer;
+		Renderer* renderer;
 
 		Settings* settings;
 

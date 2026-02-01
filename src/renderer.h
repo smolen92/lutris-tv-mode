@@ -10,28 +10,23 @@
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include "node.h"
 #include "font.h"
 #include "settings.h"
+#include "node.h"
 
 /**
  * @brief Node that handles input and redering through SDL3.0
  */
-class Node_renderer : public Node {
+class Renderer {
 	public:
-		/// inherited from Node
-		bool logic(void* data) override;
-		/// intherited from Node
-		void render() override;
-
 		/**
 		 *
 		 * @param settings pointer to settings
 		 *
 		 */
-		Node_renderer(Settings* settings);
+		Renderer(Settings* settings);
 
-		~Node_renderer();
+		~Renderer();
 		
 		/**
 		 * @brief try to open images for covert art and banner
@@ -40,6 +35,27 @@ class Node_renderer : public Node {
 		 */
 		void load_texture(const char* slug);
 	
+		/**
+		 *
+		 * @brief handle the input
+		 *
+		 * @param buttons_pressed pointer to an array, where button state will be stored
+		 *
+		 * @return false when the "X" of the window was pressed, true otherwise
+		 *
+		 */
+		bool check_input(bool* buttons_pressed);
+		
+		/**
+		 * @brief clear the screen
+		 */
+		void clear_screen();
+		
+		/**
+		 * @brief draw the screen
+		 */
+		void draw_screen();
+
 		/**
 		 * @brief render one line of centerd text
 		 *
@@ -72,11 +88,50 @@ class Node_renderer : public Node {
 		 *
 		 */
 		void clear_images();
-
+		
+		/**
+		 *
+		 * @brief render rect on screen
+		 *
+		 * @param x x coordinate of the rect on screen
+		 * @param y y coordinate of the rect on screen
+		 * @param w width of the rect
+		 * @param h height of the rect
+		 * @param r red color value of the rect
+		 * @param g green color value of the rect
+		 * @param b blue color value of the rect
+		 * @param a alpha value of the rect
+		 * @param filled if true filled rect is rendered, if false only outline is renderer, default to true
+		 *
+		 */
 		void render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled = true);
 
-		/// \todo keep aspec ratio of images
+		
+		/**
+		 *
+		 * @brief render cover art on screen
+		 *
+		 * @param index index of the covert art to render
+		 * @param x x coordinate of the image on screen
+		 * @param y y coordinate of the image on screen
+		 * @param w width of the image on screen
+		 * @param h height of the image on screen
+		 *
+		 * \todo keep aspec ratio of images
+		 */
 		void render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h);
+
+		/**
+		 *
+		 * @param x coordinate of the viewport
+		 * @param y coordinate of the viewport
+		 * @param w width of the viewport
+		 * @param h height of the viewport
+		 *
+		 * @details if either width of height of the viewport is set to 0, it will reset the viewport to whole screen, all values defaults to 0
+		 *
+		 */
+		void set_viewport(int32_t x = 0, int32_t y = 0, int32_t w = 0, int32_t h = 0);
 	private:
 
 		SDL_Window* window;

@@ -1,7 +1,8 @@
 #include "node_games_grid.h"
 
-bool Node_games_grid::logic(void* data) {
-	bool *buttons_pressed = (bool*)data;
+void Node_games_grid::logic(void* global_data) {
+	/// \todo set after global_data is defined
+	bool *buttons_pressed = (bool*)global_data;
 
 	if( buttons_pressed[UP] ) {
 		if(current_game >= settings->games_per_row) current_game -= settings->games_per_row;
@@ -18,9 +19,10 @@ bool Node_games_grid::logic(void* data) {
 			process_handler.run_process(command.c_str());
 	}
 
-	process_handler.check_and_clean_zombie_processes();
+	/// \todo set global_data
+	if( buttons_pressed[CATEGORIES] );
 
-	return true;
+	process_handler.check_and_clean_zombie_processes();
 }
 
 void Node_games_grid::render() {
@@ -61,7 +63,7 @@ void Node_games_grid::render() {
 	}
 }
 
-Node_games_grid::Node_games_grid(Settings* settings, Node_renderer* renderer, std::vector<Game> *games) {
+Node_games_grid::Node_games_grid(Settings* settings, Renderer* renderer, std::vector<Game> *games) {
 	this->settings = settings;
 	this->renderer = renderer;
 	this->games = games;
