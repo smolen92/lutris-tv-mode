@@ -2,7 +2,6 @@
 #define _NODE_RENDERER_H_
 
 #include <vector>
-#include <iostream>
 #include <string>
 #include <sstream>
 

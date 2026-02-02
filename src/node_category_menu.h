@@ -1,10 +1,7 @@
 #ifndef _NODE_CATEGORY_MENU_H_
 #define _NODE_CATEGORY_MENU_H_
 
-#include <vector>
-
 #include "renderer.h"
-#include "settings.h"
 #include "category.h"
 
 /**
@@ -16,7 +13,7 @@
 class Node_category_menu : public Node {
 	public:
 		/// inherited from Node
-		void logic(void* global_data) override;
+		void logic(Global_data* global_data) override;
 		/// inherited from Node
 		void render() override;
 		

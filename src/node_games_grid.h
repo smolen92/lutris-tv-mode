@@ -1,11 +1,8 @@
 #ifndef _NODE_GAMES_GRID_H_
 #define _NODE_GAMES_GRID_H_
 
-#include <vector>
-
-#include "node_renderer.h"
+#include "renderer.h"
 #include "game.h"
-#include "settings.h"
 #include "process.h"
 
 /**
@@ -14,7 +11,7 @@
 class Node_games_grid : public Node {
 	public:
 		/// inherited from Node
-		void logic(void* global_data) override;
+		void logic(Global_data* global_data) override;
 		/// inherited from Node
 		void render() override;
 		

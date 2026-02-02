@@ -69,6 +69,8 @@ void Renderer::draw_screen() {
 }
 
 Renderer::Renderer(Settings* settings) {
+	this->settings = settings;
+
 	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
 		throw std::runtime_error(SDL_GetError());
 	}
@@ -111,9 +113,6 @@ Renderer::Renderer(Settings* settings) {
 	gamepad = SDL_OpenGamepad(joysticks[0]);
 
 	SDL_free(joysticks);
-
-	this->settings = settings;
-
 }
 		
 Renderer::~Renderer() {

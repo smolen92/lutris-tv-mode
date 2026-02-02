@@ -1,28 +1,28 @@
 #include "node_games_grid.h"
 
-void Node_games_grid::logic(void* global_data) {
-	/// \todo set after global_data is defined
-	bool *buttons_pressed = (bool*)global_data;
+void Node_games_grid::logic(Global_data* global_data) {
+	current_game = global_data->current_game;
 
-	if( buttons_pressed[UP] ) {
+	if( global_data->buttons_pressed[UP] ) {
 		if(current_game >= settings->games_per_row) current_game -= settings->games_per_row;
 	}
 
-	if( buttons_pressed[DOWN] ) {
+	if( global_data->buttons_pressed[DOWN] ) {
 		if( (current_game + settings->games_per_row) < games->size() ) current_game += settings->games_per_row;
 	}
 
-	if( buttons_pressed[RIGHT] ) if( current_game != games->size()-1) current_game += 1;
-	if( buttons_pressed[LEFT] ) if( current_game != 0) current_game -= 1;
-	if( buttons_pressed[RUN] ) {
+	if( global_data->buttons_pressed[RIGHT] ) if( current_game != games->size()-1) current_game += 1;
+	if( global_data->buttons_pressed[LEFT] ) if( current_game != 0) current_game -= 1;
+	if( global_data->buttons_pressed[RUN] ) {
 			std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games->at(current_game).id);
 			process_handler.run_process(command.c_str());
 	}
 
-	/// \todo set global_data
-	if( buttons_pressed[CATEGORIES] );
+	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = SWITCH_TO_CATEGORY_NODE;
 
 	process_handler.check_and_clean_zombie_processes();
+
+	global_data->current_game = current_game;
 }
 
 void Node_games_grid::render() {

@@ -1,16 +1,30 @@
 #include "gui_manager.h"
 
-/// \todo add nodes, handle global_data in all nodes
 Gui_manager::Gui_manager() {
 	settings = new Settings("settings.ini");
-	
+	renderer = new Renderer(settings);
+
 	sql = new SQL(settings->database_path.c_str());
 		
 	sql->load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", sql->callback_load_games);
 	sql->load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", sql->callback_load_categories);
+
+	nodes.push_back(new Node_games_grid(settings, renderer, &games));
+
+	global_data.action = NONE;
+	global_data.current_game = 0;
+	global_data.current_category = 0;
 }
 		
 Gui_manager::~Gui_manager() {
+	while(!nodes.empty()) {
+		delete nodes.back();
+		nodes.pop_back();
+	}
+
+	delete renderer;
+	renderer = nullptr;
+
 	delete settings;
 	settings = nullptr;
 
@@ -21,10 +35,10 @@ Gui_manager::~Gui_manager() {
 bool Gui_manager::logic() {
 	bool return_value = renderer->check_input(global_data.buttons_pressed);
 
-	nodes.at(global_data.active_node_id)->logic((void*)&global_data);
-	/// \todo change magic number
-	if( global_data.buttons_pressed[CATEGORIES] ) global_data.active_node_id = 1;
-	if( global_data.read_database) {
+	nodes.back()->logic(&global_data);
+	if( global_data.action == SWITCH_TO_CATEGORY_NODE ) nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+	
+	if( global_data.action == READ_DATABASE) {
 		global_data.current_game = 0;
 		games.clear();
 		renderer->clear_images();
@@ -34,6 +48,13 @@ bool Gui_manager::logic() {
 		sql->load_data((void*)&games,sql_statement.c_str(), sql->callback_load_games);
 		load_images();	
 	}
+
+	if( global_data.action == REMOVE_NODE) {
+		delete nodes.back();
+		nodes.pop_back();
+	}
+	
+	global_data.action = NONE;
 
 	return return_value;
 }

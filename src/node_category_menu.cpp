@@ -1,22 +1,19 @@
 #include "node_category_menu.h"
 
-void Node_category_menu::logic(void* global_data) {
-	bool *buttons_pressed = (bool*)global_data;
-
-	if( buttons_pressed[UP] ) {
+void Node_category_menu::logic(Global_data* global_data) {
+	if( global_data->buttons_pressed[UP] ) {
 		if( current_category != 0) current_category -= 1;
 	}
 
-	if( buttons_pressed[DOWN] ) {
+	if( global_data->buttons_pressed[DOWN] ) {
 		if(current_category != categories->size()-1) current_category += 1;
 	}
 
-	if( buttons_pressed[RUN] ) {
-		/// \todo set global data
+	if( global_data->buttons_pressed[RUN] ) {
+		global_data->action = READ_DATABASE;
 	}
 
-	/// \todo set global data
-	if( buttons_pressed[CATEGORIES] ) active = false;
+	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = REMOVE_NODE;
 }
 
 void Node_category_menu::render() {
@@ -59,8 +56,6 @@ Node_category_menu::Node_category_menu(Renderer* renderer, Settings* settings, s
 	this->renderer = renderer;
 	this->categories = categories;
 	this->settings = settings;
-
-	active = false;
 
 	current_category = 0;
 }

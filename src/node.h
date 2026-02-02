@@ -11,15 +11,21 @@ enum Buttons {
 	TOTAL_BUTTONS
 };
 
+enum Action {
+	NONE,
+	READ_DATABASE,
+	SWITCH_TO_CATEGORY_NODE,
+	REMOVE_NODE
+};
+
 /**
  * @brief data that will be exchanged between nodes
  */
-struct GlobalData {
+struct Global_data {
 	/// \cond
 	uint64_t current_game;
 	uint64_t current_category;
-	uint64_t active_node_id;
-	bool read_database;
+	uint64_t action;
 	bool buttons_pressed[TOTAL_BUTTONS];
 	/// \endcond
 };
@@ -31,10 +37,9 @@ struct GlobalData {
 class Node {
 	public:
 		/// \cond
-		virtual void logic(void* global_data) = 0;
+		virtual void logic(Global_data* global_data) = 0;
 		virtual void render() = 0;
-		virtual ~Node();
-		bool active;
+		virtual ~Node() { };
 		/// \endcond
 };
 
