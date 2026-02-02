@@ -8,7 +8,8 @@
 /**
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
- * \todo add/remove games from favorite
+ * \todo add/remove games from favorite - INSERT INTO games_categories VALUES (game_id,category_id)
+ *		DELETE FROM games_categories WHERE game_id= AND category_id=
  */
 class Gui_manager {
 	public:

@@ -116,7 +116,7 @@ class Renderer {
 		 * @param w width of the image on screen
 		 * @param h height of the image on screen
 		 *
-		 * \todo keep aspec ratio of images
+		 * \bug aspect ratio calculation are in some situation incorrect
 		 */
 		void render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h);
 

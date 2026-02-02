@@ -232,7 +232,22 @@ void Renderer::render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint6
 void Renderer::render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h) {
 	if(cover_art.at(index) == nullptr) return;
 
-	SDL_FRect temp = {(float) x, (float) y, (float) w, (float) h};
+	SDL_FRect temp;
+
+	if(cover_art.at(index)->w >= cover_art.at(index)->h) {
+		temp.x = (float)x;
+		temp.w = (float)w;
+		
+		temp.h = (float)((int)((float)w/(float)cover_art.at(index)->w*(float)cover_art.at(index)->h));
+		temp.y = (float)(y + ((h - (int)temp.h) >> 1));
+	}
+	else {
+		temp.y = (float)y;
+		temp.h = (float)h;
+
+		temp.w = (float)((int)((float)h/(float)cover_art.at(index)->h*(float)cover_art.at(index)->w));
+		temp.x = (float)(x + ((w - (int)temp.w) >> 1));
+	}
 
 	SDL_RenderTexture(renderer, cover_art.at(index), nullptr, &temp);
 }
