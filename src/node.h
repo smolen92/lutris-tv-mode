@@ -32,7 +32,6 @@ struct Global_data {
 
 /**
  * @brief genric Node class that other Nodes will inherit
- * \todo document Node system
  */
 class Node {
 	public:
@@ -42,6 +41,27 @@ class Node {
 		virtual ~Node() { };
 		/// \endcond
 };
+
+/**
+ *
+ * \defgroup node_system Node System
+ *
+ * Node:
+ * - Every gui element must inherit Node class
+ * - Every gui element (e.g. games's grid, category menu) is one node
+ * - Nodes are handled by Gui_manager class
+ * - Every inherited node must have pointer to renderer class
+ * - render() function must be implemented thorugh renderer class
+ * - data between nodes are exchanges through Global_data structure
+ * 
+ * Gui_manager:
+ * - only logic() of the last node added is run
+ * - nodes are renderer in ordered, that they were added (first added, first renderer)
+ *
+ * Renderer:
+ * - this class handles rendering and input with SDL3.0
+ * - if the rendering or input handling need to be done with other libraries only this class need to be edited 
+ */
 
 #endif
 

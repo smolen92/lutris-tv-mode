@@ -1,8 +1,8 @@
 #include "settings.h"
 
 Settings::Settings(const char* path) {
-	
-	settings_file_path = path;
+
+	(path == nullptr) ? settings_file_path = std::string("settings.ini") : settings_file_path = path;
 
 	std::fstream settings_file;
 	settings_file.open(path, std::fstream::in);

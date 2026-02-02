@@ -7,6 +7,8 @@
 
 /**
  * @brief manages all nodes
+ * \todo predifined header should be loaded from settings not hardcoded
+ * \todo add/remove games from favorite
  */
 class Gui_manager {
 	public:

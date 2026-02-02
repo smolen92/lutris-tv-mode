@@ -8,7 +8,6 @@
  *
  * @brief handle input and render the category menu
  *
- * \todo switching back to rendering all games after category is selected
  */
 class Node_category_menu : public Node {
 	public:

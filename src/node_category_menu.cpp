@@ -12,8 +12,10 @@ void Node_category_menu::logic(Global_data* global_data) {
 	if( global_data->buttons_pressed[RUN] ) {
 		global_data->action = READ_DATABASE;
 	}
-
+	
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = REMOVE_NODE;
+
+	global_data->current_category = current_category;
 }
 
 void Node_category_menu::render() {
@@ -39,6 +41,10 @@ void Node_category_menu::render() {
 	renderer->set_viewport(category_viewport_x,category_viewport_y,category_viewport_w, category_viewport_h);
 
 	renderer->render_rect(clear_rect_x, clear_rect_y, clear_rect_w, clear_rect_h, 0,0,0,0xFF);
+	
+	//predefined categories separation line
+	renderer->render_rect(clear_rect_x, clear_rect_y, clear_rect_w, settings->font_size, 0xFF,0xFF,0xFF,0xFF, false);
+	
 
 	renderer->render_rect(clear_rect_x, clear_rect_y, clear_rect_w, clear_rect_h, 0xFF,0xFF,0xFF,0xFF, false);
 
