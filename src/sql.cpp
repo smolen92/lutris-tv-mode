@@ -24,7 +24,7 @@ int SQL::callback_load_games(void* data_vector, int argc, char** argv, char **az
 	std::vector<Game>* game_ptr;
 	game_ptr = (std::vector<Game>*)data_vector;
 	
-	uint64_t temp_id;
+	uint64_t temp_id = 0;
 	std::string temp_name;
 	std::string temp_slug;
 
@@ -44,7 +44,7 @@ int SQL::callback_load_categories(void* data_vector, int argc, char** argv, char
 	category_ptr = (std::vector<Category>*)data_vector;
 	
 
-	uint64_t temp_id;
+	uint64_t temp_id = 0;
 	std::string temp_name;
 	
 	for(int i=0; i < argc; i++) {

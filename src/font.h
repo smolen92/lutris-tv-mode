@@ -1,6 +1,8 @@
 #ifndef _FONT_H_
 #define _FONT_H_
 
+#include <cstdint>
+
 //Montserrat font
 
 const uint8_t embedded_font_data[] = {

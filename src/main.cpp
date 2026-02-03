@@ -28,3 +28,9 @@ int main(int argc, char** argv) {
 
 }
 /// \endcond
+
+/**
+ * \defgroup improvements Improvements
+ *
+ * low prio improvements 
+ */

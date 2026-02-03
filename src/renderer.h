@@ -85,6 +85,15 @@ class Renderer {
 		 *
 		 * @brief destroys the textures
 		 *
+		 *
+		 *
+		 * \ingroup improvements
+		 *
+		 * when category change all images are destroyed and loaded again for current category
+		 * improvement:
+		 * 1. load all images at startup
+		 * 2. store them in unordered_map<int, texture> where int = game_id, texture = game image
+		 * 3. when changing categories only update games/categories vector
 		 */
 		void clear_images();
 		
@@ -144,6 +153,6 @@ class Renderer {
 		Settings* settings;
 		
 };
-	
+
 #endif
 

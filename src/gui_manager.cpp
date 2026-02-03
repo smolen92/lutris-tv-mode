@@ -21,6 +21,7 @@ Gui_manager::Gui_manager() {
 Gui_manager::~Gui_manager() {
 	while(!nodes.empty()) {
 		delete nodes.back();
+		nodes.back() = nullptr;
 		nodes.pop_back();
 	}
 
@@ -38,30 +39,65 @@ bool Gui_manager::logic() {
 	bool return_value = renderer->check_input(global_data.buttons_pressed);
 
 	nodes.back()->logic(&global_data);
-	if( global_data.action == SWITCH_TO_CATEGORY_NODE ) nodes.push_back(new Node_category_menu(renderer, settings, &categories));
-	
-	if( global_data.action == READ_DATABASE) {	
-		global_data.current_game = 0;
-		games.clear();
-		renderer->clear_images();
-		
-		std::string sql_statement;
+	switch(global_data.action) {
+		case(SWITCH_TO_CATEGORY_NODE) : nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+						break;
 
-		if(global_data.current_category == 0) {
-			sql_statement = std::string("SELECT * FROM games ORDER BY name COLLATE NOCASE");
-		} else {
-			sql_statement = std::string("SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = ")
-				+ std::to_string(categories[global_data.current_category].id) 
-				+ std::string(" ORDER BY games.name COLLATE NOCASE");
-		}
-		
-		sql->load_data((void*)&games,sql_statement.c_str(), sql->callback_load_games);
-		load_images();	
-	}
+		case(READ_DATABASE) :		{
+							global_data.current_game = 0;
+							games.clear();
+							renderer->clear_images();
+							
+							std::string sql_statement;
 
-	if( global_data.action == REMOVE_NODE) {
-		delete nodes.back();
-		nodes.pop_back();
+							if(global_data.current_category == 0) {
+								sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
+							} else {
+								sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
+									+ std::to_string(categories[global_data.current_category].id) 
+									+ " ORDER BY games.name COLLATE NOCASE";
+							}
+							
+							sql->load_data((void*)&games,sql_statement.c_str(), sql->callback_load_games);
+							load_images();	
+						}
+						break;
+
+		case(REMOVE_NODE) :		delete nodes.back();
+						nodes.back() = nullptr;
+						nodes.pop_back();
+						break;
+
+		case(ADD_REMOVE_FAVORITE) :	{
+							std::string sql_statement;
+							
+							//0 is the Games category, this should skip all predefined categories, there is only 1 for now
+							/// \todo check if favorite has id 1
+							/// \todo add game to any category - will need new render node
+							/// \todo a lot of copied code from READ_DATABASE - create helper func if this work
+							if(global_data.current_category == 0) {
+								sql_statement = "INSERT INTO games_categories VALUES (" + std::to_string(games.at(global_data.current_game).id) + ",1)";	
+								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
+							}
+							else {
+								sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
+								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
+									+ std::to_string(categories[global_data.current_category].id) 
+									+ " ORDER BY games.name COLLATE NOCASE";
+							}
+
+							global_data.current_game = 0;
+							games.clear();
+							renderer->clear_images();
+
+							sql->load_data((void*)&games,sql_statement.c_str(), sql->callback_load_games);
+
+
+						}
+						break;
+
 	}
 	
 	global_data.action = NONE;

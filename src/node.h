@@ -1,6 +1,8 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
+#include <cstdint>
+
 enum Buttons {
 	UP,
 	DOWN,
@@ -8,6 +10,7 @@ enum Buttons {
 	RIGHT,
 	RUN,
 	CATEGORIES,
+	FAVORITE,
 	TOTAL_BUTTONS
 };
 
@@ -15,7 +18,8 @@ enum Action {
 	NONE,
 	READ_DATABASE,
 	SWITCH_TO_CATEGORY_NODE,
-	REMOVE_NODE
+	REMOVE_NODE,
+	ADD_REMOVE_FAVORITE
 };
 
 /**
