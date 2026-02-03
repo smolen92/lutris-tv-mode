@@ -8,6 +8,7 @@ Gui_manager::Gui_manager() {
 	categories.push_back(Category(0,"Games"));
 	
 	sql = new SQL(settings->database_path.c_str());
+	
 	sql->load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", sql->callback_load_games);
 	sql->load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", sql->callback_load_categories);
 
@@ -44,10 +45,6 @@ bool Gui_manager::logic() {
 						break;
 
 		case(READ_DATABASE) :		{
-							global_data.current_game = 0;
-							games.clear();
-							renderer->clear_images();
-							
 							std::string sql_statement;
 
 							if(global_data.current_category == 0) {
@@ -57,9 +54,8 @@ bool Gui_manager::logic() {
 									+ std::to_string(categories[global_data.current_category].id) 
 									+ " ORDER BY games.name COLLATE NOCASE";
 							}
-							
-							sql->load_data((void*)&games,sql_statement.c_str(), sql->callback_load_games);
-							load_images();	
+						
+							load_games_vector(sql_statement.c_str());
 						}
 						break;
 
@@ -72,9 +68,9 @@ bool Gui_manager::logic() {
 							std::string sql_statement;
 							
 							//0 is the Games category, this should skip all predefined categories, there is only 1 for now
-							/// \todo check if favorite has id 1
+							/// \todo check if the game is in favorite if no then add it, if yes delete it
 							/// \todo add game to any category - will need new render node
-							/// \todo a lot of copied code from READ_DATABASE - create helper func if this work
+							/// \bug game can be added to favorite multiple times
 							if(global_data.current_category == 0) {
 								sql_statement = "INSERT INTO games_categories VALUES (" + std::to_string(games.at(global_data.current_game).id) + ",1)";	
 								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
@@ -87,14 +83,9 @@ bool Gui_manager::logic() {
 									+ std::to_string(categories[global_data.current_category].id) 
 									+ " ORDER BY games.name COLLATE NOCASE";
 							}
-
-							global_data.current_game = 0;
-							games.clear();
-							renderer->clear_images();
-
-							sql->load_data((void*)&games,sql_statement.c_str(), sql->callback_load_games);
-
-
+							
+							load_games_vector(sql_statement.c_str());
+							
 						}
 						break;
 
@@ -103,6 +94,14 @@ bool Gui_manager::logic() {
 	global_data.action = NONE;
 
 	return return_value;
+}
+
+void Gui_manager::load_games_vector(const char* sql_statement) {
+	global_data.current_game = 0;
+	games.clear();
+	renderer->clear_images();
+	sql->load_data((void*)&games,sql_statement, sql->callback_load_games);
+	load_images();
 }
 
 void Gui_manager::render() {

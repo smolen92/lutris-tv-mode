@@ -18,8 +18,10 @@ void Node_games_grid::logic(Global_data* global_data) {
 			process_handler.run_process(command.c_str());
 	}
 
-	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = SWITCH_TO_CATEGORY_NODE;
 
+	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ADD_REMOVE_FAVORITE;
+	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = SWITCH_TO_CATEGORY_NODE;
+	
 	process_handler.check_and_clean_zombie_processes();
 
 	global_data->current_game = current_game;

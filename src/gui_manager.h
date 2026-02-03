@@ -33,6 +33,13 @@ class Gui_manager {
 		 * @brief helper function for loading images for games
 		 */
 		void load_images();
+		
+		/**
+		 * @brief helper fucntion when changes to game vector need to be made
+		 *
+		 * @param sql_statement sql statement that will be used for retrieving games from database
+		 */
+		void load_games_vector(const char* sql_statement);
 
 		Renderer* renderer;
 		std::vector<Node*> nodes;
