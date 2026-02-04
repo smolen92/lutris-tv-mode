@@ -64,28 +64,32 @@ bool Gui_manager::logic() {
 						nodes.pop_back();
 						break;
 
-		case(ADD_REMOVE_FAVORITE) :	{
-							std::string sql_statement;
-							
-							//0 is the Games category, this should skip all predefined categories, there is only 1 for now
-							/// \todo check if the game is in favorite if no then add it, if yes delete it
-							/// \todo add game to any category - will need new render node
+		case(ADD_REMOVE_FAVORITE) :	{	/// \todo add game to any category - will need new render node
 							/// \bug game can be added to favorite multiple times
-							if(global_data.current_category == 0) {
+							/// \bug crash when games vector is empty and buttons_pressed[FAVORITE] is pressed
+							/// \bug after deleting from favorites and favorite is not the selected category, nothing is rendered
+							/// \todo reset the game vector when adding only if you are in favorite category
+							std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
+							sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+
+							if(sql->row_count == 0) {
 								sql_statement = "INSERT INTO games_categories VALUES (" + std::to_string(games.at(global_data.current_game).id) + ",1)";	
 								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 								sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
 							}
 							else {
+								std::cout << "deleting\n";
 								sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
 								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 								sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
 									+ std::to_string(categories[global_data.current_category].id) 
 									+ " ORDER BY games.name COLLATE NOCASE";
 							}
-							
+
 							load_games_vector(sql_statement.c_str());
-							
+
+
+														
 						}
 						break;
 
