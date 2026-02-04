@@ -64,9 +64,9 @@ bool Gui_manager::logic() {
 						nodes.pop_back();
 						break;
 
-		case(ADD_REMOVE_FAVORITE) :	{	/// \todo add game to any category - will need new render node
-							/// \bug crash when games vector is empty and buttons_pressed[FAVORITE] is pressed
-							/// \bug after deleting from favorites and favorite is not the selected category, nothing is rendered
+		case(ADD_REMOVE_FAVORITE) :	if(!games.empty()) {	
+							/// \todo add game to any category - will need new render node
+							/// \bug after deleting from favorites and favorite is not the selected category, nothing is rendered when in predefined Games category, or the category is switch to predefined Games if you are in another category
 							std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
 							sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 
