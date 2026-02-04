@@ -54,7 +54,7 @@ bool Gui_manager::logic() {
 									+ std::to_string(categories[global_data.current_category].id) 
 									+ " ORDER BY games.name COLLATE NOCASE";
 							}
-						
+							
 							load_games_vector(sql_statement.c_str());
 						}
 						break;
@@ -65,10 +65,8 @@ bool Gui_manager::logic() {
 						break;
 
 		case(ADD_REMOVE_FAVORITE) :	{	/// \todo add game to any category - will need new render node
-							/// \bug game can be added to favorite multiple times
 							/// \bug crash when games vector is empty and buttons_pressed[FAVORITE] is pressed
 							/// \bug after deleting from favorites and favorite is not the selected category, nothing is rendered
-							/// \todo reset the game vector when adding only if you are in favorite category
 							std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
 							sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 
@@ -78,7 +76,6 @@ bool Gui_manager::logic() {
 								sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
 							}
 							else {
-								std::cout << "deleting\n";
 								sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
 								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 								sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
@@ -97,11 +94,12 @@ bool Gui_manager::logic() {
 	
 	global_data.action = NONE;
 
+	if( global_data.current_game > games.size() ) global_data.current_game = 0;
+
 	return return_value;
 }
 
 void Gui_manager::load_games_vector(const char* sql_statement) {
-	global_data.current_game = 0;
 	games.clear();
 	renderer->clear_images();
 	sql->load_data((void*)&games,sql_statement, sql->callback_load_games);
