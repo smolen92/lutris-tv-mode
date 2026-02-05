@@ -34,6 +34,10 @@ bool Renderer::check_input(bool* buttons_pressed) {
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) buttons_pressed[RUN] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) buttons_pressed[CATEGORIES] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_NORTH) buttons_pressed[FAVORITE] = true;
+			
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_BACK) buttons_pressed[SELECT] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_START) buttons_pressed[START] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_GUIDE) buttons_pressed[HOME] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {

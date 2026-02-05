@@ -8,8 +8,6 @@
 /**
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
- * \todo system shutdown and restart - call with process handler
- * \todo move process handler from node_gamer_grid to manager and add action to global_data
  */
 class Gui_manager {
 	public:
@@ -48,6 +46,7 @@ class Gui_manager {
 		std::vector<Category> categories;
 		SQL* sql;
 		Global_data global_data;
+		ProcessHandler process_handler;
 };
 
 #endif

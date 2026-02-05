@@ -33,8 +33,6 @@ class Node_games_grid : public Node {
 		uint64_t current_game;
 		
 		std::vector<Game> *games;
-		
-		ProcessHandler process_handler;
 };
 
 #endif
