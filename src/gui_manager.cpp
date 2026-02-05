@@ -39,19 +39,13 @@ Gui_manager::~Gui_manager() {
 bool Gui_manager::logic() {
 	bool return_value = renderer->check_input(global_data.buttons_pressed);
 
-	/// \todo for testing, create a menu for it
-	if( global_data.buttons_pressed[SELECT] && global_data.buttons_pressed[START] ) {
-		std::string command = "shutdown -h now";
-		process_handler.run_process(command.c_str());
-	}
-
-	if(global_data.buttons_pressed[HOME] && global_data.buttons_pressed[START] ) {
-		std::string command = "shutdown -r now";
-		process_handler.run_process(command.c_str());
-	}
+	if( global_data.buttons_pressed[START]) global_data.action = SHOW_START_MENU;
 
 	nodes.back()->logic(&global_data);
 	switch(global_data.action) {
+		case(SHOW_START_MENU) : 	nodes.push_back(new Node_start_menu(renderer,settings));
+						break;
+
 		case(SWITCH_TO_CATEGORY_NODE) : nodes.push_back(new Node_category_menu(renderer, settings, &categories));
 						break;
 
@@ -101,13 +95,27 @@ bool Gui_manager::logic() {
 						}
 						break;
 
-		case(RUN_GAME) :		
-						std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
-						process_handler.run_process(command.c_str());
+		case(RUN_GAME) :		{
+							std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
+							process_handler.run_process(command.c_str());
+						}
+						break;
+		
+		case(RESTART_SYSTEM) :		{
+							std::string command = "shutdown -r now";
+							process_handler.run_process(command.c_str());
+						}
+						break;
+
+		case(SHUTDOWN_SYSTEM) :		{
+							std::string command = "shutdown -h now";
+							process_handler.run_process(command.c_str());
+						}
 						break;
 
 	}
 	
+
 	global_data.action = NONE;
 
 	if( global_data.current_game >= games.size() ) global_data.current_game = 0;
