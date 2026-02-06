@@ -38,6 +38,9 @@ lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_
 ./obj/node_start_menu.o: ./src/node_start_menu.h ./src/node_start_menu.cpp ./obj/renderer.o
 	$(CXX) $(CXXFLAGS) -c ./src/node_start_menu.cpp -o ./obj/node_start_menu.o
 
+./obj/node_category_table.o: ./src/node_category_table.h ./src/node_category_table.cpp ./obj/renderer.o
+	$(CXX) $(CXXFLAGS) -c ./src/node_category_table.cpp -o ./obj/node_category_table.o
+
 .PHONY: clean doc 
 
 clean:
