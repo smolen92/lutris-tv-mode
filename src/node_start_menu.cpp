@@ -18,11 +18,20 @@ void Node_start_menu::logic(Global_data* global_data) {
 	}
 
 	if( global_data->buttons_pressed[RUN] ) {
-		if(current_entry == 0) global_data->action = RESTART_SYSTEM;
-		if(current_entry == 1) global_data->action = SHUTDOWN_SYSTEM;
+		
+		switch(current_entry) {
+			case(ENTRY_RESTART_SYSTEM) :	global_data->action = ACTION_RESTART_SYSTEM;
+							break;
+
+			case(ENTRY_SHUTDOWN_SYSTEM) :	global_data->action = ACTION_SHUTDOWN_SYSTEM;
+							break;
+
+			case(ENTRY_QUIT_TV_MODE) :	global_data->action = ACTION_QUIT_TV_MODE;
+							break;
+		}
 	}
 
-	if( global_data->buttons_pressed[START]) global_data->action = REMOVE_NODE;
+	if( global_data->buttons_pressed[START]) global_data->action = ACTION_REMOVE_NODE;
 }
 
 void Node_start_menu::render() {
@@ -36,7 +45,8 @@ void Node_start_menu::render() {
 	renderer->render_rect(start_menu_x,start_menu_y,start_menu_width,start_menu_height,0xFF,0xFF,0xFF,0xFF,false);
 
 	renderer->render_one_line_of_text(start_menu_x, start_menu_y, "Restart",start_menu_width);
-	renderer->render_one_line_of_text(start_menu_x, start_menu_y+settings->font_size, "Shutdown",start_menu_width);
+	renderer->render_one_line_of_text(start_menu_x, start_menu_y+settings->font_size, "Quit TV Mode", start_menu_width);
+	renderer->render_one_line_of_text(start_menu_x, start_menu_y+(settings->font_size*2), "Shutdown",start_menu_width);
 
 	renderer->render_rect(start_menu_x,start_menu_y+(settings->font_size*current_entry),start_menu_width,settings->font_size,0, 0, 0xFF, 0x6F);
 }

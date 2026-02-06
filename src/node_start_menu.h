@@ -3,8 +3,12 @@
 
 #include "renderer.h"
 
-#define ENTRY_COUNT 2
-
+enum Entry {
+	ENTRY_RESTART_SYSTEM,
+	ENTRY_QUIT_TV_MODE,
+	ENTRY_SHUTDOWN_SYSTEM,
+	ENTRY_COUNT
+};
 
 class Node_start_menu : public Node {
 	public:

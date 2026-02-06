@@ -10,10 +10,10 @@ void Node_category_menu::logic(Global_data* global_data) {
 	}
 
 	if( global_data->buttons_pressed[RUN] ) {
-		global_data->action = READ_DATABASE;
+		global_data->action = ACTION_READ_DATABASE;
 	}
 	
-	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = REMOVE_NODE;
+	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_REMOVE_NODE;
 
 	global_data->current_category = current_category;
 }

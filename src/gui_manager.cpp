@@ -14,7 +14,7 @@ Gui_manager::Gui_manager() {
 
 	nodes.push_back(new Node_games_grid(settings, renderer, &games));
 
-	global_data.action = NONE;
+	global_data.action = ACTION_NONE;
 	global_data.current_game = 0;
 	global_data.current_category = 0;
 }
@@ -39,84 +39,86 @@ Gui_manager::~Gui_manager() {
 bool Gui_manager::logic() {
 	bool return_value = renderer->check_input(global_data.buttons_pressed);
 
-	if( global_data.buttons_pressed[START]) global_data.action = SHOW_START_MENU;
+	if( global_data.buttons_pressed[START]) global_data.action = ACTION_SHOW_START_MENU;
 
 	nodes.back()->logic(&global_data);
 	switch(global_data.action) {
-		case(SHOW_START_MENU) : 	nodes.push_back(new Node_start_menu(renderer,settings));
-						break;
+		case(ACTION_SHOW_START_MENU) : 		nodes.push_back(new Node_start_menu(renderer,settings));
+							break;
 
-		case(SWITCH_TO_CATEGORY_NODE) : nodes.push_back(new Node_category_menu(renderer, settings, &categories));
-						break;
+		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+							break;
 
-		case(READ_DATABASE) :		{
-							std::string sql_statement;
+		case(ACTION_READ_DATABASE) :		{
+								std::string sql_statement;
 
-							if(global_data.current_category == 0) {
-								sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
-							} else {
-								sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
-									+ std::to_string(categories[global_data.current_category].id) 
-									+ " ORDER BY games.name COLLATE NOCASE";
-							}
+								if(global_data.current_category == 0) {
+									sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
+								} else {
+									sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
+										+ std::to_string(categories[global_data.current_category].id) 
+										+ " ORDER BY games.name COLLATE NOCASE";
+								}
 							
-							load_games_vector(sql_statement.c_str());
-						}
-						break;
-
-		case(REMOVE_NODE) :		delete nodes.back();
-						nodes.back() = nullptr;
-						nodes.pop_back();
-						break;
-
-		case(ADD_REMOVE_FAVORITE) :	if(!games.empty()) {	
-							/// \todo add game to any category - will need new render node
-							std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
-							sql->load_data(nullptr, sql_statement.c_str(), nullptr);
-
-							if(sql->row_count == 0) {
-								sql_statement = "INSERT INTO games_categories VALUES (" + std::to_string(games.at(global_data.current_game).id) + ",1)";	
-								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								load_games_vector(sql_statement.c_str());
 							}
-							else {
-								sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
+							break;
+
+		case(ACTION_REMOVE_NODE) :		delete nodes.back();
+							nodes.back() = nullptr;
+							nodes.pop_back();
+							break;
+
+		case(ACTION_ADD_REMOVE_FAVORITE) :	if(!games.empty()) {	
+								/// \todo add game to any category - will need new render node
+								std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
 								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+
+								if(sql->row_count == 0) {
+									sql_statement = "INSERT INTO games_categories VALUES (" + std::to_string(games.at(global_data.current_game).id) + ",1)";	
+									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								}
+								else {
+									sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
+									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								}
+								
+								( global_data.current_category == 0) ? 
+								(sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE") :
+								(sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
+										+ std::to_string(categories[global_data.current_category].id) 
+										+ " ORDER BY games.name COLLATE NOCASE");
+								load_games_vector(sql_statement.c_str());
+
+
+															
 							}
-							
-							( global_data.current_category == 0) ? 
-							(sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE") :
-							(sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
-									+ std::to_string(categories[global_data.current_category].id) 
-									+ " ORDER BY games.name COLLATE NOCASE");
-							load_games_vector(sql_statement.c_str());
+							break;
 
-
-														
-						}
-						break;
-
-		case(RUN_GAME) :		{
-							std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
-							process_handler.run_process(command.c_str());
-						}
-						break;
+		case(ACTION_RUN_GAME) :			{
+								std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
+								process_handler.run_process(command.c_str());
+							}
+							break;
 		
-		case(RESTART_SYSTEM) :		{
-							std::string command = "shutdown -r now";
-							process_handler.run_process(command.c_str());
-						}
-						break;
+		case(ACTION_RESTART_SYSTEM) :		{
+								std::string command = "shutdown -r now";
+								process_handler.run_process(command.c_str());
+							}
+							break;
 
-		case(SHUTDOWN_SYSTEM) :		{
-							std::string command = "shutdown -h now";
-							process_handler.run_process(command.c_str());
-						}
-						break;
+		case(ACTION_SHUTDOWN_SYSTEM) :		{
+								std::string command = "shutdown -h now";
+								process_handler.run_process(command.c_str());
+							}
+							break;
 
+		case(ACTION_QUIT_TV_MODE) :		return false;
+							break;
 	}
 	
 
-	global_data.action = NONE;
+	global_data.action = ACTION_NONE;
 
 	if( global_data.current_game >= games.size() ) global_data.current_game = 0;
 
