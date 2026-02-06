@@ -2,7 +2,6 @@
 #define _NODE_RENDERER_H_
 
 #include <vector>
-#include <string>
 #include <sstream>
 
 #include <SDL3/SDL.h>

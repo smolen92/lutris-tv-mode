@@ -10,26 +10,30 @@ enum Entry {
 	ENTRY_COUNT
 };
 
+/**
+ * @brief menu that shows when start/ESC is pressed
+ */
 class Node_start_menu : public Node {
 	public:
 		/**
 		 *
-		 * \ingroup improvements
+		 * @param renderer pointer to renderer
+		 * @param settings pointer to settings
 		 *
-		 * this whole node is hardcoded, does it make sense to load it from settings?
-		 * \todo document node
 		 */
 		Node_start_menu(Renderer* renderer,Settings* settings);
+		
+		/// inherited from Node
 		void logic(Global_data* global_data) override;
+		/// inherited from Node
 		void render() override;
 		~Node_start_menu();
 	private:
 		Renderer* renderer;
 		Settings* settings;
 		uint64_t current_entry;
+		std::vector<std::string> entries_strings;
 };
-
-
 
 #endif
 

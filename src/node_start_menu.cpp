@@ -6,6 +6,10 @@ Node_start_menu::Node_start_menu(Renderer* renderer, Settings* settings) {
 	this->settings = settings;
 
 	current_entry = 0;
+
+	entries_strings.push_back("Restart");
+	entries_strings.push_back("Quit TV Mode");
+	entries_strings.push_back("Shutdown");
 }
 
 void Node_start_menu::logic(Global_data* global_data) {
@@ -38,17 +42,18 @@ void Node_start_menu::render() {
 	uint64_t start_menu_width = settings->window_width*0.3;
 	uint64_t start_menu_height = settings->window_height*0.3;
 
-	uint64_t start_menu_x = (settings->window_width-start_menu_width)/2;
-	uint64_t start_menu_y = (settings->window_height-start_menu_height)/2;
+	renderer->set_viewport((settings->window_width-start_menu_width)/2, (settings->window_height-start_menu_height)/2, start_menu_width, start_menu_height);	
 
-	renderer->render_rect(start_menu_x,start_menu_y,start_menu_width,start_menu_height,0x00,0x00,0x00,0xFF);
-	renderer->render_rect(start_menu_x,start_menu_y,start_menu_width,start_menu_height,0xFF,0xFF,0xFF,0xFF,false);
+	renderer->render_rect(0,0,start_menu_width,start_menu_height,0x00,0x00,0x00,0xFF);
+	renderer->render_rect(0,0,start_menu_width,start_menu_height,0xFF,0xFF,0xFF,0xFF,false);
 
-	renderer->render_one_line_of_text(start_menu_x, start_menu_y, "Restart",start_menu_width);
-	renderer->render_one_line_of_text(start_menu_x, start_menu_y+settings->font_size, "Quit TV Mode", start_menu_width);
-	renderer->render_one_line_of_text(start_menu_x, start_menu_y+(settings->font_size*2), "Shutdown",start_menu_width);
+	for(uint64_t i=0; i < ENTRY_COUNT; i++) {
+		renderer->render_one_line_of_text(0, settings->font_size*i, entries_strings[i].c_str(),start_menu_width);
+	}
 
-	renderer->render_rect(start_menu_x,start_menu_y+(settings->font_size*current_entry),start_menu_width,settings->font_size,0, 0, 0xFF, 0x6F);
+	renderer->render_rect(0,settings->font_size*current_entry,start_menu_width,settings->font_size,0, 0, 0xFF, 0x6F);
+
+	renderer->set_viewport();
 }
 
 Node_start_menu::~Node_start_menu() {
