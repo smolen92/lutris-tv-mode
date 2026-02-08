@@ -5,11 +5,13 @@
 #include "node_category_menu.h"
 #include "node_games_grid.h"
 #include "node_start_menu.h"
+#include "node_category_table.h"
 #include "process.h"
 
 /**
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
+ * \todo split predefined and user defined categories into two vectors
  */
 class Gui_manager {
 	public:

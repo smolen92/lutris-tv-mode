@@ -14,6 +14,10 @@ class Node_category_table : public Node {
 		Renderer* renderer;
 		Settings* settings;
 		std::vector<Category> *categories;
+
+		uint64_t current_category;
+		std::vector<bool> categories_to_add;
+		uint64_t selection_box_offset;
 };
 
 #endif

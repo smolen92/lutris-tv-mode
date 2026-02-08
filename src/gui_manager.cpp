@@ -46,7 +46,8 @@ bool Gui_manager::logic() {
 		case(ACTION_SHOW_START_MENU) : 		nodes.push_back(new Node_start_menu(renderer,settings));
 							break;
 
-		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_table(renderer, settings, &categories));
+							//nodes.push_back(new Node_category_menu(renderer, settings, &categories));
 							break;
 
 		case(ACTION_READ_DATABASE) :		{

@@ -2,8 +2,8 @@ CXX = g++
 
 CXXFLAGS = -Wall -g 
 
-lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_category_menu.o ./obj/node_games_grid.o ./obj/process.o ./obj/renderer.o ./obj/settings.o ./obj/sql.o ./obj/main.o ./obj/node_start_menu.o
-	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_category_menu.o ./obj/node_games_grid.o ./obj/process.o ./obj/renderer.o ./obj/settings.o ./obj/sql.o ./obj/main.o ./obj/node_start_menu.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
+lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_category_menu.o ./obj/node_games_grid.o ./obj/process.o ./obj/renderer.o ./obj/settings.o ./obj/sql.o ./obj/main.o ./obj/node_start_menu.o ./obj/node_category_table.o
+	$(CXX) $(CXXFLAGS) -o lutris-tvmode.out ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_category_menu.o ./obj/node_games_grid.o ./obj/process.o ./obj/renderer.o ./obj/settings.o ./obj/sql.o ./obj/main.o ./obj/node_start_menu.o ./obj/node_category_table.o -lSDL3 -lSDL3_ttf -lSDL3_image -lsqlite3
 
 ./obj/category.o: ./src/category.h ./src/category.cpp
 	$(CXX) $(CXXFLAGS) -c ./src/category.cpp -o ./obj/category.o
