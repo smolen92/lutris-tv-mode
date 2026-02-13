@@ -113,12 +113,20 @@ bool Gui_manager::logic() {
 		case(ACTION_QUIT_TV_MODE) :		return false;
 							break;
 	}
-
-	while(!global_data.categories_to_add.empty()) {
-		std::string sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (" + std::to_string(games.at(global_data.current_game).id) + " ," + std::to_string(categories.at(global_data.categories_to_add.back()).id) + ")";
+	
+	if(!global_data.categories_to_add.empty()) {
+		//delete old categories
+		std::string sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id);
 		sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+		
+		//add new categories
+		while(!global_data.categories_to_add.empty()) {
+			sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (" + std::to_string(games.at(global_data.current_game).id) + " ," + std::to_string(categories.at(global_data.categories_to_add.back()).id) + ")";
+			global_data.categories_to_add.pop_back();
+			sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+		}
+		
 		reload_game_vector = true;
-		global_data.categories_to_add.pop_back();
 	}
 
 	if(reload_game_vector) {

@@ -53,7 +53,7 @@ class SQL {
 		uint64_t row_count;
 
 	private:
-				sqlite3 *db;
+		sqlite3 *db;
 		char *error_message;
 };
 

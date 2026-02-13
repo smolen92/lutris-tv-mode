@@ -7,7 +7,6 @@
 /**
  * @brief category table where you can select categories for games
  * \todo read in what categories the game is
- * \todo remove game from categories
  */
 class Node_category_table : public Node {
 	public:
