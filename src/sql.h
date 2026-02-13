@@ -11,6 +11,7 @@
 
 /**
  * @brief class for managing sql
+ * \todo move callback function to game class and category class
  */
 class SQL {
 	public:

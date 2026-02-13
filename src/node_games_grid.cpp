@@ -13,11 +13,12 @@ void Node_games_grid::logic(Global_data* global_data) {
 
 	if( global_data->buttons_pressed[RIGHT] ) if( current_game != games->size()-1) current_game += 1;
 	if( global_data->buttons_pressed[LEFT] ) if( current_game != 0) current_game -= 1;
-
+	
 	if( global_data->buttons_pressed[RUN] ) global_data->action = ACTION_RUN_GAME;
 	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE;
-	
+	if( global_data->buttons_pressed[SELECTION] ) global_data->action = ACTION_SWITCH_TO_CAT_TABLE_NODE;
+
 	global_data->current_game = current_game;
 }
 

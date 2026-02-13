@@ -3,7 +3,6 @@
 /// \file
 /// \cond
 int main(int argc, char** argv) {
-
 	try {
 		//gui initialization
 		Gui_manager gui_manager;

@@ -1,7 +1,6 @@
 #ifndef _NODE_RENDERER_H_
 #define _NODE_RENDERER_H_
 
-#include <vector>
 #include <sstream>
 
 #include <SDL3/SDL.h>

@@ -2,18 +2,18 @@
 #define _NODE_H_
 
 #include <cstdint>
+#include <vector>
 
 enum Buttons {
 	UP,
 	DOWN,
 	LEFT,
 	RIGHT,
-	RUN,
-	CATEGORIES,
-	FAVORITE,
-	SELECT,
-	START,
-	HOME,
+	RUN, //A
+	CATEGORIES,//RB
+	FAVORITE, //Y
+	SELECTION, //X
+	START, //START
 	TOTAL_BUTTONS
 };
 
@@ -22,8 +22,10 @@ enum Action {
 	ACTION_RUN_GAME,
 	ACTION_READ_DATABASE,
 	ACTION_SWITCH_TO_CATEGORY_NODE,
+	ACTION_SWITCH_TO_CAT_TABLE_NODE,
 	ACTION_REMOVE_NODE,
 	ACTION_ADD_REMOVE_FAVORITE,
+	ACTION_ADD_CATEGORIES,
 	ACTION_SHUTDOWN_SYSTEM,
 	ACTION_RESTART_SYSTEM,
 	ACTION_SHOW_START_MENU,
@@ -39,6 +41,7 @@ struct Global_data {
 	uint64_t current_category;
 	uint64_t action;
 	bool buttons_pressed[TOTAL_BUTTONS];
+	std::vector<uint64_t> categories_to_add;
 	/// \endcond
 };
 

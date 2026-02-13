@@ -8,7 +8,7 @@ Gui_manager::Gui_manager() {
 	categories.push_back(Category(0,"Games"));
 	
 	sql = new SQL(settings->database_path.c_str());
-	
+
 	sql->load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", sql->callback_load_games);
 	sql->load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", sql->callback_load_categories);
 
@@ -38,6 +38,8 @@ Gui_manager::~Gui_manager() {
 		
 bool Gui_manager::logic() {
 	bool return_value = renderer->check_input(global_data.buttons_pressed);
+	
+	bool reload_game_vector = false;
 
 	if( global_data.buttons_pressed[START]) global_data.action = ACTION_SHOW_START_MENU;
 
@@ -46,8 +48,10 @@ bool Gui_manager::logic() {
 		case(ACTION_SHOW_START_MENU) : 		nodes.push_back(new Node_start_menu(renderer,settings));
 							break;
 
-		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_table(renderer, settings, &categories));
-							//nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+							break;
+		
+		case(ACTION_SWITCH_TO_CAT_TABLE_NODE) :	nodes.push_back(new Node_category_table(renderer, settings, &categories));
 							break;
 
 		case(ACTION_READ_DATABASE) :		{
@@ -71,7 +75,6 @@ bool Gui_manager::logic() {
 							break;
 
 		case(ACTION_ADD_REMOVE_FAVORITE) :	if(!games.empty()) {	
-								/// \todo add game to any category - will need new render node
 								std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
 								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 
@@ -84,14 +87,7 @@ bool Gui_manager::logic() {
 									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 								}
 								
-								( global_data.current_category == 0) ? 
-								(sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE") :
-								(sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
-										+ std::to_string(categories[global_data.current_category].id) 
-										+ " ORDER BY games.name COLLATE NOCASE");
-								load_games_vector(sql_statement.c_str());
-
-
+								reload_game_vector = true;
 															
 							}
 							break;
@@ -117,7 +113,24 @@ bool Gui_manager::logic() {
 		case(ACTION_QUIT_TV_MODE) :		return false;
 							break;
 	}
-	
+
+	while(!global_data.categories_to_add.empty()) {
+		std::string sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (" + std::to_string(games.at(global_data.current_game).id) + " ," + std::to_string(categories.at(global_data.categories_to_add.back()).id) + ")";
+		sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+		reload_game_vector = true;
+		global_data.categories_to_add.pop_back();
+	}
+
+	if(reload_game_vector) {
+		std::string sql_statement;
+
+		( global_data.current_category == 0) ? 
+		(sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE") :
+		(sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
+					+ std::to_string(categories[global_data.current_category].id) 
+					+ " ORDER BY games.name COLLATE NOCASE");
+		load_games_vector(sql_statement.c_str());
+	}
 
 	global_data.action = ACTION_NONE;
 

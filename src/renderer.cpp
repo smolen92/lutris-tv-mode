@@ -25,6 +25,7 @@ bool Renderer::check_input(bool* buttons_pressed) {
 			if(input.key.scancode == SDL_SCANCODE_C) buttons_pressed[CATEGORIES] = true;
 			if(input.key.scancode == SDL_SCANCODE_F) buttons_pressed[FAVORITE] = true;
 			if(input.key.scancode == SDL_SCANCODE_ESCAPE) buttons_pressed[START] = true;
+			if(input.key.scancode == SDL_SCANCODE_SPACE) buttons_pressed[SELECTION] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
@@ -36,6 +37,7 @@ bool Renderer::check_input(bool* buttons_pressed) {
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) buttons_pressed[CATEGORIES] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_NORTH) buttons_pressed[FAVORITE] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_START) buttons_pressed[START] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_WEST) buttons_pressed[SELECTION] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {

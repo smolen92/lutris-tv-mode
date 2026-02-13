@@ -6,7 +6,6 @@ Node_category_table::Node_category_table(Renderer* renderer, Settings* settings,
 	this->categories = categories;
 
 	current_category = 0;
-	selection_box_offset = 0;
 	categories_to_add.resize(categories->size(),false);
 }
 
@@ -19,8 +18,15 @@ void Node_category_table::logic(Global_data* global_data) {
 		if(current_category != categories->size()-2) current_category += 1;
 	}
 
-	if(global_data->buttons_pressed[RUN] ) {
+	if(global_data->buttons_pressed[SELECTION] ) {
 		categories_to_add.at(current_category+1) = !categories_to_add.at(current_category+1);
+	}
+
+	if(global_data->buttons_pressed[RUN] ) {
+		for(uint64_t i=0; i < categories_to_add.size(); i++) {
+			if(categories_to_add[i]) global_data->categories_to_add.push_back(i);
+		}
+		global_data->action = ACTION_REMOVE_NODE;
 	}
 
 }
@@ -37,19 +43,24 @@ void Node_category_table::render() {
 	
 	uint64_t y = 0;
 	uint64_t start;
+	uint64_t selection_box_offset;
+	
+	uint64_t category_count = category_table_height/settings->font_size;
 
-	uint64_t category_count = settings->window_height/2/settings->font_size;
-
-	if(current_category + category_count > categories->size()-1) {
+	//+1 to skip predefined Games category
+	if( category_count >= categories->size() ) {
+		start = 1;
+		selection_box_offset = current_category;
+	}
+	else if ( (current_category+1+category_count) > categories->size() ) {
 		start = categories->size()-category_count;
 		selection_box_offset = current_category+1-start;
 	}
 	else {
-		start=current_category+1;
+		start = current_category+1;
 		selection_box_offset = 0;
 	}
-
-	//+1 to skip predefined Games category
+	
 	for(uint64_t i=start; (i < categories->size()) && (y<category_table_height); i++) {
 		renderer->render_one_line_of_text(0,y,categories->at(i).name.c_str(), category_table_width);
 		if(categories_to_add.at(i)) renderer->render_rect(0,y,settings->font_size,settings->font_size,0xFF,0,0,0xFF);
