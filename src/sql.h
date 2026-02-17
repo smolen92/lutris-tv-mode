@@ -2,16 +2,11 @@
 #define _SQL_H_
 
 #include <sqlite3.h> //https://www.sqlite.org/cintro.html
-#include <vector>
 #include <stdexcept>
-#include <cstring>
-
-#include "game.h"
-#include "category.h"
+#include <cstdint>
 
 /**
  * @brief class for managing sql
- * \todo move callback function to game class and category class
  */
 class SQL {
 	public:
@@ -33,20 +28,6 @@ class SQL {
 		 */
 		void load_data(void *data, const char* sql_statement, void (*callback_function)(void*,sqlite3_stmt* pre_statement));
 		
-		/**
-		 * @brief callback function for loading game data from database
-		 *
-		 * @details more info https://www.sqlite.org/c3ref/exec.html 
-		 */
-		static void callback_load_games(void* data_vector, sqlite3_stmt* pre_statement);
-		
-		/**
-		 * @brief callback fuction for loading categories data from database
-		 *
-		 * @details more info https://www.sqlite.org/c3ref/exec.html 
-		 */
-		static void callback_load_categories(void* data_vector, sqlite3_stmt* pre_statement);
-
 		~SQL();
 	
 		/// the number of rows that was read from the db using the last sql statement

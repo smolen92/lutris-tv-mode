@@ -9,8 +9,8 @@ Gui_manager::Gui_manager() {
 	
 	sql = new SQL(settings->database_path.c_str());
 
-	sql->load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", sql->callback_load_games);
-	sql->load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", sql->callback_load_categories);
+	sql->load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", Game::callback_load_games);
+	sql->load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", Category::callback_load_categories);
 
 	nodes.push_back(new Node_games_grid(settings, renderer, &games));
 
@@ -152,7 +152,7 @@ bool Gui_manager::logic() {
 void Gui_manager::load_games_vector(const char* sql_statement) {
 	games.clear();
 	renderer->clear_images();
-	sql->load_data((void*)&games,sql_statement, sql->callback_load_games);
+	sql->load_data((void*)&games,sql_statement, Game::callback_load_games);
 	load_images();
 }
 

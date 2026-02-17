@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <string>
+#include <sqlite3.h>
+#include <vector>
 
 /**
  * @brief class for storing info about a game
@@ -27,7 +29,13 @@ class Game {
 		 * @details loading images are handled by gui, this function only save indexes to an array/vectorwhere the image for a game is 
 		 */
 		void set_images_indexes(uint64_t cover_art, uint64_t banner);
-
+		
+		/**
+		 * @brief callback function for loading game data from database
+		 *
+		 */
+		static void callback_load_games(void* data_vector, sqlite3_stmt* pre_statement);
+		
 		/// \cond
 		std::string name;
 		std::string slug;
