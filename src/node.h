@@ -41,7 +41,7 @@ struct Global_data {
 	uint64_t current_category;
 	uint64_t action;
 	bool buttons_pressed[TOTAL_BUTTONS];
-	std::vector<uint64_t> categories_to_add;
+	std::vector<bool> categories_present;
 	/// \endcond
 };
 

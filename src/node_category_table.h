@@ -6,7 +6,7 @@
 
 /**
  * @brief category table where you can select categories for games
- * \todo read in what categories the game is
+ * \bug when nothing no category is added or remove, then the selection will switch to all games
  */
 class Node_category_table : public Node {
 	public:
@@ -18,7 +18,10 @@ class Node_category_table : public Node {
 		Node_category_table(Renderer* renderer, Settings* settings, std::vector<Category> *categories);
 		/// inherited from node
 		void logic(Global_data* global_data) override;
-		///inherited from node
+		/**
+		 * inherited from node
+		 * \todo render checkbox instead of red square
+		 */
 		void render() override;
 		~Node_category_table();
 	private:
@@ -27,7 +30,8 @@ class Node_category_table : public Node {
 		std::vector<Category> *categories;
 
 		uint64_t current_category;
-		std::vector<bool> categories_to_add;
+
+		std::vector<bool> *global_data_categories_present_ptr;
 };
 
 #endif

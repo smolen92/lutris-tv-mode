@@ -1,6 +1,8 @@
 #ifndef _GUI_MANAGER_H_
 #define _GUI_MANAGER_H_
 
+#include <unordered_map>
+
 #include "sql.h"
 #include "node_category_menu.h"
 #include "node_games_grid.h"
@@ -12,9 +14,15 @@
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
  * \todo split predefined and user defined categories into two vectors
+ *
  */
 class Gui_manager {
 	public:
+ 		/**
+		* \ingroup improvements
+ 		*
+ 		* check if categories vector and categories map can be replaced with std::map
+		*/
 		Gui_manager();
 		
 		~Gui_manager();
@@ -48,11 +56,17 @@ class Gui_manager {
 		 */
 		void pop_node();
 
+		/**
+		 * @brief callback function to load key list 
+		 */
+		static void callback_load_key_list(void* data_vector, sqlite3_stmt* pre_statement);
+		
 		Renderer* renderer;
 		std::vector<Node*> nodes;
 		Settings* settings;
 		std::vector<Game> games;
 		std::vector<Category> categories;
+		std::unordered_map<uint64_t, uint64_t> categories_map; //key = category_id, value = vector index
 		SQL* sql;
 		Global_data global_data;
 		ProcessHandler process_handler;
