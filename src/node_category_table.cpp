@@ -26,7 +26,7 @@ void Node_category_table::logic(Global_data* global_data) {
 		for(uint64_t i=0; i < categories_to_add.size(); i++) {
 			if(categories_to_add[i]) global_data->categories_to_add.push_back(i);
 		}
-		global_data->action = ACTION_REMOVE_NODE;
+		global_data->action = ACTION_ADD_CATEGORIES;
 	}
 
 }

@@ -69,9 +69,7 @@ bool Gui_manager::logic() {
 							}
 							break;
 
-		case(ACTION_REMOVE_NODE) :		delete nodes.back();
-							nodes.back() = nullptr;
-							nodes.pop_back();
+		case(ACTION_REMOVE_NODE) :		this->pop_node();
 							break;
 
 		case(ACTION_ADD_REMOVE_FAVORITE) :	if(!games.empty()) {	
@@ -89,6 +87,23 @@ bool Gui_manager::logic() {
 								
 								reload_game_vector = true;
 															
+							}
+							break;
+		
+		case(ACTION_ADD_CATEGORIES) :		{
+								//delete old categories
+								std::string sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id);
+								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+			
+								//add new categories
+								while(!global_data.categories_to_add.empty()) {
+									sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (" + std::to_string(games.at(global_data.current_game).id) + " ," + std::to_string(categories.at(global_data.categories_to_add.back()).id) + ")";
+									global_data.categories_to_add.pop_back();
+									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								}
+							
+								reload_game_vector = true;
+								this->pop_node();
 							}
 							break;
 
@@ -114,21 +129,6 @@ bool Gui_manager::logic() {
 							break;
 	}
 	
-	if(!global_data.categories_to_add.empty()) {
-		//delete old categories
-		std::string sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id);
-		sql->load_data(nullptr, sql_statement.c_str(), nullptr);
-		
-		//add new categories
-		while(!global_data.categories_to_add.empty()) {
-			sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (" + std::to_string(games.at(global_data.current_game).id) + " ," + std::to_string(categories.at(global_data.categories_to_add.back()).id) + ")";
-			global_data.categories_to_add.pop_back();
-			sql->load_data(nullptr, sql_statement.c_str(), nullptr);
-		}
-		
-		reload_game_vector = true;
-	}
-
 	if(reload_game_vector) {
 		std::string sql_statement;
 
@@ -147,6 +147,14 @@ bool Gui_manager::logic() {
 	process_handler.check_and_clean_zombie_processes();
 
 	return return_value;
+}
+
+void Gui_manager::pop_node() {
+	if(nodes.empty()) return;
+
+	delete nodes.back();
+	nodes.back() = nullptr;
+	nodes.pop_back();						
 }
 
 void Gui_manager::load_games_vector(const char* sql_statement) {

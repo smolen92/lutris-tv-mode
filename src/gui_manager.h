@@ -42,6 +42,11 @@ class Gui_manager {
 		 * @param sql_statement sql statement that will be used for retrieving games from database
 		 */
 		void load_games_vector(const char* sql_statement);
+	
+		/**
+		 * @brief pop node
+		 */
+		void pop_node();
 
 		Renderer* renderer;
 		std::vector<Node*> nodes;
