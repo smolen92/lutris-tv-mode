@@ -11,7 +11,7 @@ lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_
 ./obj/game.o: ./src/game.cpp ./src/game.h
 	$(CXX) $(CXXFLAGS) -c ./src/game.cpp -o ./obj/game.o
 
-./obj/gui_manager.o: ./src/gui_manager.cpp ./src/gui_manager.h ./obj/sql.o ./obj/node_category_menu.o ./obj/node_games_grid.o ./obj/node_start_menu.o ./obj/process.o
+./obj/gui_manager.o: ./src/gui_manager.cpp ./src/gui_manager.h ./obj/sql.o ./obj/node_category_menu.o ./obj/node_games_grid.o ./obj/node_start_menu.o ./obj/node_category_table.o 
 	$(CXX) $(CXXFLAGS) -c ./src/gui_manager.cpp -o ./obj/gui_manager.o
 
 ./obj/node_category_menu.o: ./src/node_category_menu.cpp ./src/node_category_menu.h ./obj/category.o ./obj/renderer.o
@@ -26,10 +26,10 @@ lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_
 ./obj/renderer.o: ./src/renderer.cpp ./src/renderer.h ./obj/settings.o ./src/assets.h ./src/node.h
 	$(CXX) $(CXXFLAGS) -c ./src/renderer.cpp -o ./obj/renderer.o
 
-./obj/settings.o: ./src/settings.h ./src/settings.cpp
+./obj/settings.o: ./src/settings.h ./src/settings.cpp ./obj/process.o
 	$(CXX) $(CXXFLAGS) -c ./src/settings.cpp -o ./obj/settings.o
 
-./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o ./obj/category.o
+./obj/sql.o: ./src/sql.cpp ./src/sql.h ./obj/game.o 
 	$(CXX) $(CXXFLAGS) -c ./src/sql.cpp -o ./obj/sql.o
 
 ./obj/main.o: ./src/main.cpp ./obj/gui_manager.o
@@ -38,7 +38,7 @@ lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_
 ./obj/node_start_menu.o: ./src/node_start_menu.h ./src/node_start_menu.cpp ./obj/renderer.o
 	$(CXX) $(CXXFLAGS) -c ./src/node_start_menu.cpp -o ./obj/node_start_menu.o
 
-./obj/node_category_table.o: ./src/node_category_table.h ./src/node_category_table.cpp ./obj/renderer.o
+./obj/node_category_table.o: ./src/node_category_table.h ./src/node_category_table.cpp ./obj/renderer.o ./obj/category.o
 	$(CXX) $(CXXFLAGS) -c ./src/node_category_table.cpp -o ./obj/node_category_table.o
 
 .PHONY: clean doc 

@@ -1,8 +1,6 @@
 #ifndef _NODE_RENDERER_H_
 #define _NODE_RENDERER_H_
 
-#include <sstream>
-
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
@@ -13,7 +11,6 @@
 
 /**
  * @brief Node that handles input and redering through SDL3.0
- * \todo embed the checkbox images to the executable
  */
 class Renderer {
 	public:

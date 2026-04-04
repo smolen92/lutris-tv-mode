@@ -1,5 +1,18 @@
 #include "process.h"
 
+ProcessHandler::ProcessHandler() {
+	cwd = get_current_dir_name();
+	if(cwd == nullptr) throw std::runtime_error("Failed to get current working dir\n");
+
+	
+	struct passwd *temp;
+	temp = getpwuid(getuid());
+	if(temp == nullptr) throw std::runtime_error("Failed to get user name\n");
+	
+	user = temp->pw_name;
+
+}
+
 bool ProcessHandler::run_process(const char* command) {
 	int32_t pid = fork();
 
@@ -34,6 +47,7 @@ bool ProcessHandler::run_process(const char* command) {
 	} else {
 		pid_list.push_back(pid);
 	}
+	
 
 	return true;
 }
@@ -53,4 +67,8 @@ void ProcessHandler::check_and_clean_zombie_processes() {
 ProcessHandler::~ProcessHandler() {
 	//wait for child processes to finish executing
 	wait(NULL); 
+
+	free(cwd);
+	cwd = nullptr;
 }
+

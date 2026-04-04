@@ -1,7 +1,7 @@
 #include "gui_manager.h"
 
 Gui_manager::Gui_manager() {
-	settings = new Settings("settings.ini");
+	settings = new Settings(&process_handler);
 	renderer = new Renderer(settings);
 	
 	//predefined categories

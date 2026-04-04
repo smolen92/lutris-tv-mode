@@ -1,23 +1,21 @@
 #ifndef _SETTINGS_H_
 #define _SETTINGS_H_
 
-#include <cstdint>
-#include <string>
 #include <fstream>
-#include <iostream>
+
+#include "process.h"
 
 /**
  * @brief class that stores settings for the app
- * \todo default path should be user home dir + suffix
  */
 class Settings {
 	public:
 		/**
 		 * @brief load settings
 		 *
-		 * @param path path to file with settings
+		 * @param p_handler pointer to process handler
 		 */
-		Settings(const char* path);
+		Settings(ProcessHandler *p_handler);
 	
 		/**
 		 * @brief recalculate settings that depend on another settings
@@ -59,8 +57,11 @@ class Settings {
 /**
  *
  * \defgroup settings_file Settings File
- *
  *  
+ *  
+ *  - the file has to be named lutris-tvmode-settings.ini
+ *  - the file can be stored at 2 location - 	a) Directory with the executable<br>
+ * 						b) home/$USER/.config/
  *  - based on ini file structure\n
  *  - comments are lines that begin with ; or # symbol\n
  *  - the rest lines are key=value pair devided with = sign e.g. window_width=800, : as divider are not supported\n

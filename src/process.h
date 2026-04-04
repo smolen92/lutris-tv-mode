@@ -6,7 +6,9 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <pwd.h>
 #include <sstream>
+#include <string>
 
 #define MAX_ARGS 32
 
@@ -15,6 +17,8 @@
  */
 class ProcessHandler {
 	public:
+		ProcessHandler();
+
 		/**
 		 * @brief run system command
 		 *
@@ -33,6 +37,11 @@ class ProcessHandler {
 		void check_and_clean_zombie_processes();
 		
 		~ProcessHandler();
+		
+		/// \cond
+		char *cwd;
+		std::string user;
+		/// \endcond
 	private:
 		std::vector<uint32_t> pid_list;
 };

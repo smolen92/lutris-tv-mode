@@ -75,7 +75,7 @@ class Node {
  *
  * Renderer:
  * - this class handles rendering and input with SDL3.0
- * - if the rendering or input handling need to be done with other libraries only this class need to be edited 
+ * - if the rendering or input handling need to be done with other libraries only this class needs to be changed 
  */
 
 #endif
