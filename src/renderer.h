@@ -13,6 +13,7 @@
 
 /**
  * @brief Node that handles input and redering through SDL3.0
+ * \todo embed the checkbox images to the executable
  */
 class Renderer {
 	public:
@@ -126,6 +127,18 @@ class Renderer {
 		 * \bug aspect ratio calculation are in some situation incorrect
 		 */
 		void render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h);
+		
+		/**
+		 * @brief render check box on screen
+		 *
+		 * @param x x position of the checkbox
+		 * @param y y position of the checkbox
+		 * @param w width of the checkbox
+		 * @param h height of the checkbox
+		 * @param checked if true checked checkbox is render, if false empty square is renderer
+		 *
+		 */
+		void render_checkbox(uint64_t x, uint64_t y, uint64_t w, uint64_t h, bool checked);
 
 		/**
 		 *
@@ -144,6 +157,7 @@ class Renderer {
 		SDL_Renderer* renderer;
 
 		std::vector<SDL_Texture*> cover_art;	
+		SDL_Texture* checkbox[2];
 
 		TTF_Font* font;
 		SDL_Gamepad* gamepad;

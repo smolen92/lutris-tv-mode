@@ -18,10 +18,7 @@ class Node_category_table : public Node {
 		Node_category_table(Renderer* renderer, Settings* settings, std::vector<Category> *categories, std::vector<bool> *categories_present_ptr);
 		/// inherited from node
 		void logic(Global_data* global_data) override;
-		/**
-		 * inherited from node
-		 * \todo render checkbox instead of red square
-		 */
+		/// inherited from node
 		void render() override;
 		~Node_category_table();
 	private:

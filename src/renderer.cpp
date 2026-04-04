@@ -113,6 +113,12 @@ Renderer::Renderer(Settings* settings) {
 		throw std::runtime_error(SDL_GetError());
 	}
 
+	checkbox[0] = IMG_LoadTexture(renderer, "./assets/check_square_grey.png");
+	if( checkbox[0] == nullptr) std::clog << "failed to load checkbox\n";
+	checkbox[1] = IMG_LoadTexture(renderer, "./assets/check_square_grey_checkmark.png");
+	if( checkbox[1] == nullptr) std::clog << "failed to load checkbox\n";
+
+
 	int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
 	
@@ -264,3 +270,8 @@ void Renderer::set_viewport(int32_t x, int32_t y, int32_t w, int32_t h) {
 	( (w == 0) || (h == 0) ) ? SDL_SetRenderViewport(renderer, nullptr) : SDL_SetRenderViewport(renderer, &temp);
 }
 
+void Renderer::render_checkbox(uint64_t x, uint64_t y, uint64_t w, uint64_t h, bool checked) {
+	SDL_FRect temp = {(float)x, (float)y, (float)w, (float)h};
+
+	SDL_RenderTexture(renderer, checkbox[checked], nullptr, &temp);
+}

@@ -60,7 +60,7 @@ void Node_category_table::render() {
 	
 	for(uint64_t i=start; (i < categories->size()) && (y<category_table_height); i++) {
 		renderer->render_one_line_of_text(0,y,categories->at(i).name.c_str(), category_table_width);
-		if( global_data_categories_present_ptr->at(i) ) renderer->render_rect(0,y,settings->font_size,settings->font_size,0xFF,0,0,0xFF);
+		renderer->render_checkbox(0,y,settings->font_size,settings->font_size,global_data_categories_present_ptr->at(i));
 		y += settings->font_size;
 	}
 	
