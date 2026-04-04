@@ -7,8 +7,8 @@ Node_start_menu::Node_start_menu(Renderer* renderer, Settings* settings) {
 
 	current_entry = 0;
 
-	entries_strings.push_back("Restart");
 	entries_strings.push_back("Quit TV Mode");
+	entries_strings.push_back("Restart");
 	entries_strings.push_back("Shutdown");
 }
 

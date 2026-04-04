@@ -22,8 +22,9 @@ class Node_category_menu : public Node {
 		 * @param renderer pointer to renderer node
 		 * @param settings pointer to settings
 		 * @param categories pointer to category vector
+		 * @param current_category current category index
 		 */
-		Node_category_menu(Renderer* renderer, Settings* settings, std::vector<Category> *categories);
+		Node_category_menu(Renderer* renderer, Settings* settings, std::vector<Category> *categories, uint64_t current_category);
 
 		~Node_category_menu();
 	private:

@@ -1,17 +1,15 @@
 #include "node_category_table.h"
 
-Node_category_table::Node_category_table(Renderer* renderer, Settings* settings, std::vector<Category> *categories) {
+Node_category_table::Node_category_table(Renderer* renderer, Settings* settings, std::vector<Category> *categories, std::vector<bool> *categories_present_ptr) {
 	this->renderer = renderer;
 	this->settings = settings;
 	this->categories = categories;
 
 	current_category = 0;
-	global_data_categories_present_ptr = nullptr;
+	global_data_categories_present_ptr = categories_present_ptr;
 }
 
 void Node_category_table::logic(Global_data* global_data) {
-	global_data_categories_present_ptr = &global_data->categories_present;
-
 	if( global_data->buttons_pressed[UP] ) {
 		if( current_category != 0) current_category -= 1;
 	}
@@ -62,7 +60,7 @@ void Node_category_table::render() {
 	
 	for(uint64_t i=start; (i < categories->size()) && (y<category_table_height); i++) {
 		renderer->render_one_line_of_text(0,y,categories->at(i).name.c_str(), category_table_width);
-		if( (global_data_categories_present_ptr != nullptr) && (global_data_categories_present_ptr->at(i)) ) renderer->render_rect(0,y,settings->font_size,settings->font_size,0xFF,0,0,0xFF);
+		if( global_data_categories_present_ptr->at(i) ) renderer->render_rect(0,y,settings->font_size,settings->font_size,0xFF,0,0,0xFF);
 		y += settings->font_size;
 	}
 	

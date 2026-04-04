@@ -54,21 +54,24 @@ bool Gui_manager::logic() {
 		case(ACTION_SHOW_START_MENU) : 		nodes.push_back(new Node_start_menu(renderer,settings));
 							break;
 
-		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(renderer, settings, &categories));
+		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(renderer, settings, &categories, global_data.current_category));
 							break;
 		
 		case(ACTION_SWITCH_TO_CAT_TABLE_NODE) :	{	
-								std::string sql_statement;
-								sql_statement = "SELECT * FROM games LEFT JOIN games_categories ON games.id = games_categories.game_id LEFT JOIN categories ON games_categories.category_id = categories.id WHERE game_id = " + std::to_string(games[global_data.current_game].id); 
-								std::vector<uint64_t> key_list;
-								sql->load_data(&key_list, sql_statement.c_str(), this->callback_load_key_list);
+								if(!games.empty()) {
+
+									std::string sql_statement;
+									sql_statement = "SELECT * FROM games LEFT JOIN games_categories ON games.id = games_categories.game_id LEFT JOIN categories ON games_categories.category_id = categories.id WHERE game_id = " + std::to_string(games[global_data.current_game].id); 
+									std::vector<uint64_t> key_list;
+									sql->load_data(&key_list, sql_statement.c_str(), this->callback_load_key_list);
 								
-								global_data.categories_present.resize(categories.size(), false);
-								for(uint64_t i=0; i < key_list.size(); i++) {
-									global_data.categories_present[categories_map[key_list[i]]] = true;	
+									global_data.categories_present.resize(categories.size(), false);
+									for(uint64_t i=0; i < key_list.size(); i++) {
+										global_data.categories_present[categories_map[key_list[i]]] = true;	
+									}
+								
+									nodes.push_back(new Node_category_table(renderer, settings, &categories, &global_data.categories_present));
 								}
-								
-								nodes.push_back(new Node_category_table(renderer, settings, &categories));
 							}
 							break;
 
@@ -120,7 +123,7 @@ bool Gui_manager::logic() {
 									global_data.categories_present[i] = false;
 									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
 								}
-							
+								
 								reload_game_vector = true;
 								this->pop_node();
 							}

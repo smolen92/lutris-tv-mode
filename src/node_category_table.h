@@ -6,7 +6,6 @@
 
 /**
  * @brief category table where you can select categories for games
- * \bug when nothing no category is added or remove, then the selection will switch to all games
  */
 class Node_category_table : public Node {
 	public:
@@ -14,8 +13,9 @@ class Node_category_table : public Node {
 		 * @param renderer pointer to renderer node
 		 * @param settings pointer to settings
 		 * @param categories pointer to category vector
+		 * @param categories_present_ptr pointer to global data categories present vector
 		 */
-		Node_category_table(Renderer* renderer, Settings* settings, std::vector<Category> *categories);
+		Node_category_table(Renderer* renderer, Settings* settings, std::vector<Category> *categories, std::vector<bool> *categories_present_ptr);
 		/// inherited from node
 		void logic(Global_data* global_data) override;
 		/**

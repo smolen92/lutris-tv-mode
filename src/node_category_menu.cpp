@@ -58,12 +58,12 @@ void Node_category_menu::render() {
 
 }
 
-Node_category_menu::Node_category_menu(Renderer* renderer, Settings* settings, std::vector<Category> *categories) {
+Node_category_menu::Node_category_menu(Renderer* renderer, Settings* settings, std::vector<Category> *categories, uint64_t current_category) {
 	this->renderer = renderer;
 	this->categories = categories;
 	this->settings = settings;
 
-	current_category = 0;
+	this->current_category = current_category;
 }
 
 Node_category_menu::~Node_category_menu() {
