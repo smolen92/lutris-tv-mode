@@ -7,7 +7,7 @@
 #include <SDL3_image/SDL_image.h>
 #include <SDL3_ttf/SDL_ttf.h>
 
-#include "font.h"
+#include "assets.h"
 #include "settings.h"
 #include "node.h"
 

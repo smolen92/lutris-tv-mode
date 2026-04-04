@@ -23,7 +23,7 @@ lutris-tvmode.out: ./obj/category.o ./obj/game.o ./obj/gui_manager.o ./obj/node_
 ./obj/process.o: ./src/process.h ./src/process.cpp
 	$(CXX) $(CXXFLAGS) -c ./src/process.cpp -o ./obj/process.o
 
-./obj/renderer.o: ./src/renderer.cpp ./src/renderer.h ./obj/settings.o ./src/font.h ./src/node.h
+./obj/renderer.o: ./src/renderer.cpp ./src/renderer.h ./obj/settings.o ./src/assets.h ./src/node.h
 	$(CXX) $(CXXFLAGS) -c ./src/renderer.cpp -o ./obj/renderer.o
 
 ./obj/settings.o: ./src/settings.h ./src/settings.cpp

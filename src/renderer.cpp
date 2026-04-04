@@ -77,47 +77,40 @@ void Renderer::draw_screen() {
 Renderer::Renderer(Settings* settings) {
 	this->settings = settings;
 
-	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) {
-		throw std::runtime_error(SDL_GetError());
-	}
+	if(!SDL_Init(SDL_INIT_VIDEO|SDL_INIT_EVENTS|SDL_INIT_GAMEPAD) ) throw std::runtime_error(SDL_GetError());
 
-	if(!TTF_Init()) {
-		throw std::runtime_error(SDL_GetError());
-	}
+	if(!TTF_Init()) throw std::runtime_error(SDL_GetError());
 
 	uint64_t window_flags = SDL_WINDOW_RESIZABLE;
 
 	if(this->settings->window_maximized) window_flags |= SDL_WINDOW_MAXIMIZED;
 
 	window = SDL_CreateWindow("Lutris TV Mode", settings->window_width, settings->window_height, window_flags);
-	if( window == nullptr) {
-		throw std::runtime_error(SDL_GetError());
-	}
+	if( window == nullptr) 	throw std::runtime_error(SDL_GetError());
 	
 	SDL_SetWindowMinimumSize(this->window, settings->min_window_width, settings->min_window_height);
 
 	renderer = SDL_CreateRenderer(window, NULL);
-	if(renderer == nullptr) {
-		throw std::runtime_error(SDL_GetError());
-	}
+	if(renderer == nullptr) throw std::runtime_error(SDL_GetError());
 
 	SDL_SetRenderDrawBlendMode(this->renderer, SDL_BLENDMODE_BLEND);
 
-	SDL_IOStream *temp_font = SDL_IOFromConstMem(embedded_font_data, embedded_font_size);
-	if(temp_font == nullptr) {
-		throw std::runtime_error(SDL_GetError());
-	}
+	SDL_IOStream *temp_font = SDL_IOFromConstMem(montserrat_regular_ttf_data, montserrat_regular_ttf_size);
+	if(temp_font == nullptr) throw std::runtime_error(SDL_GetError());
 
 	font = TTF_OpenFontIO(temp_font, true, settings->font_size);
-	if(font == nullptr) {
-		throw std::runtime_error(SDL_GetError());
-	}
+	if(font == nullptr) throw std::runtime_error(SDL_GetError());
+	
+	SDL_IOStream *temp_checkbox[2];
+	temp_checkbox[0] = SDL_IOFromConstMem(check_square_grey_png_data, check_square_grey_png_size);
+	if(temp_checkbox[0] == nullptr) throw std::runtime_error(SDL_GetError());
+	temp_checkbox[1] = SDL_IOFromConstMem(check_square_grey_checkmark_png_data, check_square_grey_checkmark_png_size);
+	if(temp_checkbox[1] == nullptr) throw std::runtime_error(SDL_GetError());
 
-	checkbox[0] = IMG_LoadTexture(renderer, "./assets/check_square_grey.png");
+	checkbox[0] = IMG_LoadTexture_IO(renderer, temp_checkbox[0], true);
 	if( checkbox[0] == nullptr) std::clog << "failed to load checkbox\n";
-	checkbox[1] = IMG_LoadTexture(renderer, "./assets/check_square_grey_checkmark.png");
+	checkbox[1] = IMG_LoadTexture_IO(renderer, temp_checkbox[1], true);
 	if( checkbox[1] == nullptr) std::clog << "failed to load checkbox\n";
-
 
 	int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
@@ -132,6 +125,11 @@ Renderer::~Renderer() {
 
 	clear_images();
 	
+	SDL_DestroyTexture(checkbox[0]);
+	checkbox[0] = nullptr;
+	SDL_DestroyTexture(checkbox[1]);
+	checkbox[1] = nullptr;
+
 	TTF_CloseFont(font);
 	font = nullptr;
 
