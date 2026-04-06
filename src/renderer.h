@@ -159,6 +159,8 @@ class Renderer {
 		SDL_Gamepad* gamepad;
 
 		Settings* settings;
+
+		bool stick_centered_x, stick_centered_y;
 		
 };
 

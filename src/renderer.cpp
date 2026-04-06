@@ -1,7 +1,5 @@
 #include "renderer.h"
 
-/// \bug doesn't detect if gamepad button is down
-/// \bug gamepad axis too sensitive, take input even when returning to center
 /// \todo mouse input
 bool Renderer::check_input(bool* buttons_pressed) {
 	SDL_Event input;
@@ -40,20 +38,6 @@ bool Renderer::check_input(bool* buttons_pressed) {
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_WEST) buttons_pressed[SELECTION] = true;
 		}
 
-		if(input.type == SDL_EVENT_GAMEPAD_AXIS_MOTION) {
-			
-			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTX) {
-				if(input.gaxis.value < -settings->gamepad_deadzone) buttons_pressed[LEFT] = true;
-				if(input.gaxis.value > settings->gamepad_deadzone) buttons_pressed[RIGHT] = true;
-			}
-			
-			if(input.gaxis.axis == SDL_GAMEPAD_AXIS_LEFTY) {
-				if(input.gaxis.value < -settings->gamepad_deadzone) buttons_pressed[UP] = true;
-				if(input.gaxis.value > settings->gamepad_deadzone) buttons_pressed[DOWN] = true;
-			}
-
-		}
-
 		if( input.type == SDL_EVENT_WINDOW_RESIZED ) {
 			settings->window_width = input.window.data1;
 			settings->window_height = input.window.data2;
@@ -62,6 +46,42 @@ bool Renderer::check_input(bool* buttons_pressed) {
 
 	}
 	
+	int16_t left_stick_x = SDL_GetGamepadAxis(gamepad, SDL_GAMEPAD_AXIS_LEFTX);
+	int16_t left_stick_y = SDL_GetGamepadAxis(gamepad, SDL_GAMEPAD_AXIS_LEFTY);
+	
+	if(stick_centered_x) {
+		if(left_stick_x < -settings->gamepad_deadzone) {
+			buttons_pressed[LEFT] = true;
+			stick_centered_x = false;
+		}
+	
+		if(left_stick_x > settings->gamepad_deadzone) {
+			buttons_pressed[RIGHT] = true;
+			stick_centered_x = false;
+		}
+	}
+
+	if(left_stick_x > -settings->gamepad_deadzone && left_stick_x < settings->gamepad_deadzone) {
+		stick_centered_x = true;
+	}
+	
+
+	if(stick_centered_y) {
+		if(left_stick_y < -settings->gamepad_deadzone) {
+			buttons_pressed[UP] = true;
+			stick_centered_y = false;
+		}
+		
+		if(left_stick_y > settings->gamepad_deadzone) {
+			buttons_pressed[DOWN] = true;
+			stick_centered_y = false;
+		}
+	}
+
+	if(left_stick_y > -settings->gamepad_deadzone && left_stick_y < settings->gamepad_deadzone) {
+		stick_centered_y = true;
+	}
+
 	return true;
 }
 
@@ -118,6 +138,9 @@ Renderer::Renderer(Settings* settings) {
 	gamepad = SDL_OpenGamepad(joysticks[0]);
 
 	SDL_free(joysticks);
+
+	stick_centered_x = true;
+	stick_centered_y = true;
 }
 		
 Renderer::~Renderer() {
