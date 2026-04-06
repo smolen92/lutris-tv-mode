@@ -44,6 +44,17 @@ bool Renderer::check_input(bool* buttons_pressed) {
 			settings->calculate_settings();
 		}
 
+		if( input.type == SDL_EVENT_GAMEPAD_ADDED) {
+			gamepad = SDL_OpenGamepad(input.gdevice.which);
+		}
+
+		if( input.type == SDL_EVENT_GAMEPAD_REMOVED) {
+			if(SDL_GetJoystickID(SDL_GetGamepadJoystick(gamepad)) == input.gdevice.which) {
+				SDL_CloseGamepad(gamepad);
+				gamepad = nullptr;
+			}
+		}
+
 	}
 	
 	int16_t left_stick_x = SDL_GetGamepadAxis(gamepad, SDL_GAMEPAD_AXIS_LEFTX);
@@ -132,12 +143,14 @@ Renderer::Renderer(Settings* settings) {
 	checkbox[1] = IMG_LoadTexture_IO(renderer, temp_checkbox[1], true);
 	if( checkbox[1] == nullptr) std::clog << "failed to load checkbox\n";
 
-	int32_t gamepad_count;
+	/*int32_t gamepad_count;
 	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
 	
 	gamepad = SDL_OpenGamepad(joysticks[0]);
 
-	SDL_free(joysticks);
+	SDL_free(joysticks);*/
+		
+	gamepad = nullptr;
 
 	stick_centered_x = true;
 	stick_centered_y = true;
