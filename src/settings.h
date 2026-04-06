@@ -48,8 +48,10 @@ class Settings {
 	private:
 		/**
 		 * @brief load default settings
+		 *
+		 * @param user name of the user that the program is run as
 		 */
-		void load_defaults();
+		void load_defaults(const char *user);
 
 		std::string settings_file_path;
 };

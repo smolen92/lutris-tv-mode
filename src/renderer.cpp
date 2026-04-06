@@ -243,21 +243,18 @@ void Renderer::render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t
 	if(cover_art.at(index) == nullptr) return;
 
 	SDL_FRect temp;
+	
+	float scale_w = (float)w/(float)cover_art.at(index)->w;
+	float scale_h = (float)h/(float)cover_art.at(index)->h;
+	float *used_scale;
 
-	if(cover_art.at(index)->w >= cover_art.at(index)->h) {
-		temp.x = (float)x;
-		temp.w = (float)w;
-		
-		temp.h = (float)((int)((float)w/(float)cover_art.at(index)->w*(float)cover_art.at(index)->h));
-		temp.y = (float)(y + ((h - (int)temp.h) >> 1));
-	}
-	else {
-		temp.y = (float)y;
-		temp.h = (float)h;
+	(scale_w < scale_h) ? used_scale = &scale_w : used_scale = &scale_h;
 
-		temp.w = (float)((int)((float)h/(float)cover_art.at(index)->h*(float)cover_art.at(index)->w));
-		temp.x = (float)(x + ((w - (int)temp.w) >> 1));
-	}
+	temp.w = (float)cover_art.at(index)->w*(*used_scale);
+	temp.h = (float)cover_art.at(index)->h*(*used_scale);
+	temp.x = (float)(x + ((int)(w-temp.w) >> 1));
+	temp.y = (float)(y + ((int)(h-temp.h) >> 1));
+
 
 	SDL_RenderTexture(renderer, cover_art.at(index), nullptr, &temp);
 }

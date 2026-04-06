@@ -1,7 +1,7 @@
 #include "settings.h"
 
 Settings::Settings(ProcessHandler *p_handler) {
-	load_defaults();
+	load_defaults(p_handler->user.c_str());
 	calculate_settings();
 
 	std::fstream settings_file;
@@ -90,10 +90,10 @@ void Settings::calculate_settings() {
 	max_category_menu_width = window_width>>2;
 }
 
-void Settings::load_defaults() {
-	cover_art_path = "./test-data/coverart/";
-	banner_path = "./test-data/banners/";
-	database_path = "./test-data/pga.db";
+void Settings::load_defaults(const char* user) {
+	cover_art_path = "/home/" + std::string(user) + ".local/share/coverart/";
+	banner_path = "home" + std::string(user) + ".local/share/banners/";
+	database_path = "home" + std::string(user) + ".local/share/pga.db";
 
 	window_width = 800;
 	window_height = 600;
