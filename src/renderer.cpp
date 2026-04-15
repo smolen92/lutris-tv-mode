@@ -1,11 +1,11 @@
 #include "renderer.h"
 
 /// \todo mouse input
-bool Renderer::check_input(bool* buttons_pressed) {
+bool Renderer::check_input(Global_data* global_data) {
 	SDL_Event input;
 
 	for(uint8_t i=0; i < TOTAL_BUTTONS; i++) {
-		buttons_pressed[i] = false;
+		global_data->buttons_pressed[i] = false;
 	}
 
 	while(SDL_PollEvent(&input)) {
@@ -15,27 +15,27 @@ bool Renderer::check_input(bool* buttons_pressed) {
 		}
 
 		if(input.type == SDL_EVENT_KEY_DOWN) {
-			if(input.key.scancode == SDL_SCANCODE_DOWN) buttons_pressed[DOWN] = true;
-			if(input.key.scancode == SDL_SCANCODE_UP) buttons_pressed[UP] = true;
-			if(input.key.scancode == SDL_SCANCODE_RIGHT) buttons_pressed[RIGHT] = true;
-			if(input.key.scancode == SDL_SCANCODE_LEFT) buttons_pressed[LEFT] = true;
-			if(input.key.scancode == SDL_SCANCODE_RETURN) buttons_pressed[RUN] = true;
-			if(input.key.scancode == SDL_SCANCODE_C) buttons_pressed[CATEGORIES] = true;
-			if(input.key.scancode == SDL_SCANCODE_F) buttons_pressed[FAVORITE] = true;
-			if(input.key.scancode == SDL_SCANCODE_ESCAPE) buttons_pressed[START] = true;
-			if(input.key.scancode == SDL_SCANCODE_SPACE) buttons_pressed[SELECTION] = true;
+			if(input.key.scancode == SDL_SCANCODE_DOWN) global_data->buttons_pressed[DOWN] = true;
+			if(input.key.scancode == SDL_SCANCODE_UP) global_data->buttons_pressed[UP] = true;
+			if(input.key.scancode == SDL_SCANCODE_RIGHT) global_data->buttons_pressed[RIGHT] = true;
+			if(input.key.scancode == SDL_SCANCODE_LEFT) global_data->buttons_pressed[LEFT] = true;
+			if(input.key.scancode == SDL_SCANCODE_RETURN) global_data->buttons_pressed[RUN] = true;
+			if(input.key.scancode == SDL_SCANCODE_C) global_data->buttons_pressed[CATEGORIES] = true;
+			if(input.key.scancode == SDL_SCANCODE_F) global_data->buttons_pressed[FAVORITE] = true;
+			if(input.key.scancode == SDL_SCANCODE_ESCAPE) global_data->buttons_pressed[START] = true;
+			if(input.key.scancode == SDL_SCANCODE_SPACE) global_data->buttons_pressed[SELECTION] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_DOWN) buttons_pressed[DOWN] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_UP) buttons_pressed[UP] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) buttons_pressed[RIGHT] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) buttons_pressed[LEFT] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) buttons_pressed[RUN] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) buttons_pressed[CATEGORIES] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_NORTH) buttons_pressed[FAVORITE] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_START) buttons_pressed[START] = true;
-			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_WEST) buttons_pressed[SELECTION] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_DOWN) global_data->buttons_pressed[DOWN] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_UP) global_data->buttons_pressed[UP] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_RIGHT) global_data->buttons_pressed[RIGHT] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_DPAD_LEFT) global_data->buttons_pressed[LEFT] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_SOUTH) global_data->buttons_pressed[RUN] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_LEFT_SHOULDER) global_data->buttons_pressed[CATEGORIES] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_NORTH) global_data->buttons_pressed[FAVORITE] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_START) global_data->buttons_pressed[START] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_WEST) global_data->buttons_pressed[SELECTION] = true;
 		}
 
 		if( input.type == SDL_EVENT_WINDOW_RESIZED ) {
@@ -62,12 +62,12 @@ bool Renderer::check_input(bool* buttons_pressed) {
 	
 	if(stick_centered_x) {
 		if(left_stick_x < -settings->gamepad_deadzone) {
-			buttons_pressed[LEFT] = true;
+			global_data->buttons_pressed[LEFT] = true;
 			stick_centered_x = false;
 		}
 	
 		if(left_stick_x > settings->gamepad_deadzone) {
-			buttons_pressed[RIGHT] = true;
+			global_data->buttons_pressed[RIGHT] = true;
 			stick_centered_x = false;
 		}
 	}
@@ -79,12 +79,12 @@ bool Renderer::check_input(bool* buttons_pressed) {
 
 	if(stick_centered_y) {
 		if(left_stick_y < -settings->gamepad_deadzone) {
-			buttons_pressed[UP] = true;
+			global_data->buttons_pressed[UP] = true;
 			stick_centered_y = false;
 		}
 		
 		if(left_stick_y > settings->gamepad_deadzone) {
-			buttons_pressed[DOWN] = true;
+			global_data->buttons_pressed[DOWN] = true;
 			stick_centered_y = false;
 		}
 	}
@@ -92,6 +92,12 @@ bool Renderer::check_input(bool* buttons_pressed) {
 	if(left_stick_y > -settings->gamepad_deadzone && left_stick_y < settings->gamepad_deadzone) {
 		stick_centered_y = true;
 	}
+	
+	float temp_x, temp_y;
+
+	global_data->mouse_flags = SDL_GetMouseState(&temp_x, &temp_y);
+	global_data->mouse_x = (uint16_t) temp_x;
+	global_data->mouse_y = (uint16_t) temp_y;
 
 	return true;
 }
@@ -143,13 +149,6 @@ Renderer::Renderer(Settings* settings) {
 	checkbox[1] = IMG_LoadTexture_IO(renderer, temp_checkbox[1], true);
 	if( checkbox[1] == nullptr) std::clog << "failed to load checkbox\n";
 
-	/*int32_t gamepad_count;
-	SDL_JoystickID *joysticks = SDL_GetGamepads(&gamepad_count);
-	
-	gamepad = SDL_OpenGamepad(joysticks[0]);
-
-	SDL_free(joysticks);*/
-		
 	gamepad = nullptr;
 
 	stick_centered_x = true;

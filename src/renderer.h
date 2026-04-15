@@ -34,12 +34,12 @@ class Renderer {
 		 *
 		 * @brief handle the input
 		 *
-		 * @param buttons_pressed pointer to an array, where button state will be stored
+		 * @param global_data pointer to an Global_data struct
 		 *
 		 * @return false when the "X" of the window was pressed, true otherwise
 		 *
 		 */
-		bool check_input(bool* buttons_pressed);
+		bool check_input(Global_data* global_data);
 		
 		/**
 		 * @brief clear the screen

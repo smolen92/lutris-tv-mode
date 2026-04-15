@@ -43,7 +43,7 @@ Gui_manager::~Gui_manager() {
 }
 		
 bool Gui_manager::logic() {
-	bool return_value = renderer->check_input(global_data.buttons_pressed);
+	bool return_value = renderer->check_input(&global_data);
 	
 	bool reload_game_vector = false;
 
