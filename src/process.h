@@ -14,6 +14,8 @@
 
 /**
  * @brief class that handles creating processes
+ * \todo option to kill a process
+ * \todo run native games directly
  */
 class ProcessHandler {
 	public:

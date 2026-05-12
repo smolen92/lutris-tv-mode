@@ -11,6 +11,7 @@
 
 /**
  * @brief Node that handles input and redering through SDL3.0
+ * \todo keyboard input + virtual keyboard for gamepad
  */
 class Renderer {
 	public:

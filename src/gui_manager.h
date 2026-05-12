@@ -13,6 +13,7 @@
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
  * \todo split predefined and user defined categories into two vectors
+ * \todo parameterized queries for sqlite
  *
  */
 class Gui_manager {

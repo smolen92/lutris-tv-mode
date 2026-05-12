@@ -6,6 +6,7 @@
 
 /**
  * @brief category table where you can select categories for games
+ * \todo option to create a categor
  */
 class Node_category_table : public Node {
 	public:

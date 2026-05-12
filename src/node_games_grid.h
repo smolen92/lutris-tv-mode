@@ -6,6 +6,9 @@
 
 /**
  * @brief handle input and render the games grid
+ * \todo animation for moving the grid
+ * \todo animation for selecting a game
+ * \todo status bar with info and controls - load more info from db (playtime ...)
  */
 class Node_games_grid : public Node {
 	public:
