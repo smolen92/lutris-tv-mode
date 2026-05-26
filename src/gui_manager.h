@@ -1,8 +1,6 @@
 #ifndef _GUI_MANAGER_H_
 #define _GUI_MANAGER_H_
 
-#include <unordered_map>
-
 #include "sql.h"
 #include "node_category_menu.h"
 #include "node_games_grid.h"

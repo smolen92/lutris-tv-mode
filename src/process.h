@@ -11,13 +11,19 @@
 #include <string>
 #include <signal.h>
 #include <unordered_map>
+#include <time.h>
 
 #define MAX_ARGS 32
+
+struct process_info {
+	int32_t pid;
+	uint64_t start_time;
+};
 
 /**
  * @brief class that handles creating processes
  * \todo run native games directly + update time in db
- * \todo track start and end time of a process unorderde map value pair of pid and starttime ? 
+ * \todo end time how to return the info so gui_manager can edit playtime in db? 
  */
 class ProcessHandler {
 	public:
@@ -26,21 +32,13 @@ class ProcessHandler {
 		/**
 		 * @brief run system command
 		 *
+		 * @param game_id id of the game to run
 		 * @param command comand to run
 		 *
 		 * @details this function will create a child process where the command will be run
 		 */
 		void run_process(uint64_t game_id, const char* command);	
 	
-		/**
-		 *
-		 * @brief kill process with specified signal
-		 *
-		 * @param pid pid of the process to kill
-		 * @param signal SIGTERM or SIGKILL
-		 *
-		 */
-
 		/**
 		 * @brief check if process is running
 		 *
@@ -50,8 +48,17 @@ class ProcessHandler {
 		 *
 		 */
 		bool is_process_running(uint64_t game_id);
+		
+		/**
+		 *
+		 * @brief kill process with specified signal
+		 *
+		 * @param game_id id of the game to kill
+		 * @param signal SIGTERM or SIGKILL
+		 *
+		 */
+		void kill_process(uint64_t game_id, int32_t signal);
 
-		void kill_process(uint64_t game_id, int32_t singal);
 		/**
 		 *
 		 * @brief check for zombie processes and clean them if necessary
@@ -66,7 +73,7 @@ class ProcessHandler {
 		std::string user;
 		/// \endcond
 	private:
-		std::unordered_map<uint64_t, uint32_t> game_id_to_pid_map;
+		std::unordered_map<uint64_t, process_info> game_id_to_pid_map;
 };
 
 #endif

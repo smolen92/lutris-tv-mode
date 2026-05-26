@@ -49,7 +49,8 @@ void ProcessHandler::run_process(uint64_t game_id, const char* command) {
 		std::clog << "exec failed\n";
 		_exit(1);
 	} else {
-		game_id_to_pid_map[game_id] = pid;	
+		process_info temp_info = {pid, (uint64_t)(clock()/CLOCKS_PER_SEC) };
+		game_id_to_pid_map[game_id] = temp_info;
 	}
 	
 
@@ -63,7 +64,7 @@ bool ProcessHandler::is_process_running(uint64_t game_id) {
 void ProcessHandler::kill_process(uint64_t game_id, int32_t signal ) {
 
 	if( game_id_to_pid_map.find(game_id) != game_id_to_pid_map.end()) {
-		kill(game_id_to_pid_map[game_id], signal);
+		kill(game_id_to_pid_map[game_id].pid, signal);
 	}
 
 }
@@ -72,8 +73,9 @@ void ProcessHandler::check_and_clean_zombie_processes() {
         //check for running subprocesses, and read their status if finished so there is no zombie process
         //status of the subprocess is not used
 	for(auto i=game_id_to_pid_map.begin(); i != game_id_to_pid_map.end();  i++) {
-        	if(waitpid(i->second, nullptr, WNOHANG) != 0) {
-                        waitpid(i->second, nullptr, 0);
+        	if(waitpid(i->second.pid, nullptr, WNOHANG) != 0) {
+			uint64_t temp_end_time = (uint64_t)(clock()/CLOCKS_PER_SEC);
+			waitpid(i->second.pid, nullptr, 0);
 			game_id_to_pid_map.erase(i);
                         break;
                 }
