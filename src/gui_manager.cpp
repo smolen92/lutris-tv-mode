@@ -131,19 +131,19 @@ bool Gui_manager::logic() {
 
 		case(ACTION_RUN_GAME) :			{
 								std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
-								process_handler.run_process(command.c_str());
+								process_handler.run_process(global_data.current_game,command.c_str());
 							}
 							break;
 		
 		case(ACTION_RESTART_SYSTEM) :		{
 								std::string command = "shutdown -r now";
-								process_handler.run_process(command.c_str());
+								process_handler.run_process(global_data.current_game,command.c_str());
 							}
 							break;
 
 		case(ACTION_SHUTDOWN_SYSTEM) :		{
 								std::string command = "shutdown -h now";
-								process_handler.run_process(command.c_str());
+								process_handler.run_process(global_data.current_game,command.c_str());
 							}
 							break;
 

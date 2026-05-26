@@ -10,13 +10,13 @@
 #include <sstream>
 #include <string>
 #include <signal.h>
+#include <unordered_map>
 
 #define MAX_ARGS 32
 
 /**
  * @brief class that handles creating processes
  * \todo run native games directly + update time in db
- * \todo change std::vector to unordered map - key=game_id, value=pid and create function for lookup
  * \todo track start and end time of a process unorderde map value pair of pid and starttime ? 
  */
 class ProcessHandler {
@@ -28,10 +28,9 @@ class ProcessHandler {
 		 *
 		 * @param command comand to run
 		 *
-		 * @details
-		 * this function will create a child process where the command will be run
+		 * @details this function will create a child process where the command will be run
 		 */
-		bool run_process(const char* command);	
+		void run_process(uint64_t game_id, const char* command);	
 	
 		/**
 		 *
@@ -40,9 +39,19 @@ class ProcessHandler {
 		 * @param pid pid of the process to kill
 		 * @param signal SIGTERM or SIGKILL
 		 *
-		 * \todo now this process will kill all processes that was started, when unordered map is used change the parameter to game_id, do a lookup and then kill the process
 		 */
-		void kill_process(uint32_t pid, int32_t singal);
+
+		/**
+		 * @brief check if process is running
+		 *
+		 * @param game_id game id to check
+		 *
+		 * @return true if there is a process associated with the id, false if not
+		 *
+		 */
+		bool is_process_running(uint64_t game_id);
+
+		void kill_process(uint64_t game_id, int32_t singal);
 		/**
 		 *
 		 * @brief check for zombie processes and clean them if necessary
@@ -57,7 +66,7 @@ class ProcessHandler {
 		std::string user;
 		/// \endcond
 	private:
-		std::vector<uint32_t> pid_list;
+		std::unordered_map<uint64_t, uint32_t> game_id_to_pid_map;
 };
 
 #endif

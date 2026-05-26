@@ -13,12 +13,17 @@ ProcessHandler::ProcessHandler() {
 
 }
 
-bool ProcessHandler::run_process(const char* command) {
+void ProcessHandler::run_process(uint64_t game_id, const char* command) {
 	int32_t pid = fork();
+
+	if(this->is_process_running(game_id)) {
+		std::cerr << "Game is already running\n";
+		return;
+       	}	
 
 	if(pid == -1) {
 		throw std::runtime_error("Unable to create child process");
-		return false;
+		return;
 	}
 	else if(pid == 0) { 
 		const char* args[MAX_ARGS+1];
@@ -43,19 +48,22 @@ bool ProcessHandler::run_process(const char* command) {
 		//only when exec failed
 		std::clog << "exec failed\n";
 		_exit(1);
-		return false; 
 	} else {
-		pid_list.push_back(pid);
+		game_id_to_pid_map[game_id] = pid;	
 	}
 	
 
-	return true;
+	return;
 }
 
-void ProcessHandler::kill_process(uint32_t pid, int32_t signal ) {
-	
-	for(uint32_t i=0; i < pid_list.size(); i++) {
-		kill(pid_list[i], signal);
+bool ProcessHandler::is_process_running(uint64_t game_id) {
+	return game_id_to_pid_map.find(game_id) != game_id_to_pid_map.end();
+}
+
+void ProcessHandler::kill_process(uint64_t game_id, int32_t signal ) {
+
+	if( game_id_to_pid_map.find(game_id) != game_id_to_pid_map.end()) {
+		kill(game_id_to_pid_map[game_id], signal);
 	}
 
 }
@@ -63,10 +71,10 @@ void ProcessHandler::kill_process(uint32_t pid, int32_t signal ) {
 void ProcessHandler::check_and_clean_zombie_processes() {
         //check for running subprocesses, and read their status if finished so there is no zombie process
         //status of the subprocess is not used
-        for(uint32_t i=0; i < pid_list.size(); i++) {
-                if(waitpid(pid_list[i], nullptr, WNOHANG) != 0) {
-                        waitpid(pid_list[i], nullptr, 0);
-                        pid_list.erase(pid_list.begin() + i);
+	for(auto i=game_id_to_pid_map.begin(); i != game_id_to_pid_map.end();  i++) {
+        	if(waitpid(i->second, nullptr, WNOHANG) != 0) {
+                        waitpid(i->second, nullptr, 0);
+			game_id_to_pid_map.erase(i);
                         break;
                 }
         }
