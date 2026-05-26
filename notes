@@ -29,12 +29,13 @@ name = saved_searches
 	dflt_value = NULL
 	pk = 0
 
-cid = 2
-name = sortname
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#mostly unused/not interesed
+	cid = 2
+	name = sortname
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 	cid = 3
 	name = slug
@@ -43,83 +44,92 @@ pk = 0
 	dflt_value = NULL
 	pk = 0
 
-cid = 4
-name = installer_slug
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#unused
+	cid = 4
+	name = installer_slug
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 5
-name = parent_slug
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#unused
+	cid = 5
+	name = parent_slug
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 6
-name = platform
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 6
+	name = platform
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 7
-name = runner
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 7
+	name = runner
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 8
-name = executable
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#unused
+	cid = 8
+	name = executable
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 9
-name = directory
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 9
+	name = directory
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 10
-name = updated
-type = DATETIME
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#unused
+	cid = 10
+	name = updated
+	type = DATETIME
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 11
-name = lastplayed
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#time since unix epoch
+	cid = 11
+	name = lastplayed
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
+	
+	#all set to 1/not interesed
+	cid = 12
+	name = installed
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 12
-name = installed
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#time since unix epoch/not interesed
+	cid = 13
+	name = installed_at
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 13
-name = installed_at
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#unused
+	cid = 14
+	name = year
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 14
-name = year
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
-
+#set look how the config is structured
 cid = 15
 name = configpath
 type = TEXT
@@ -127,26 +137,29 @@ notnull = 0
 dflt_value = NULL
 pk = 0
 
-cid = 16
-name = has_custom_banner
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#set to 0
+	cid = 16
+	name = has_custom_banner
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 17
-name = has_custom_icon
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#set to 0
+	cid = 17
+	name = has_custom_icon
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 18
-name = has_custom_coverart_big
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#set to 0
+	cid = 18
+	name = has_custom_coverart_big
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 	cid = 19
 	name = playtime
@@ -155,28 +168,29 @@ pk = 0
 	dflt_value = NULL
 	pk = 0
 
-cid = 20
-name = service
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	#NULL/not interesed
+	cid = 20
+	name = service
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 21
-name = service_id
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 21
+	name = service_id
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 22
-name = discord_id
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 22
+	name = discord_id
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-
+#probably not interesed for this table
 ----------------service_games table--------------------------------------
 cid = 0
 name = id
@@ -248,6 +262,7 @@ notnull = 0
 dflt_value = NULL
 pk = 0
 
+#probably not intersed in this table
 ----------sources table---------------------------------------------------
 cid = 0
 name = id

@@ -8,8 +8,8 @@
  * @brief handle input and render the games grid
  * \todo animation for moving the grid
  * \todo animation for selecting a game
- * \todo load which platform the game uses - platform in db?
- * \todo status bar with info and controls - add lastplayed, are this info usefull to display: updated, installed, installed_at, year
+ * \todo status bar controls gfx
+ * \todo improve status bar rendering - coordinate to status bar rect
  */
 class Node_games_grid : public Node {
 	public:

@@ -18,8 +18,13 @@ class Game {
 		 * @param name name of the game that will be render in gui
 		 * @param slug slug of the game, used for loading coverart and banner
 		 * @param playtime set playtime 1.0 = 1.h
+		 * @param platform set platform of the game
+		 * @param runner runner of the game
+		 * @param directory set the directory of the game
+		 * @param last_played set last played date, seconds since unix epoch
 		 */
-		Game(const uint64_t id, const char* name, const char* slug, const double playtime);
+		Game(const uint64_t id, const char* name, const char* slug, const double playtime,
+		     const char* platform, const char* runner, const char* directory, const uint64_t last_played);
 	
 		/**
 		 * @brief indexes of cover art and banner for a game
@@ -40,9 +45,13 @@ class Game {
 		/// \cond
 		std::string name;
 		std::string slug;
+		std::string platform;
+		std::string runner;
+		std::string directory;
 		uint64_t cover_art_index, banner_index;
 		uint64_t id;
 		double playtime;
+		uint64_t last_played;
 		/// \endcond
 };
 

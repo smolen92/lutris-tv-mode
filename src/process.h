@@ -15,8 +15,13 @@
 
 #define MAX_ARGS 32
 
+/**
+ * @brief structure that holds info about process
+ */
 struct process_info {
+ 	///pid of the process
 	int32_t pid;
+ 	///start time of the app - second since tv mode was started
 	uint64_t start_time;
 };
 
