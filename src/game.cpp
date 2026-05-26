@@ -1,10 +1,12 @@
 #include "game.h"
 
-Game::Game(const uint64_t id, const char* name, const char* slug) {
+Game::Game(const uint64_t id, const char* name, const char* slug, const double playtime) {
 	this->id = id;
 	
 	this->name = name;
 	this->slug = slug;
+
+	this->playtime = playtime;
 
 }
 
@@ -20,6 +22,7 @@ void Game::callback_load_games(void* data_vector, sqlite3_stmt* pre_statement) {
 	uint64_t temp_id = 0;
 	std::string temp_name;
 	std::string temp_slug;
+	double temp_playtime = 0;
 	
 	uint64_t argc = sqlite3_column_count(pre_statement);
 
@@ -33,11 +36,12 @@ void Game::callback_load_games(void* data_vector, sqlite3_stmt* pre_statement) {
 
 				case(SQLITE_TEXT) : 	if( std::string("name").compare(current_column_name) == 0) temp_name = (const char*) sqlite3_column_text(pre_statement,i);
 							if( std::string("slug").compare(current_column_name) == 0) temp_slug = (const char*) sqlite3_column_text(pre_statement,i);
+				case(SQLITE_FLOAT) :	if( std::string("playtime").compare(current_column_name) == 0) temp_playtime = sqlite3_column_double(pre_statement, i);
 							break;
 		}
 
 	}
 	
-	game_ptr->push_back(Game(temp_id, temp_name.c_str(), temp_slug.c_str()));
+	game_ptr->push_back(Game(temp_id, temp_name.c_str(), temp_slug.c_str(), temp_playtime));
 	
 }

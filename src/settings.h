@@ -36,6 +36,7 @@ class Settings {
 		int32_t game_tile_width, game_tile_height;
 		uint32_t vertical_padding, horizontal_padding; 
 		uint32_t font_size;
+		uint32_t playtime_text_width;
 
 		int16_t gamepad_deadzone;
 

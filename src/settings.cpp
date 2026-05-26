@@ -66,6 +66,9 @@ Settings::Settings(ProcessHandler *p_handler) {
 		else if(line.substr(0,first_equal_sign_location).compare("font_size") == 0) {
 			font_size = std::stol(line.substr(first_equal_sign_location+1));
 		} 
+		else if(line.substr(0,first_equal_sign_location).compare("playtime_text_width") == 0) {
+			playtime_text_width = std::stol(line.substr(first_equal_sign_location+1));
+		} 
 		else if(line.substr(0,first_equal_sign_location).compare("gamepad_deadzone") == 0) {
 			gamepad_deadzone = std::stol(line.substr(first_equal_sign_location+1));
 		} 
@@ -110,6 +113,8 @@ void Settings::load_defaults(const char* user) {
 	
 	font_size = 12;
 
+	playtime_text_width = 400;
+
 	gamepad_deadzone = 1000;
 	
 	category_menu_x = 0;
@@ -143,6 +148,7 @@ Settings::~Settings() {
 			<< "\nvertical_padding=" << vertical_padding
 			<< "\nhorizontal_padding=" << horizontal_padding
 			<< "\nfont_size=" << font_size
+			<< "\nplaytime_text_width=" << playtime_text_width
 			<< "\n\n[gamepad]"
 			<< "\ngamepad_deadzone=" << gamepad_deadzone
 			<< "\n\n[category]" 

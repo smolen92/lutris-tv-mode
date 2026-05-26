@@ -52,6 +52,14 @@ bool ProcessHandler::run_process(const char* command) {
 	return true;
 }
 
+void ProcessHandler::kill_process(uint32_t pid, int32_t signal ) {
+	
+	for(uint32_t i=0; i < pid_list.size(); i++) {
+		kill(pid_list[i], signal);
+	}
+
+}
+
 void ProcessHandler::check_and_clean_zombie_processes() {
         //check for running subprocesses, and read their status if finished so there is no zombie process
         //status of the subprocess is not used

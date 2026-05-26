@@ -17,8 +17,9 @@ class Game {
 		 * @param id id of the game
 		 * @param name name of the game that will be render in gui
 		 * @param slug slug of the game, used for loading coverart and banner
+		 * @param playtime set playtime 1.0 = 1.h
 		 */
-		Game(const uint64_t id, const char* name, const char* slug);
+		Game(const uint64_t id, const char* name, const char* slug, const double playtime);
 	
 		/**
 		 * @brief indexes of cover art and banner for a game
@@ -41,6 +42,7 @@ class Game {
 		std::string slug;
 		uint64_t cover_art_index, banner_index;
 		uint64_t id;
+		double playtime;
 		/// \endcond
 };
 

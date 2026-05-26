@@ -15,19 +15,19 @@ name = games_categories
 name = saved_searches
 
 ----------------games table--------------------------------------------
-cid = 0
-name = id
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 1
+	cid = 0
+	name = id
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 1
 
-cid = 1
-name = name
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 1
+	name = name
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 cid = 2
 name = sortname
@@ -36,12 +36,12 @@ notnull = 0
 dflt_value = NULL
 pk = 0
 
-cid = 3
-name = slug
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 3
+	name = slug
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 cid = 4
 name = installer_slug
@@ -148,12 +148,12 @@ notnull = 0
 dflt_value = NULL
 pk = 0
 
-cid = 19
-name = playtime
-type = REAL
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 19
+	name = playtime
+	type = REAL
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 cid = 20
 name = service
@@ -264,34 +264,34 @@ dflt_value = NULL
 pk = 0
 
 ------------categories table----------------------------------------------
-cid = 0
-name = id
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 1
+	cid = 0
+	name = id
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 1
 
-cid = 1
-name = name
-type = TEXT
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 1
+	name = name
+	type = TEXT
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 --------------games_categories table---------------------------------------
-cid = 0
-name = game_id
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 0
+	name = game_id
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
-cid = 1
-name = category_id
-type = INTEGER
-notnull = 0
-dflt_value = NULL
-pk = 0
+	cid = 1
+	name = category_id
+	type = INTEGER
+	notnull = 0
+	dflt_value = NULL
+	pk = 0
 
 --------------saved_searches-----------------------------------------------
 cid = 0
