@@ -27,7 +27,6 @@ class Node_games_grid : public Node {
 
 		~Node_games_grid();
 
-
 	private:
 		Renderer* renderer;
 
