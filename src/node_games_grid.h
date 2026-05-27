@@ -7,7 +7,7 @@
 /**
  * @brief handle input and render the games grid
  * \todo animation for moving the grid
- * \todo animation for selecting a game
+ * \todo animation for selecting a game add it to the rest of the menus (2xcategory+start)
  * \todo status bar controls gfx
  * \todo improve status bar rendering - coordinate to status bar rect
  */
@@ -35,6 +35,10 @@ class Node_games_grid : public Node {
 		uint64_t current_game;
 		
 		std::vector<Game> *games;
+
+		uint64_t selection_box_time;
+
+		uint64_t current_millis;
 };
 
 #endif

@@ -49,7 +49,7 @@ void ProcessHandler::run_process(uint64_t game_id, const char* command) {
 		std::clog << "exec failed\n";
 		_exit(1);
 	} else {
-		process_info temp_info = {pid, (uint64_t)(clock()/CLOCKS_PER_SEC) };
+		process_info temp_info = {pid, this->get_millis() };
 		game_id_to_pid_map[game_id] = temp_info;
 	}
 	
@@ -74,7 +74,7 @@ void ProcessHandler::check_and_clean_zombie_processes() {
         //status of the subprocess is not used
 	for(auto i=game_id_to_pid_map.begin(); i != game_id_to_pid_map.end();  i++) {
         	if(waitpid(i->second.pid, nullptr, WNOHANG) != 0) {
-			uint64_t temp_end_time = (uint64_t)(clock()/CLOCKS_PER_SEC);
+			uint64_t temp_end_time = this->get_millis();
 			waitpid(i->second.pid, nullptr, 0);
 			game_id_to_pid_map.erase(i);
                         break;
@@ -88,5 +88,11 @@ ProcessHandler::~ProcessHandler() {
 
 	free(cwd);
 	cwd = nullptr;
+}
+
+uint64_t ProcessHandler::get_millis() {
+	timespec temp_ts;
+	clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &temp_ts);
+	return (uint64_t)(temp_ts.tv_sec*1000 + temp_ts.tv_nsec/1000000);
 }
 

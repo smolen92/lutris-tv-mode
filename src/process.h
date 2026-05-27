@@ -70,7 +70,14 @@ class ProcessHandler {
 		 *
 		 */
 		void check_and_clean_zombie_processes();
-		
+	
+		/**
+		 *
+		 * @return millisecond since the start of the programm
+		 *
+		 */
+		uint64_t get_millis();
+
 		~ProcessHandler();
 		
 		/// \cond

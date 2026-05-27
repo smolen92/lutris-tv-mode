@@ -41,6 +41,8 @@ class Settings {
 		int16_t gamepad_deadzone;
 
 		uint32_t category_menu_x, category_menu_y;
+		
+		uint64_t selection_timeout;
 
 		//these settings shouldn't be set manually, it is calculate in calculate_settings
 	        uint64_t games_per_row;

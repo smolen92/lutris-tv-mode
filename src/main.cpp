@@ -1,6 +1,7 @@
 #include "gui_manager.h"
 
 /// \file
+/// \bug exception is thrown (out_of_range) when selecting some categories
 /// \cond
 int main(int argc, char** argv) {
 	try {

@@ -46,6 +46,8 @@ bool Gui_manager::logic() {
 	bool return_value = renderer->check_input(&global_data);
 	
 	bool reload_game_vector = false;
+	
+	global_data.millis = process_handler.get_millis(); 
 
 	if( global_data.buttons_pressed[START]) global_data.action = ACTION_SHOW_START_MENU;
 

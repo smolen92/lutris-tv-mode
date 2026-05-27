@@ -77,7 +77,10 @@ Settings::Settings(ProcessHandler *p_handler) {
 		} 
 		else if(line.substr(0,first_equal_sign_location).compare("category_menu_y") == 0) {
 			category_menu_y = std::stol(line.substr(first_equal_sign_location+1));
-		} 
+		}
+		else if(line.substr(0,first_equal_sign_location).compare("selection_timeout") == 0) {
+			selection_timeout = std::stol(line.substr(first_equal_sign_location+1));
+		}
 
 	}
 	
@@ -119,6 +122,8 @@ void Settings::load_defaults(const char* user) {
 	
 	category_menu_x = 0;
 	category_menu_y = 0;
+
+	selection_timeout = 200;
 }
 
 Settings::~Settings() {
@@ -151,6 +156,8 @@ Settings::~Settings() {
 			<< "\nplaytime_text_width=" << playtime_text_width
 			<< "\n\n[gamepad]"
 			<< "\ngamepad_deadzone=" << gamepad_deadzone
+			<< "\n\n[animation]"
+			<< "\nselection_timeout=" << selection_timeout
 			<< "\n\n[category]" 
 			<< "\ncategory_menu_x=" << category_menu_x
 			<< "\ncategory_menu_y=" << category_menu_y;
