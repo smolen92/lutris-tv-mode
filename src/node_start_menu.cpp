@@ -1,11 +1,13 @@
 #include "node_start_menu.h"
 
-Node_start_menu::Node_start_menu(Renderer* renderer, Settings* settings) {
+Node_start_menu::Node_start_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings) {
 	this->renderer = renderer;
-	
 	this->settings = settings;
+	this->process_handler = process_handler;
 
 	current_entry = 0;
+
+	selection_time = 0;
 
 	entries_strings.push_back("Quit TV Mode");
 	entries_strings.push_back("Restart");
@@ -23,6 +25,8 @@ void Node_start_menu::logic(Global_data* global_data) {
 
 	if( global_data->buttons_pressed[RUN] ) {
 		
+		selection_time = process_handler->get_millis();
+
 		switch(current_entry) {
 			case(ENTRY_RESTART_SYSTEM) :	global_data->action = ACTION_RESTART_SYSTEM;
 							break;
@@ -51,7 +55,7 @@ void Node_start_menu::render() {
 		renderer->render_one_line_of_text(0, settings->font_size*i, entries_strings[i].c_str(),start_menu_width);
 	}
 
-	renderer->render_rect(0,settings->font_size*current_entry,start_menu_width,settings->font_size,0, 0, 0xFF, 0x6F);
+	if( selection_time + settings->selection_timeout < process_handler->get_millis() ) renderer->render_rect(0,settings->font_size*current_entry,start_menu_width,settings->font_size,0, 0, 0xFF, 0x6F);
 
 	renderer->set_viewport();
 }
@@ -59,4 +63,5 @@ void Node_start_menu::render() {
 Node_start_menu::~Node_start_menu() {
 	renderer = nullptr;
 	settings = nullptr;
+	process_handler = nullptr;
 }

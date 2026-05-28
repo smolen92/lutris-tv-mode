@@ -16,14 +16,12 @@ void Node_games_grid::logic(Global_data* global_data) {
 	
 	if( global_data->buttons_pressed[RUN] ) {
 		global_data->action = ACTION_RUN_GAME;
-		selection_box_time = global_data->millis;
+		selection_box_time = process_handler->get_millis();
 	}
 	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE;
 	if( global_data->buttons_pressed[SELECTION] ) global_data->action = ACTION_SWITCH_TO_CAT_TABLE_NODE;
 	
-	current_millis = global_data->millis;
-
 	global_data->current_game = current_game;
 }
 
@@ -43,7 +41,7 @@ void Node_games_grid::render() {
 		if(rendered_height > max_renderer_font_height) max_renderer_font_height = rendered_height;
 
 		//selection box rendering
-		if( ( i == current_game ) && (selection_box_time + settings->selection_timeout < current_millis) ) {
+		if( ( i == current_game ) && (selection_box_time + settings->selection_timeout < process_handler->get_millis()) ) {
 			renderer->render_rect(	cover_art_rect_x - settings->horizontal_padding, cover_art_rect_y - settings->vertical_padding, 
 						cover_art_rect_w + 2*settings->horizontal_padding, cover_art_rect_h + 2*settings->vertical_padding + rendered_height,
 						0,0,255,0x6F);
@@ -83,10 +81,11 @@ void Node_games_grid::render() {
 					       	settings->window_width/2); 
 }
 
-Node_games_grid::Node_games_grid(Settings* settings, Renderer* renderer, std::vector<Game> *games) {
+Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games) {
 	this->settings = settings;
 	this->renderer = renderer;
 	this->games = games;
+	this->process_handler = process_handler;
 	
 	current_game = 0;
 

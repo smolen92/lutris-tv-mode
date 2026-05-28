@@ -44,7 +44,6 @@ struct Global_data {
 	uint16_t mouse_x, mouse_y;
 	uint32_t mouse_flags; //0x01 - LMB, 0x02 - MMB, 0x04- RMB
 	std::vector<bool> categories_present;
-	uint64_t millis;
 	/// \endcond
 };
 

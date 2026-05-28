@@ -11,9 +11,11 @@ void Node_category_menu::logic(Global_data* global_data) {
 
 	if( global_data->buttons_pressed[RUN] ) {
 		global_data->action = ACTION_READ_DATABASE;
+		selection_time = process_handler->get_millis();
 	}
 	
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_REMOVE_NODE;
+
 
 	global_data->current_category = current_category;
 }
@@ -45,10 +47,9 @@ void Node_category_menu::render() {
 	//predefined categories separation line
 	renderer->render_rect(clear_rect_x, clear_rect_y, clear_rect_w, settings->font_size, 0xFF,0xFF,0xFF,0xFF, false);
 	
-
 	renderer->render_rect(clear_rect_x, clear_rect_y, clear_rect_w, clear_rect_h, 0xFF,0xFF,0xFF,0xFF, false);
 
-	renderer->render_rect(category_selection_x, category_selection_y, category_selection_w, category_selection_h, 0, 0, 0xFF, 0x6F);
+	if( selection_time + settings->selection_timeout < process_handler->get_millis() ) renderer->render_rect(category_selection_x, category_selection_y, category_selection_w, category_selection_h, 0, 0, 0xFF, 0x6F);
 
 	for(uint64_t i=0; i < categories->size(); i++) {
 		renderer->render_one_line_of_text(0,i*settings->font_size,categories->at(i).name.c_str(),category_viewport_w);
@@ -58,17 +59,21 @@ void Node_category_menu::render() {
 
 }
 
-Node_category_menu::Node_category_menu(Renderer* renderer, Settings* settings, std::vector<Category> *categories, uint64_t current_category) {
+Node_category_menu::Node_category_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, std::vector<Category> *categories, uint64_t current_category) {
 	this->renderer = renderer;
 	this->categories = categories;
 	this->settings = settings;
 
 	this->current_category = current_category;
+	this->process_handler = process_handler;
+
+	selection_time = 0;
 }
 
 Node_category_menu::~Node_category_menu() {
 	settings = nullptr;
 	categories = nullptr;
 	renderer = nullptr;
+	process_handler = nullptr;
 }
 

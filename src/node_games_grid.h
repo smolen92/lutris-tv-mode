@@ -7,7 +7,6 @@
 /**
  * @brief handle input and render the games grid
  * \todo animation for moving the grid
- * \todo animation for selecting a game add it to the rest of the menus (2xcategory+start)
  * \todo status bar controls gfx
  * \todo improve status bar rendering - coordinate to status bar rect
  */
@@ -19,15 +18,18 @@ class Node_games_grid : public Node {
 		void render() override;
 		
 		/**
+		 * @param process_handler pointer to process handler
 		 * @param renderer pointer to renderer node
 		 * @param settings pointer to settings
 		 * @param games pointer to game vector
 		 */	
-		Node_games_grid(Settings* settings, Renderer* renderer, std::vector<Game> *games);
+		Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games);
 
 		~Node_games_grid();
 
 	private:
+		ProcessHandler* process_handler;
+
 		Renderer* renderer;
 
 		Settings* settings;
@@ -37,8 +39,6 @@ class Node_games_grid : public Node {
 		std::vector<Game> *games;
 
 		uint64_t selection_box_time;
-
-		uint64_t current_millis;
 };
 
 #endif

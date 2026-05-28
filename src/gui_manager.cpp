@@ -16,7 +16,7 @@ Gui_manager::Gui_manager() {
 		categories_map[categories[i].id] = i;
 	}
 
-	nodes.push_back(new Node_games_grid(settings, renderer, &games));
+	nodes.push_back(new Node_games_grid(&process_handler, settings, renderer, &games));
 
 	global_data.action = ACTION_NONE;
 	global_data.current_game = 0;
@@ -47,16 +47,14 @@ bool Gui_manager::logic() {
 	
 	bool reload_game_vector = false;
 	
-	global_data.millis = process_handler.get_millis(); 
-
 	if( global_data.buttons_pressed[START]) global_data.action = ACTION_SHOW_START_MENU;
 
 	nodes.back()->logic(&global_data);
 	switch(global_data.action) {
-		case(ACTION_SHOW_START_MENU) : 		nodes.push_back(new Node_start_menu(renderer,settings));
+		case(ACTION_SHOW_START_MENU) : 		nodes.push_back(new Node_start_menu(&process_handler, renderer,settings));
 							break;
 
-		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(renderer, settings, &categories, global_data.current_category));
+		case(ACTION_SWITCH_TO_CATEGORY_NODE) : 	nodes.push_back(new Node_category_menu(&process_handler, renderer, settings, &categories, global_data.current_category));
 							break;
 		
 		case(ACTION_SWITCH_TO_CAT_TABLE_NODE) :	{	
@@ -72,7 +70,7 @@ bool Gui_manager::logic() {
 										global_data.categories_present[categories_map[key_list[i]]] = true;	
 									}
 								
-									nodes.push_back(new Node_category_table(renderer, settings, &categories, &global_data.categories_present));
+									nodes.push_back(new Node_category_table(&process_handler, renderer, settings, &categories, &global_data.categories_present));
 								}
 							}
 							break;

@@ -28,7 +28,6 @@ class Gui_manager {
 		
 		/**
 		 * @details only logic of the last node in vector is run
-		 * \todo millis are set in global data, add process_handler to every node and rewrite the code
 		 */
 		bool logic();
 		
