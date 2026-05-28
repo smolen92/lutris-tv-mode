@@ -189,7 +189,7 @@ void Renderer::load_texture(const char* slug) {
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " cover art texture\n";
 }
 
-void Renderer::render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width) {
+void Renderer::render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width) {
 	SDL_Surface *text_surface;
 
 	text_surface = TTF_RenderText_Blended(font, text, 0, {255,255,255,255});
@@ -218,7 +218,7 @@ void Renderer::render_one_line_of_text(const uint64_t x, const uint64_t y, const
 
 }
 
-uint32_t Renderer::render_multi_line_text(uint64_t x, uint64_t y, const char* text) {
+uint32_t Renderer::render_multi_line_text(int64_t x, int64_t y, const char* text) {
 	std::stringstream temp_string_stream(text);
 	std::string temp_element;
 	std::vector<std::string> elements;
@@ -266,7 +266,7 @@ void Renderer::clear_images() {
 	}
 }
 
-void Renderer::render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled) {
+void Renderer::render_rect(int64_t x, int64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled) {
 	SDL_FRect temp = {(float)x, (float)y, (float) w, (float) h};
 
 	SDL_SetRenderDrawColor(renderer, r, g, b, a);

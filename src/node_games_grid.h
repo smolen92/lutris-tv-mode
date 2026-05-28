@@ -38,6 +38,8 @@ class Node_games_grid : public Node {
 		std::vector<Game> *games;
 
 		uint64_t selection_box_time;
+
+		int64_t move_offset;
 };
 
 #endif

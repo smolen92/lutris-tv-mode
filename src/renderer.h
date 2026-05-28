@@ -62,7 +62,7 @@ class Renderer {
 		 *
 		 * \todo add bool centered, if set to true center the text else print it from x 
 		 */
-		void render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width);
+		void render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width);
 		
 		/**
 		 *
@@ -75,7 +75,7 @@ class Renderer {
 		 * @return height that the text used for rendering
 		 *
 		 */
-		uint32_t render_multi_line_text(uint64_t x, uint64_t y, const char* text);
+		uint32_t render_multi_line_text(int64_t x, int64_t y, const char* text);
 
 		/**
 		 *
@@ -108,7 +108,7 @@ class Renderer {
 		 * @param filled if true filled rect is rendered, if false only outline is renderer, default to true
 		 *
 		 */
-		void render_rect(uint64_t x, uint64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled = true);
+		void render_rect(int64_t x, int64_t y, uint64_t w, uint64_t h, uint64_t r, uint64_t g, uint64_t b, uint64_t a, bool filled = true);
 
 		
 		/**

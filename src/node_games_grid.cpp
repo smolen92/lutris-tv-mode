@@ -21,7 +21,7 @@ void Node_games_grid::logic(Global_data* global_data) {
 	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE;
 	if( global_data->buttons_pressed[SELECTION] ) global_data->action = ACTION_SWITCH_TO_CAT_TABLE_NODE;
-	
+
 	global_data->current_game = current_game;
 }
 
@@ -29,10 +29,10 @@ void Node_games_grid::render() {
 	uint32_t max_renderer_font_height = 0;
 
 	//initial cover art rect calculation
-	uint64_t cover_art_rect_x = settings->horizontal_padding;
-	uint64_t cover_art_rect_y = settings->vertical_padding;
-	uint64_t cover_art_rect_w = settings->game_tile_width;
-	uint64_t cover_art_rect_h = settings->game_tile_height;
+	int64_t cover_art_rect_x = settings->horizontal_padding;
+	int64_t cover_art_rect_y = (int64_t)settings->vertical_padding - move_offset;
+	int64_t cover_art_rect_w = settings->game_tile_width;
+	int64_t cover_art_rect_h = settings->game_tile_height;
 
 	for(uint64_t i=current_game/settings->games_per_row*settings->games_per_row; i < games->size(); i++) {
 		//font rendering
@@ -104,6 +104,7 @@ Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* sett
 	}
 
 	selection_box_time = 0;
+	move_offset = 0;
 }
 
 Node_games_grid::~Node_games_grid() {
