@@ -6,7 +6,7 @@ void Node_category_menu::logic(Global_data* global_data) {
 	}
 
 	if( global_data->buttons_pressed[DOWN] ) {
-		if(current_category != categories->size()-2) current_category += 1;
+		if(current_category != categories->size()-1) current_category += 1;
 	}
 
 	if( global_data->buttons_pressed[RUN] ) {
@@ -44,22 +44,21 @@ void Node_category_menu::render() {
 	
 	uint64_t category_count = category_viewport_h/settings->font_size;
 
-	//+1 to skip predefined Games category
 	if( category_count >= categories->size() ) {
-		start = 1;
+		start = 0;
 		selection_box_offset = current_category;
 	}
-	else if ( (current_category+1+category_count) > categories->size() ) {
+	else if ( (current_category+category_count) > categories->size() ) {
 		start = categories->size()-category_count;
-		selection_box_offset = current_category+1-start;
+		selection_box_offset = current_category-start;
 	}
 	else {
-		start = current_category+1;
+		start = current_category;
 		selection_box_offset = 0;
 	}
 	
 	//predefined categories separation line
-	if(start == 1) renderer->render_rect(category_viewport_x, category_viewport_y, category_viewport_w, settings->font_size, 0xFF,0xFF,0xFF,0xFF, false);
+	if(start == 0) renderer->render_rect(category_viewport_x, category_viewport_y, category_viewport_w, settings->font_size, 0xFF,0xFF,0xFF,0xFF, false);
 	//border
 	renderer->render_rect(category_viewport_x, category_viewport_y, category_viewport_w, category_viewport_h, 0xFF,0xFF,0xFF,0xFF, false);
 

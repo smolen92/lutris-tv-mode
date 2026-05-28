@@ -149,6 +149,13 @@ Renderer::Renderer(Settings* settings) {
 	checkbox[1] = IMG_LoadTexture_IO(renderer, temp_checkbox[1], true);
 	if( checkbox[1] == nullptr) std::clog << "failed to load checkbox\n";
 
+	SDL_IOStream *temp_gamepad_gfx;
+	temp_gamepad_gfx = SDL_IOFromConstMem(gamepad_xbox_data, gamepad_xbox_data_size);
+	if(temp_gamepad_gfx == nullptr) throw std::runtime_error(SDL_GetError());
+
+	gamepad_gfx = IMG_LoadTexture_IO(renderer, temp_gamepad_gfx, true);
+	if(gamepad_gfx == nullptr) std::clog << "failed to load gamepad texture";
+
 	gamepad = nullptr;
 
 	stick_centered_x = true;

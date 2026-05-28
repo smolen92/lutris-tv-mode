@@ -154,6 +154,7 @@ class Renderer {
 
 		std::vector<SDL_Texture*> cover_art;	
 		SDL_Texture* checkbox[2];
+		SDL_Texture* gamepad_gfx;
 
 		TTF_Font* font;
 		SDL_Gamepad* gamepad;
