@@ -14,7 +14,6 @@ class Node_category_menu : public Node {
 		/// inherited from Node
 		void logic(Global_data* global_data) override;
 		/** inherited from Node
-		 * \todo scroll when there are more categories that can be displayed - similar to category table
 		 */
 		void render() override;
 		
