@@ -8,7 +8,6 @@
  * @brief handle input and render the games grid
  * \todo animation for moving the grid
  * \todo status bar controls gfx
- * \todo improve status bar rendering - coordinate to status bar rect
  */
 class Node_games_grid : public Node {
 	public:

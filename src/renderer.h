@@ -60,8 +60,7 @@ class Renderer {
 		 * @param text text to render
 		 * @param area_width width of the area
 		 *
-		 *
-		 * @details this function is called internally by render_multi_line_text and shouldn't be called by itself
+		 * \todo add bool centered, if set to true center the text else print it from x 
 		 */
 		void render_one_line_of_text(const uint64_t x, const uint64_t y, const char* text, const int32_t area_width);
 		

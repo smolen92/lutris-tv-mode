@@ -63,22 +63,31 @@ void Node_games_grid::render() {
 	}
 
 	//status bar
-	time_t epoch_time = (time_t)games->at(current_game).last_played;
-	char human_readable[12];
-	strncpy(human_readable, ctime(&epoch_time)+8, 3);
-	strncpy(human_readable+3, ctime(&epoch_time)+4, 4);
-	strncpy(human_readable+7, ctime(&epoch_time)+20,4);
-	human_readable[11] = '\0';
-	
-	renderer->render_rect( 0, settings->window_height-settings->font_size, settings->window_width/2, settings->font_size,
-				0, 0, 0, 0xFF, true);
+	uint64_t status_bar_rect_x = 0; 
+	uint64_t status_bar_rect_y = settings->window_height-settings->font_size;
+	uint64_t status_bar_rect_w = settings->window_width/2;
+	uint64_t status_bar_rect_h = settings->font_size;
+
+	renderer->render_rect( status_bar_rect_x, status_bar_rect_y, status_bar_rect_w, status_bar_rect_h, 0, 0, 0, 0xFF, true);
+
 	uint64_t temp_current_game_playtime_hour = (uint64_t) games->at(current_game).playtime;
 	uint64_t temp_current_game_playtime_minute = (uint64_t)( (games->at(current_game).playtime - temp_current_game_playtime_hour) * 60);
-	renderer->render_one_line_of_text(settings->horizontal_padding, settings->window_height-settings->font_size,
-		       				std::string("Playtime: " + std::to_string(temp_current_game_playtime_hour) + "h " + std::to_string(temp_current_game_playtime_minute) + "m" +
-						"   Last Played: " + human_readable + 
-						"   Runner: " + games->at(current_game).runner).c_str(),
-					       	settings->window_width/2); 
+
+	std::string temp_status_bar_text = "Playtime: " + std::to_string(temp_current_game_playtime_hour) + "h " + std::to_string(temp_current_game_playtime_minute) + "m ";
+	if(games->at(current_game).last_played != 0) {
+		time_t epoch_time = (time_t)games->at(current_game).last_played;
+		char human_readable[12];
+		strncpy(human_readable, ctime(&epoch_time)+8, 3);
+		strncpy(human_readable+3, ctime(&epoch_time)+4, 4);
+		strncpy(human_readable+7, ctime(&epoch_time)+20,4);
+		human_readable[11] = '\0';
+
+		temp_status_bar_text += "Last Played: " + std::string(human_readable) + " ";
+	}
+
+	temp_status_bar_text += "Runner: " + games->at(current_game).runner;
+
+	renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w); 
 }
 
 Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games) {
