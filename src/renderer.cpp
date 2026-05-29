@@ -210,8 +210,10 @@ void Renderer::load_texture(const char* slug) {
 	if(temp_texture == nullptr) std::clog << "failed to load " << slug << " cover art texture\n";
 }
 
-void Renderer::render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width) {
+uint64_t Renderer::render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width) {
 	SDL_Surface *text_surface;
+
+	uint64_t return_width = 0;
 
 	text_surface = TTF_RenderText_Blended(font, text, 0, {255,255,255,255});
 	if(text_surface) {
@@ -228,6 +230,7 @@ void Renderer::render_one_line_of_text(const int64_t x, const int64_t y, const c
 							(float)text_texture->h};
 
 			SDL_RenderTexture(renderer, text_texture, &src_text_rect, &dst_text_rect); 
+			return_width = dst_text_rect.w;
 			SDL_DestroyTexture(text_texture);
 			text_texture = nullptr;
 		}
@@ -235,6 +238,8 @@ void Renderer::render_one_line_of_text(const int64_t x, const int64_t y, const c
 
 	SDL_DestroySurface(text_surface);
 	text_surface = nullptr;
+	
+	return return_width;
 
 }
 

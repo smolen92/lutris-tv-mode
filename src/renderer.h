@@ -59,13 +59,15 @@ class Renderer {
 		 * @param y y-position of the text
 		 * @param text text to render
 		 * @param area_width width of the area
-		 * 
+		 *
+		 * @return the width of rendered text in pixels
+		 *
 		 * @details if area_width is set to 0 text is not centered, 
 		 * if area_width is not 0 and text fit within the area, text is centered to the area_width
 		 * if area_width is not 0 and text doesn't fit within the area, the end of the text is clipped
 		 *
 		 */
-		void render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width);
+		uint64_t render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width);
 		
 		/**
 		 *

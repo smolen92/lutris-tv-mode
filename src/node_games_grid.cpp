@@ -89,18 +89,26 @@ void Node_games_grid::render() {
 
 	renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w);
 
+	uint64_t temp_text_offset;
+
 	//status bar controls
 	renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, "Play", 0);
+	temp_text_offset = renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, "Play", 0);
+
+	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+
+	renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add Category", 0);
 	
-	renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + 100, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 100, status_bar_rect_y, "Add Category", 0);
+	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
 	
-	renderer->render_asset(GFX_LB_BUTTON, status_bar_rect_w + 300, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 300, status_bar_rect_y, "Select Category", 0);
+	renderer->render_asset(GFX_LB_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Select Category", 0);
 	
-	renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + 530, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 530, status_bar_rect_y, "Add/Remove Favorite", 0);
+	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+
+	renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add/Remove Favorite", 0);
 }
 
 Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games) {

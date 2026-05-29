@@ -7,7 +7,7 @@
 /**
  * @brief handle input and render the games grid
  * \todo animation for moving the grid
- * \todo status bar gfx - clean up without magic numbers, add start/select buttons to gfx, add start menu gfx
+ * \todo status bar gfx - add start/select buttons to gfx, add start menu gfx
  */
 class Node_games_grid : public Node {
 	public:
