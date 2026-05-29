@@ -18,8 +18,8 @@ void Node_games_grid::logic(Global_data* global_data) {
 		global_data->action = ACTION_RUN_GAME;
 		selection_box_time = process_handler->get_millis();
 	}
-	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;
-	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE;
+	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;  
+	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE; 
 	if( global_data->buttons_pressed[SELECTION] ) global_data->action = ACTION_SWITCH_TO_CAT_TABLE_NODE;
 
 	global_data->current_game = current_game;
@@ -87,7 +87,20 @@ void Node_games_grid::render() {
 
 	temp_status_bar_text += "Runner: " + games->at(current_game).runner;
 
-	renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w); 
+	renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w);
+
+	//status bar controls
+	renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, "Play", 50);
+	
+	renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + 100, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 100, status_bar_rect_y, "Add Category", 170);
+	
+	renderer->render_asset(GFX_LB_BUTTON, status_bar_rect_w + 300, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 300, status_bar_rect_y, "Select Category", 200);
+	
+	renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + 530, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 530, status_bar_rect_y, "Add/Rem Favorite", 230);
 }
 
 Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games) {

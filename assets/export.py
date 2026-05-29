@@ -4,7 +4,7 @@ i = 0
 size = 0
 
 with open(sys.argv[1], "rb") as file:
-    print("uint8_t data[] = {")
+    print("const uint8_t data[] = {")
     c = file.read(1)
     print(f"0x{ord(c):02X}", end="")
     size = size + 1
@@ -24,4 +24,4 @@ with open(sys.argv[1], "rb") as file:
         
 print("};")
 
-print(f"uint64_t data_size = {size};")
+print(f"const uint64_t data_size = {size};")

@@ -125,16 +125,16 @@ class Renderer {
 		void render_cover_art(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h);
 		
 		/**
-		 * @brief render check box on screen
+		 * @brief render asset on screen
 		 *
-		 * @param x x position of the checkbox
-		 * @param y y position of the checkbox
-		 * @param w width of the checkbox
-		 * @param h height of the checkbox
-		 * @param checked if true checked checkbox is render, if false empty square is renderer
+		 * @param index index of the asset to render
+		 * @param x x position of the asset
+		 * @param y y position of the asset
+		 * @param w width of the asset
+		 * @param h height of the asset
 		 *
 		 */
-		void render_checkbox(uint64_t x, uint64_t y, uint64_t w, uint64_t h, bool checked);
+		void render_asset(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h);
 
 		/**
 		 *
@@ -153,8 +153,7 @@ class Renderer {
 		SDL_Renderer* renderer;
 
 		std::vector<SDL_Texture*> cover_art;	
-		SDL_Texture* checkbox[2];
-		SDL_Texture* gamepad_gfx;
+		SDL_Texture* assets[GFX_ASSETS_COUNT];
 
 		TTF_Font* font;
 		SDL_Gamepad* gamepad;

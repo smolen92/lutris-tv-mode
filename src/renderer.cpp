@@ -138,23 +138,37 @@ Renderer::Renderer(Settings* settings) {
 	font = TTF_OpenFontIO(temp_font, true, settings->font_size);
 	if(font == nullptr) throw std::runtime_error(SDL_GetError());
 	
-	SDL_IOStream *temp_checkbox[2];
-	temp_checkbox[0] = SDL_IOFromConstMem(check_square_grey_png_data, check_square_grey_png_size);
-	if(temp_checkbox[0] == nullptr) throw std::runtime_error(SDL_GetError());
-	temp_checkbox[1] = SDL_IOFromConstMem(check_square_grey_checkmark_png_data, check_square_grey_checkmark_png_size);
-	if(temp_checkbox[1] == nullptr) throw std::runtime_error(SDL_GetError());
+	SDL_IOStream *temp;
 
-	checkbox[0] = IMG_LoadTexture_IO(renderer, temp_checkbox[0], true);
-	if( checkbox[0] == nullptr) std::clog << "failed to load checkbox\n";
-	checkbox[1] = IMG_LoadTexture_IO(renderer, temp_checkbox[1], true);
-	if( checkbox[1] == nullptr) std::clog << "failed to load checkbox\n";
+	for(int i=0; i < GFX_ASSETS_COUNT; i++) {
 
-	SDL_IOStream *temp_gamepad_gfx;
-	temp_gamepad_gfx = SDL_IOFromConstMem(gamepad_xbox_data, gamepad_xbox_data_size);
-	if(temp_gamepad_gfx == nullptr) throw std::runtime_error(SDL_GetError());
-
-	gamepad_gfx = IMG_LoadTexture_IO(renderer, temp_gamepad_gfx, true);
-	if(gamepad_gfx == nullptr) std::clog << "failed to load gamepad texture";
+		switch(i) {
+			case(0) : temp = SDL_IOFromConstMem(check_square_grey_png_data, check_square_grey_png_size);
+				  break;
+			case(1) : temp = SDL_IOFromConstMem(check_square_grey_checkmark_png_data, check_square_grey_checkmark_png_size);
+				  break;
+			case(2) : temp = SDL_IOFromConstMem(xbox_a_button_data, xbox_a_button_data_size);
+				  break;
+			case(3) : temp = SDL_IOFromConstMem(xbox_b_button_data, xbox_b_button_data_size);
+				  break;
+			case(4) : temp = SDL_IOFromConstMem(xbox_x_button_data, xbox_x_button_data_size);
+				  break;
+			case(5) : temp = SDL_IOFromConstMem(xbox_y_button_data, xbox_y_button_data_size);
+				  break;
+			case(6) : temp = SDL_IOFromConstMem(xbox_lb_button_data, xbox_lb_button_data_size);
+				  break;
+			case(7) : temp = SDL_IOFromConstMem(xbox_lt_button_data, xbox_lt_button_data_size);
+				  break;
+			case(8) : temp = SDL_IOFromConstMem(xbox_rb_button_data, xbox_rb_button_data_size);
+				  break;
+			case(9) : temp = SDL_IOFromConstMem(xbox_rt_button_data, xbox_rt_button_data_size);
+				  break;
+		}
+		
+		if(temp == nullptr) throw std::runtime_error(SDL_GetError());
+		assets[i] = IMG_LoadTexture_IO(renderer, temp, true);
+		if( assets[i] == nullptr) std::clog << "failed to load checkbox\n";
+	}
 
 	gamepad = nullptr;
 
@@ -166,11 +180,11 @@ Renderer::~Renderer() {
 	SDL_CloseGamepad(gamepad);
 
 	clear_images();
-	
-	SDL_DestroyTexture(checkbox[0]);
-	checkbox[0] = nullptr;
-	SDL_DestroyTexture(checkbox[1]);
-	checkbox[1] = nullptr;
+
+	for(int i=0; i < GFX_ASSETS_COUNT; i++) {
+		SDL_DestroyTexture(assets[i]);
+		assets[i] = nullptr;
+	}
 
 	TTF_CloseFont(font);
 	font = nullptr;
@@ -307,8 +321,8 @@ void Renderer::set_viewport(int32_t x, int32_t y, int32_t w, int32_t h) {
 	( (w == 0) || (h == 0) ) ? SDL_SetRenderViewport(renderer, nullptr) : SDL_SetRenderViewport(renderer, &temp);
 }
 
-void Renderer::render_checkbox(uint64_t x, uint64_t y, uint64_t w, uint64_t h, bool checked) {
+void Renderer::render_asset(uint64_t index, uint64_t x, uint64_t y, uint64_t w, uint64_t h) {
 	SDL_FRect temp = {(float)x, (float)y, (float)w, (float)h};
 
-	SDL_RenderTexture(renderer, checkbox[checked], nullptr, &temp);
+	SDL_RenderTexture(renderer, assets[index], nullptr, &temp);
 }
