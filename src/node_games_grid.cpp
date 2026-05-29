@@ -91,16 +91,16 @@ void Node_games_grid::render() {
 
 	//status bar controls
 	renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, "Play", 50);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, "Play", 0);
 	
 	renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + 100, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 100, status_bar_rect_y, "Add Category", 170);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 100, status_bar_rect_y, "Add Category", 0);
 	
 	renderer->render_asset(GFX_LB_BUTTON, status_bar_rect_w + 300, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 300, status_bar_rect_y, "Select Category", 200);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 300, status_bar_rect_y, "Select Category", 0);
 	
 	renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + 530, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 530, status_bar_rect_y, "Add/Rem Favorite", 230);
+	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + 530, status_bar_rect_y, "Add/Remove Favorite", 0);
 }
 
 Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games) {

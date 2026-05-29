@@ -217,16 +217,15 @@ void Renderer::render_one_line_of_text(const int64_t x, const int64_t y, const c
 	if(text_surface) {
 		SDL_Texture* text_texture = SDL_CreateTextureFromSurface(renderer, text_surface);
 		if( text_texture ) {
-			SDL_FRect dst_text_rect = {	(text_texture->w < area_width) ? (float)((area_width-text_texture->w)/2 + x) : (float)x,
+			SDL_FRect dst_text_rect = {	(area_width == 0) ? (float)x : ( (text_texture->w < area_width) ? (float)((area_width-text_texture->w)/2 + x) : (float)x ),
 							(float)y,
-							(text_texture->w > area_width) ? (float)area_width : (float)text_texture->w,
+							(area_width == 0) ? (float)text_texture->w : ( (text_texture->w > area_width) ? (float)area_width : (float)text_texture->w),
 							(float)text_texture->h};
 			
 			SDL_FRect src_text_rect = {	0.0,
 							0.0,
-							(text_texture->w > area_width) ? (float)area_width: (float)text_texture->w,
+							(area_width == 0) ? (float)text_texture->w : ( (text_texture->w > area_width) ? (float)area_width : (float)text_texture->w),
 							(float)text_texture->h};
-
 
 			SDL_RenderTexture(renderer, text_texture, &src_text_rect, &dst_text_rect); 
 			SDL_DestroyTexture(text_texture);

@@ -53,14 +53,17 @@ class Renderer {
 		void draw_screen();
 
 		/**
-		 * @brief render one line of centerd text
+		 * @brief render one line of text
 		 *
 		 * @param x x-position of the text
 		 * @param y y-position of the text
 		 * @param text text to render
 		 * @param area_width width of the area
+		 * 
+		 * @details if area_width is set to 0 text is not centered, 
+		 * if area_width is not 0 and text fit within the area, text is centered to the area_width
+		 * if area_width is not 0 and text doesn't fit within the area, the end of the text is clipped
 		 *
-		 * \todo add bool centered, if set to true center the text else print it from x 
 		 */
 		void render_one_line_of_text(const int64_t x, const int64_t y, const char* text, const int32_t area_width);
 		
