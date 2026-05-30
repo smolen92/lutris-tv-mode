@@ -22,19 +22,24 @@ class SQL {
 		 * @brief load info about games to game vector from database
 		 *
 		 * @param data pointer to a vector where data will be stored
-		 * @param sql_statement sql statement that will be called
+		 * @param prepared_statement prepared sqlite3 query that will be run in database
 		 * @param callback_function callback function that will be called for data return from database
 		 * 
 		 */
-		void load_data(void *data, const char* sql_statement, void (*callback_function)(void*,sqlite3_stmt* pre_statement));
-		
+		void load_data(void *data, sqlite3_stmt* prepared_statement, void (*callback_function)(void*,sqlite3_stmt* pre_statement));
+	
 		~SQL();
 	
 		/// the number of rows that was read from the db using the last sql statement
 		uint64_t row_count;
-
-	private:
+		
+		/** database
+		 * \ingroup improvements
+		 * sql prepared statement in gui_manager.cpp use a lot of repeated code
+		 * move db back to private and figure out some interface how to prepare statement and bind any type of values
+		 */
 		sqlite3 *db;
+	private:
 		char *error_message;
 };
 

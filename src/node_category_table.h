@@ -29,7 +29,8 @@ class Node_category_table : public Node {
 		Settings* settings;
 		std::vector<Category> *categories;
 		Global_data* global_data;
-
+		
+		//don't use current_category from global data, always start from 0
 		uint64_t current_category;
 
 		uint64_t selection_time;

@@ -8,9 +8,13 @@ Gui_manager::Gui_manager() {
 	categories.push_back(Category(0,"Games"));
 	
 	sql = new SQL(settings->database_path.c_str());
-
-	sql->load_data(&games,"SELECT * FROM games ORDER BY name COLLATE NOCASE", Game::callback_load_games);
-	sql->load_data(&categories, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", Category::callback_load_categories);
+	
+	sqlite3_stmt* prepared_statement;
+	sqlite3_prepare_v2(sql->db, "SELECT * FROM games ORDER BY name COLLATE NOCASE", -1, &prepared_statement, NULL);
+	sql->load_data(&games,prepared_statement, Game::callback_load_games);
+	
+	sqlite3_prepare_v2(sql->db, "SELECT * FROM categories ORDER BY name COLLATE NOCASE", -1, &prepared_statement, NULL);
+	sql->load_data(&categories, prepared_statement , Category::callback_load_categories);
 	
 	for(uint64_t i=0; i < categories.size(); i++) {
 		categories_map[categories[i].id] = i;
@@ -60,10 +64,14 @@ bool Gui_manager::logic() {
 		case(ACTION_SWITCH_TO_CAT_TABLE_NODE) :	{	
 								if(!games.empty()) {
 
+									sqlite3_stmt* prepared_statement;
 									std::string sql_statement;
-									sql_statement = "SELECT * FROM games LEFT JOIN games_categories ON games.id = games_categories.game_id LEFT JOIN categories ON games_categories.category_id = categories.id WHERE game_id = " + std::to_string(games[global_data.current_game].id); 
+									sql_statement = "SELECT * FROM games LEFT JOIN games_categories ON games.id = games_categories.game_id LEFT JOIN categories ON games_categories.category_id = categories.id WHERE game_id = (?)"; 
+									sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+									sqlite3_bind_int(prepared_statement, 1, games[global_data.current_game].id);
+
 									std::vector<uint64_t> key_list;
-									sql->load_data(&key_list, sql_statement.c_str(), this->callback_load_key_list);
+									sql->load_data(&key_list, prepared_statement, this->callback_load_key_list);
 								
 									global_data.categories_present.resize(categories.size(), false);
 									for(uint64_t i=0; i < key_list.size(); i++) {
@@ -76,34 +84,45 @@ bool Gui_manager::logic() {
 							break;
 
 		case(ACTION_READ_DATABASE) :		{
-								std::string sql_statement;
+								sqlite3_stmt* prepared_statement;
 
 								if(global_data.current_category == 0) {
-									sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
+									std::string sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
+									sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
 								} else {
-									sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
-										+ std::to_string(categories[global_data.current_category].id) 
-										+ " ORDER BY games.name COLLATE NOCASE";
+									std::string sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = (?) ORDER BY games.name COLLATE NOCASE";
+									sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+									sqlite3_bind_int(prepared_statement, 1, categories[global_data.current_category].id); 
 								}
 							
-								load_games_vector(sql_statement.c_str());
+								load_games_vector(prepared_statement);
 							}
 							break;
 
 		case(ACTION_REMOVE_NODE) :		this->pop_node();
 							break;
 
-		case(ACTION_ADD_REMOVE_FAVORITE) :	if(!games.empty()) {	
-								std::string sql_statement = "SELECT * FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
-								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+		case(ACTION_ADD_REMOVE_FAVORITE) :	if(!games.empty()) {
+
+								sqlite3_stmt *prepared_statement;
+								std::string sql_statement = "SELECT * FROM games_categories WHERE game_id= (?) AND category_id=1"; 
+								sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+								sqlite3_bind_int(prepared_statement, 1, games.at(global_data.current_game).id); 
+								sql->load_data(nullptr, prepared_statement, nullptr);
 
 								if(sql->row_count == 0) {
-									sql_statement = "INSERT INTO games_categories VALUES (" + std::to_string(games.at(global_data.current_game).id) + ",1)";	
-									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+									sqlite3_stmt* prepared_statement;
+									sql_statement = "INSERT INTO games_categories VALUES ((?),1)"; 
+									sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+									sqlite3_bind_int(prepared_statement, 1, games.at(global_data.current_game).id);	
+									sql->load_data(nullptr, prepared_statement, nullptr);
 								}
 								else {
-									sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id) + " AND category_id=1";
-									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+									sqlite3_stmt* prepared_statement;
+									sql_statement = "DELETE FROM games_categories WHERE game_id = (?) AND category_id=1"; 
+									sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+									sqlite3_bind_int(prepared_statement, 1, games.at(global_data.current_game).id);
+									sql->load_data(nullptr, prepared_statement, nullptr);
 								}
 								
 								reload_game_vector = true;
@@ -113,15 +132,22 @@ bool Gui_manager::logic() {
 		
 		case(ACTION_ADD_CATEGORIES) :		{
 								//delete old categories
-								std::string sql_statement = "DELETE FROM games_categories WHERE game_id=" + std::to_string(games.at(global_data.current_game).id);
-								sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+								sqlite3_stmt *prepared_statement;
+								std::string sql_statement = "DELETE FROM games_categories WHERE game_id = (?)";
+								sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+								sqlite3_bind_int(prepared_statement, 1, games.at(global_data.current_game).id);
+								sql->load_data(nullptr, prepared_statement, nullptr);
 			
 								//add new categories
 								for(uint64_t i=0; i < global_data.categories_present.size(); i++) {
 									if( !global_data.categories_present[i] ) continue;
-									sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (" + std::to_string(games.at(global_data.current_game).id) + " ," + std::to_string(categories.at(i).id) + ")";
+									sqlite3_stmt *prepared_statement;
+									sql_statement = "INSERT INTO games_categories (game_id, category_id) VALUES (?,?)"; 
+									sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+									sqlite3_bind_int(prepared_statement, 1, games.at(global_data.current_game).id); 
+									sqlite3_bind_int(prepared_statement, 2, categories.at(i).id);
 									global_data.categories_present[i] = false;
-									sql->load_data(nullptr, sql_statement.c_str(), nullptr);
+									sql->load_data(nullptr, prepared_statement, nullptr);
 								}
 								
 								reload_game_vector = true;
@@ -152,14 +178,19 @@ bool Gui_manager::logic() {
 	}
 	
 	if(reload_game_vector) {
-		std::string sql_statement;
+		sqlite3_stmt* prepared_statement;
 
-		( global_data.current_category == 0) ? 
-		(sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE") :
-		(sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = "
-					+ std::to_string(categories[global_data.current_category].id) 
-					+ " ORDER BY games.name COLLATE NOCASE");
-		load_games_vector(sql_statement.c_str());
+		if ( global_data.current_category == 0) {
+			std::string sql_statement = "SELECT * FROM games ORDER BY name COLLATE NOCASE";
+			sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+		}
+		else {
+			std::string sql_statement = "SELECT * FROM categories LEFT JOIN games_categories ON categories.id = games_categories.category_id LEFT JOIN games ON games_categories.game_id = games.id WHERE category_id = (?) ORDER BY games.name COLLATE NOCASE";
+			sqlite3_prepare_v2(sql->db, sql_statement.c_str(), -1, &prepared_statement, NULL);
+			sqlite3_bind_int(prepared_statement, 1, categories[global_data.current_category].id);	
+		}
+
+		load_games_vector(prepared_statement);
 	}
 
 	global_data.action = ACTION_NONE;
@@ -179,10 +210,10 @@ void Gui_manager::pop_node() {
 	nodes.pop_back();						
 }
 
-void Gui_manager::load_games_vector(const char* sql_statement) {
+void Gui_manager::load_games_vector(sqlite3_stmt* prepared_statement) {
 	games.clear();
 	renderer->clear_images();
-	sql->load_data((void*)&games,sql_statement, Game::callback_load_games);
+	sql->load_data((void*)&games,prepared_statement, Game::callback_load_games);
 	load_images();
 }
 

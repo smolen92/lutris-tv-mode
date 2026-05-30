@@ -11,7 +11,6 @@
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
  * \todo split predefined and user defined categories into two vectors
- * \todo parameterized queries for sqlite
  * \todo control for killing process
  *
  */
@@ -46,9 +45,9 @@ class Gui_manager {
 		/**
 		 * @brief helper fucntion when changes to game vector need to be made
 		 *
-		 * @param sql_statement sql statement that will be used for retrieving games from database
+		 * @param prepared_statement sqlite3 prepared_statement query that will be run
 		 */
-		void load_games_vector(const char* sql_statement);
+		void load_games_vector(sqlite3_stmt* prepared_statement);
 	
 		/**
 		 * @brief pop node

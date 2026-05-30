@@ -8,13 +8,9 @@ SQL::SQL(const char* database) {
 	row_count = 0;
 }
 
-void SQL::load_data(void *data_ptr, const char* sql_statement, void (*callback_function)(void*,sqlite3_stmt*)) {
+void SQL::load_data(void *data_ptr, sqlite3_stmt* prepared_statement, void (*callback_function)(void*,sqlite3_stmt*)) {
 	row_count = 0;
 	
-	sqlite3_stmt* prepared_statement;
-
-	sqlite3_prepare_v2(db, sql_statement, -1, &prepared_statement, nullptr);
-
 	if(prepared_statement != nullptr) {
 		
 		while(sqlite3_step(prepared_statement) == SQLITE_ROW) {
@@ -30,6 +26,8 @@ void SQL::load_data(void *data_ptr, const char* sql_statement, void (*callback_f
 	else {
 		throw std::runtime_error("No/bad sql statement");
 	}
+
+	prepared_statement = nullptr;
 }
 
 SQL::~SQL() {
