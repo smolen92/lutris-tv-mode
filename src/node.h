@@ -53,7 +53,7 @@ struct Global_data {
 class Node {
 	public:
 		/// \cond
-		virtual void logic(Global_data* global_data) = 0;
+		virtual void logic() = 0;
 		virtual void render() = 0;
 		virtual ~Node() { };
 		/// \endcond

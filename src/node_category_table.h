@@ -14,12 +14,12 @@ class Node_category_table : public Node {
 		 * @param process_handler pointer to process handler
 		 * @param renderer pointer to renderer node
 		 * @param settings pointer to settings
+		 * @param global_data pointer to global data structure
 		 * @param categories pointer to category vector
-		 * @param categories_present_ptr pointer to global data categories present vector
 		 */
-		Node_category_table(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, std::vector<Category> *categories, std::vector<bool> *categories_present_ptr);
+		Node_category_table(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, Global_data* global_data, std::vector<Category> *categories);
 		/// inherited from node
-		void logic(Global_data* global_data) override;
+		void logic() override;
 		/// inherited from node
 		void render() override;
 		~Node_category_table();
@@ -28,10 +28,9 @@ class Node_category_table : public Node {
 		Renderer* renderer;
 		Settings* settings;
 		std::vector<Category> *categories;
+		Global_data* global_data;
 
 		uint64_t current_category;
-
-		std::vector<bool> *global_data_categories_present_ptr;
 
 		uint64_t selection_time;
 };

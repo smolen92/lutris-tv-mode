@@ -1,18 +1,16 @@
 #include "node_games_grid.h"
 
-void Node_games_grid::logic(Global_data* global_data) {
-	current_game = global_data->current_game;
-
+void Node_games_grid::logic() {
 	if( global_data->buttons_pressed[UP] ) {
-		if(current_game >= settings->games_per_row) current_game -= settings->games_per_row;
+		if(global_data->current_game >= settings->games_per_row) global_data->current_game -= settings->games_per_row;
 	}
 
 	if( global_data->buttons_pressed[DOWN] ) {
-		if( (current_game + settings->games_per_row) < games->size() ) current_game += settings->games_per_row;
+		if( (global_data->current_game + settings->games_per_row) < games->size() ) global_data->current_game += settings->games_per_row;
 	}
 
-	if( global_data->buttons_pressed[RIGHT] ) if( current_game != games->size()-1) current_game += 1;
-	if( global_data->buttons_pressed[LEFT] ) if( current_game != 0) current_game -= 1;
+	if( global_data->buttons_pressed[RIGHT] ) if( global_data->current_game != games->size()-1) global_data->current_game += 1;
+	if( global_data->buttons_pressed[LEFT] ) if( global_data->current_game != 0) global_data->current_game -= 1;
 	
 	if( global_data->buttons_pressed[RUN] ) {
 		global_data->action = ACTION_RUN_GAME;
@@ -21,11 +19,10 @@ void Node_games_grid::logic(Global_data* global_data) {
 	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;  
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE; 
 	if( global_data->buttons_pressed[SELECTION] ) global_data->action = ACTION_SWITCH_TO_CAT_TABLE_NODE;
-
-	global_data->current_game = current_game;
 }
 
 void Node_games_grid::render() {
+
 	uint32_t max_renderer_font_height = 0;
 
 	//initial cover art rect calculation
@@ -34,14 +31,14 @@ void Node_games_grid::render() {
 	int64_t cover_art_rect_w = settings->game_tile_width;
 	int64_t cover_art_rect_h = settings->game_tile_height;
 
-	for(uint64_t i=current_game/settings->games_per_row*settings->games_per_row; i < games->size(); i++) {
+	for(uint64_t i=global_data->current_game/settings->games_per_row*settings->games_per_row; i < games->size(); i++) {
 		//font rendering
 		uint32_t rendered_height = renderer->render_multi_line_text(cover_art_rect_x, cover_art_rect_y + settings->game_tile_height, games->at(i).name.c_str());
 		
 		if(rendered_height > max_renderer_font_height) max_renderer_font_height = rendered_height;
 
 		//selection box rendering
-		if( ( i == current_game ) && (selection_box_time + settings->selection_timeout < process_handler->get_millis()) ) {
+		if( ( i == global_data->current_game ) && (selection_box_time + settings->selection_timeout < process_handler->get_millis()) ) {
 			renderer->render_rect(	cover_art_rect_x - settings->horizontal_padding, cover_art_rect_y - settings->vertical_padding, 
 						cover_art_rect_w + 2*settings->horizontal_padding, cover_art_rect_h + 2*settings->vertical_padding + rendered_height,
 						0,0,255,0x6F);
@@ -68,26 +65,28 @@ void Node_games_grid::render() {
 	uint64_t status_bar_rect_w = settings->window_width/2;
 	uint64_t status_bar_rect_h = settings->font_size;
 
-	renderer->render_rect( status_bar_rect_x, status_bar_rect_y, status_bar_rect_w, status_bar_rect_h, 0, 0, 0, 0xFF, true);
+	renderer->render_rect( status_bar_rect_x, status_bar_rect_y, settings->window_width, status_bar_rect_h, 0, 0, 0, 0xFF, true);
+	
+	if(!games->empty()) {
+		uint64_t temp_current_game_playtime_hour = (uint64_t) games->at(global_data->current_game).playtime;
+		uint64_t temp_current_game_playtime_minute = (uint64_t)( (games->at(global_data->current_game).playtime - temp_current_game_playtime_hour) * 60);
 
-	uint64_t temp_current_game_playtime_hour = (uint64_t) games->at(current_game).playtime;
-	uint64_t temp_current_game_playtime_minute = (uint64_t)( (games->at(current_game).playtime - temp_current_game_playtime_hour) * 60);
+		std::string temp_status_bar_text = "Playtime: " + std::to_string(temp_current_game_playtime_hour) + "h " + std::to_string(temp_current_game_playtime_minute) + "m ";
+		if(games->at(global_data->current_game).last_played != 0) {
+			time_t epoch_time = (time_t)games->at(global_data->current_game).last_played;
+			char human_readable[12];
+			strncpy(human_readable, ctime(&epoch_time)+8, 3);
+			strncpy(human_readable+3, ctime(&epoch_time)+4, 4);
+			strncpy(human_readable+7, ctime(&epoch_time)+20,4);
+			human_readable[11] = '\0';
 
-	std::string temp_status_bar_text = "Playtime: " + std::to_string(temp_current_game_playtime_hour) + "h " + std::to_string(temp_current_game_playtime_minute) + "m ";
-	if(games->at(current_game).last_played != 0) {
-		time_t epoch_time = (time_t)games->at(current_game).last_played;
-		char human_readable[12];
-		strncpy(human_readable, ctime(&epoch_time)+8, 3);
-		strncpy(human_readable+3, ctime(&epoch_time)+4, 4);
-		strncpy(human_readable+7, ctime(&epoch_time)+20,4);
-		human_readable[11] = '\0';
+			temp_status_bar_text += "Last Played: " + std::string(human_readable) + " ";
+		}
 
-		temp_status_bar_text += "Last Played: " + std::string(human_readable) + " ";
+		temp_status_bar_text += "Runner: " + games->at(global_data->current_game).runner;
+
+		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w);
 	}
-
-	temp_status_bar_text += "Runner: " + games->at(current_game).runner;
-
-	renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w);
 
 	uint64_t temp_text_offset;
 
@@ -111,13 +110,12 @@ void Node_games_grid::render() {
 	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add/Remove Favorite", 0);
 }
 
-Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games) {
+Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, Global_data* global_data, std::vector<Game> *games) {
 	this->settings = settings;
 	this->renderer = renderer;
 	this->games = games;
 	this->process_handler = process_handler;
-	
-	current_game = 0;
+	this->global_data = global_data;
 
 	for(uint64_t i=0; i < games->size(); i++) {
 		renderer->load_texture(games->at(i).slug.c_str());

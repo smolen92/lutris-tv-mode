@@ -12,7 +12,7 @@
 class Node_games_grid : public Node {
 	public:
 		/// inherited from Node
-		void logic(Global_data* global_data) override;
+		void logic() override;
 		/// inherited from Node
 		void render() override;
 		
@@ -20,9 +20,10 @@ class Node_games_grid : public Node {
 		 * @param process_handler pointer to process handler
 		 * @param renderer pointer to renderer node
 		 * @param settings pointer to settings
+		 * @param global_data pointer to global data structure
 		 * @param games pointer to game vector
 		 */	
-		Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, std::vector<Game> *games);
+		Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, Global_data* global_data, std::vector<Game> *games);
 
 		~Node_games_grid();
 
@@ -32,9 +33,9 @@ class Node_games_grid : public Node {
 		Renderer* renderer;
 
 		Settings* settings;
-		
-		uint64_t current_game;
-		
+	
+		Global_data* global_data;
+
 		std::vector<Game> *games;
 
 		uint64_t selection_box_time;

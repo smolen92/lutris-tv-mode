@@ -1,9 +1,10 @@
 #include "node_start_menu.h"
 
-Node_start_menu::Node_start_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings) {
+Node_start_menu::Node_start_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, Global_data* global_data) {
 	this->renderer = renderer;
 	this->settings = settings;
 	this->process_handler = process_handler;
+	this->global_data = global_data;
 
 	current_entry = 0;
 
@@ -14,7 +15,7 @@ Node_start_menu::Node_start_menu(ProcessHandler* process_handler, Renderer* rend
 	entries_strings.push_back("Shutdown");
 }
 
-void Node_start_menu::logic(Global_data* global_data) {
+void Node_start_menu::logic() {
 	if( global_data->buttons_pressed[UP] ) {
 		if( current_entry != 0) current_entry -= 1;
 	}

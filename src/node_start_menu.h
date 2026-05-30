@@ -20,12 +20,13 @@ class Node_start_menu : public Node {
 		 * @param process_handler pointer to process handler
 		 * @param renderer pointer to renderer
 		 * @param settings pointer to settings
+		 * @param global_data pointer to global data structure
 		 *
 		 */
-		Node_start_menu(ProcessHandler* process_handler, Renderer* renderer,Settings* settings);
+		Node_start_menu(ProcessHandler* process_handler, Renderer* renderer,Settings* settings, Global_data* global_data);
 		
 		/// inherited from Node
-		void logic(Global_data* global_data) override;
+		void logic() override;
 		/// inherited from Node
 		void render() override;
 		~Node_start_menu();
@@ -33,6 +34,7 @@ class Node_start_menu : public Node {
 		ProcessHandler* process_handler;
 		Renderer* renderer;
 		Settings* settings;
+		Global_data* global_data;
 		uint64_t current_entry;
 		std::vector<std::string> entries_strings;
 		uint64_t selection_time;

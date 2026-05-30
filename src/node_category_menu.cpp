@@ -1,12 +1,12 @@
 #include "node_category_menu.h"
 
-void Node_category_menu::logic(Global_data* global_data) {
+void Node_category_menu::logic() {
 	if( global_data->buttons_pressed[UP] ) {
-		if( current_category != 0) current_category -= 1;
+		if( global_data->current_category != 0) global_data->current_category -= 1;
 	}
 
 	if( global_data->buttons_pressed[DOWN] ) {
-		if(current_category != categories->size()-1) current_category += 1;
+		if(global_data->current_category != categories->size()-1) global_data->current_category += 1;
 	}
 
 	if( global_data->buttons_pressed[RUN] ) {
@@ -16,8 +16,6 @@ void Node_category_menu::logic(Global_data* global_data) {
 	
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_REMOVE_NODE;
 
-
-	global_data->current_category = current_category;
 }
 
 void Node_category_menu::render() {
@@ -46,14 +44,14 @@ void Node_category_menu::render() {
 
 	if( category_count >= categories->size() ) {
 		start = 0;
-		selection_box_offset = current_category;
+		selection_box_offset = global_data->current_category;
 	}
-	else if ( (current_category+category_count) > categories->size() ) {
+	else if ( (global_data->current_category+category_count) > categories->size() ) {
 		start = categories->size()-category_count;
-		selection_box_offset = current_category-start;
+		selection_box_offset = global_data->current_category-start;
 	}
 	else {
-		start = current_category;
+		start = global_data->current_category;
 		selection_box_offset = 0;
 	}
 	
@@ -74,13 +72,14 @@ void Node_category_menu::render() {
 
 }
 
-Node_category_menu::Node_category_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, std::vector<Category> *categories, uint64_t current_category) {
+Node_category_menu::Node_category_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, Global_data* global_data, std::vector<Category> *categories) {
 	this->renderer = renderer;
 	this->categories = categories;
 	this->settings = settings;
 
-	this->current_category = current_category;
 	this->process_handler = process_handler;
+
+	this->global_data = global_data;
 
 	selection_time = 0;
 }

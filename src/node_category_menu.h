@@ -12,7 +12,7 @@
 class Node_category_menu : public Node {
 	public:
 		/// inherited from Node
-		void logic(Global_data* global_data) override;
+		void logic() override;
 		/** inherited from Node
 		 */
 		void render() override;
@@ -21,10 +21,10 @@ class Node_category_menu : public Node {
 		 * @param process_handler pointer to process handler
 		 * @param renderer pointer to renderer node
 		 * @param settings pointer to settings
+		 * @param global_data pointer to global data structure
 		 * @param categories pointer to category vector
-		 * @param current_category current category index
 		 */
-		Node_category_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, std::vector<Category> *categories, uint64_t current_category);
+		Node_category_menu(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, Global_data* global_data, std::vector<Category> *categories);
 
 		~Node_category_menu();
 	private:
@@ -34,8 +34,9 @@ class Node_category_menu : public Node {
 
 		Settings* settings;
 
+		Global_data* global_data;
+
 		std::vector<Category> *categories;
-		uint64_t current_category;
 
 		uint64_t selection_time;
 };

@@ -1,7 +1,6 @@
 #include "gui_manager.h"
 
 /// \file
-/// \bug exception is thrown (out_of_range) when selecting some categories
 /// \todo render status for the rest of the nodes with gfx controls 
 /// \cond
 int main(int argc, char** argv) {
