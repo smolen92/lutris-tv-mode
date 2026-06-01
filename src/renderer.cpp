@@ -24,6 +24,7 @@ bool Renderer::check_input(Global_data* global_data) {
 			if(input.key.scancode == SDL_SCANCODE_F) global_data->buttons_pressed[FAVORITE] = true;
 			if(input.key.scancode == SDL_SCANCODE_ESCAPE) global_data->buttons_pressed[START] = true;
 			if(input.key.scancode == SDL_SCANCODE_SPACE) global_data->buttons_pressed[SELECTION] = true;
+			if(input.key.scancode == SDL_SCANCODE_K) global_data->buttons_pressed[KILL] = true;
 		}
 
 		if(input.type == SDL_EVENT_GAMEPAD_BUTTON_DOWN) {
@@ -36,6 +37,7 @@ bool Renderer::check_input(Global_data* global_data) {
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_NORTH) global_data->buttons_pressed[FAVORITE] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_START) global_data->buttons_pressed[START] = true;
 			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_WEST) global_data->buttons_pressed[SELECTION] = true;
+			if(input.gbutton.button == SDL_GAMEPAD_BUTTON_EAST) global_data->buttons_pressed[KILL] = true;
 		}
 
 		if( input.type == SDL_EVENT_WINDOW_RESIZED ) {

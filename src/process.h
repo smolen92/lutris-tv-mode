@@ -40,9 +40,13 @@ class ProcessHandler {
 		 * @param game_id id of the game to run
 		 * @param command comand to run
 		 *
+		 * @return true on success, false if child process failed to be created
+		 *
 		 * @details this function will create a child process where the command will be run
+		 *
+		 * \bug if run process failed, child processes are still running
 		 */
-		void run_process(uint64_t game_id, const char* command);	
+		bool run_process(uint64_t game_id, const char* command);	
 	
 		/**
 		 * @brief check if process is running

@@ -19,6 +19,7 @@ void Node_games_grid::logic() {
 	if( global_data->buttons_pressed[FAVORITE] ) global_data->action = ACTION_ADD_REMOVE_FAVORITE;  
 	if( global_data->buttons_pressed[CATEGORIES] ) global_data->action = ACTION_SWITCH_TO_CATEGORY_NODE; 
 	if( global_data->buttons_pressed[SELECTION] ) global_data->action = ACTION_SWITCH_TO_CAT_TABLE_NODE;
+	if( global_data->buttons_pressed[KILL] ) global_data->action = ACTION_KILL_PROCESS;
 }
 
 void Node_games_grid::render() {
@@ -99,8 +100,14 @@ void Node_games_grid::render() {
 
 		renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
 		temp_text_offset = renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, play_stop_text, 0);
-			
+		
 		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+		
+		if( process_handler->is_process_running(global_data->current_game) ) {
+			renderer->render_asset(GFX_B_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+			temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Kill", 0);
+			temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+		}
 
 		renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
 		temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add Category", 0);

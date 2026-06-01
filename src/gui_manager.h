@@ -11,7 +11,6 @@
  * @brief manages all nodes
  * \todo predifined header should be loaded from settings not hardcoded
  * \todo split predefined and user defined categories into two vectors
- * \todo control for killing process
  *
  */
 class Gui_manager {

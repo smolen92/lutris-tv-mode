@@ -156,8 +156,14 @@ bool Gui_manager::logic() {
 							break;
 
 		case(ACTION_RUN_GAME) :			{
-								std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
-								process_handler.run_process(global_data.current_game,command.c_str());
+								if( process_handler.is_process_running(global_data.current_game) ) {
+									process_handler.kill_process(global_data.current_game, SIGTERM);
+								}
+								else {
+									std::string command = std::string("lutris lutris:rungameid/") + std::to_string(games.at(global_data.current_game).id);
+									//std::string command = std::string("ping 127.0.0.1");
+									if( !process_handler.run_process(global_data.current_game,command.c_str()) ) return false;
+								}
 							}
 							break;
 		
@@ -174,6 +180,9 @@ bool Gui_manager::logic() {
 							break;
 
 		case(ACTION_QUIT_TV_MODE) :		return false;
+							break;
+
+		case(ACTION_KILL_PROCESS) :		if( process_handler.is_process_running(global_data.current_game) ) process_handler.kill_process(global_data.current_game, SIGKILL);
 							break;
 	}
 	

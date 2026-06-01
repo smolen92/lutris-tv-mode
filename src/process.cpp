@@ -13,19 +13,14 @@ ProcessHandler::ProcessHandler() {
 
 }
 
-void ProcessHandler::run_process(uint64_t game_id, const char* command) {
+bool ProcessHandler::run_process(uint64_t game_id, const char* command) {
 	int32_t pid = fork();
-
-	if(this->is_process_running(game_id)) {
-		std::cerr << "Game is already running\n";
-		return;
-       	}	
 
 	if(pid == -1) {
 		throw std::runtime_error("Unable to create child process");
-		return;
 	}
 	else if(pid == 0) { 
+		//child
 		const char* args[MAX_ARGS+1];
 		
 		std::stringstream input_string(command);
@@ -47,14 +42,13 @@ void ProcessHandler::run_process(uint64_t game_id, const char* command) {
 		
 		//only when exec failed
 		std::clog << "exec failed\n";
-		_exit(1);
+		return false;
 	} else {
 		process_info temp_info = {pid, this->get_millis() };
 		game_id_to_pid_map[game_id] = temp_info;
 	}
 	
-
-	return;
+	return true;
 }
 
 bool ProcessHandler::is_process_running(uint64_t game_id) {
