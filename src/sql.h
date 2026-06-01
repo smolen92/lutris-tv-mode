@@ -24,6 +24,8 @@ class SQL {
 		 * @param data pointer to a vector where data will be stored
 		 * @param prepared_statement prepared sqlite3 query that will be run in database
 		 * @param callback_function callback function that will be called for data return from database
+		 *
+		 * @details this function will call sqlite3_finalize for prepared statement
 		 * 
 		 */
 		void load_data(void *data, sqlite3_stmt* prepared_statement, void (*callback_function)(void*,sqlite3_stmt* pre_statement));

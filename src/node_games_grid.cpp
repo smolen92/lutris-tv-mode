@@ -67,6 +67,8 @@ void Node_games_grid::render() {
 
 	renderer->render_rect( status_bar_rect_x, status_bar_rect_y, settings->window_width, status_bar_rect_h, 0, 0, 0, 0xFF, true);
 	
+	uint64_t temp_text_offset;
+
 	if(!games->empty()) {
 		uint64_t temp_current_game_playtime_hour = (uint64_t) games->at(global_data->current_game).playtime;
 		uint64_t temp_current_game_playtime_minute = (uint64_t)( (games->at(global_data->current_game).playtime - temp_current_game_playtime_hour) * 60);
@@ -85,29 +87,41 @@ void Node_games_grid::render() {
 
 		temp_status_bar_text += "Runner: " + games->at(global_data->current_game).runner;
 
-		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), status_bar_rect_w);
+		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), 0);
+	
+		char play_stop_text[5];
+		if( process_handler->is_process_running(global_data->current_game) ) {
+			strcpy(play_stop_text, "Stop");
+		}
+		else {
+			strcpy(play_stop_text, "Play");
+		}
+
+		renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+		temp_text_offset = renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, play_stop_text, 0);
+			
+		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+
+		renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+		temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add Category", 0);
+	
+		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+		
+		renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+		temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add/Remove Favorite", 0);
+
+		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
 	}
 
-	uint64_t temp_text_offset;
-
 	//status bar controls
-	renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	temp_text_offset = renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, "Play", 0);
-
-	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
-
-	renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add Category", 0);
-	
-	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
-	
 	renderer->render_asset(GFX_LB_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
 	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Select Category", 0);
-	
+
 	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
 
-	renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add/Remove Favorite", 0);
+	renderer->render_asset(GFX_START_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
+	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Main Menu", 0);
+
 }
 
 Node_games_grid::Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, Global_data* global_data, std::vector<Game> *games) {

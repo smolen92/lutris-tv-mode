@@ -163,6 +163,10 @@ Renderer::Renderer(Settings* settings) {
 				  break;
 			case(9) : temp = SDL_IOFromConstMem(xbox_rt_button_data, xbox_rt_button_data_size);
 				  break;
+			case(10) : temp = SDL_IOFromConstMem(xbox_back_button_data, xbox_back_button_data_size);
+				   break;
+			case(11) : temp = SDL_IOFromConstMem(xbox_start_button_data, xbox_start_button_data_size);
+				   break;
 		}
 		
 		if(temp == nullptr) throw std::runtime_error(SDL_GetError());
