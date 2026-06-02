@@ -13,7 +13,7 @@ ProcessHandler::ProcessHandler() {
 
 }
 
-bool ProcessHandler::run_process(uint64_t game_id, const char* command) {
+void ProcessHandler::run_process(uint64_t game_id, const char* command) {
 	int32_t pid = fork();
 
 	if(pid == -1) {
@@ -41,14 +41,13 @@ bool ProcessHandler::run_process(uint64_t game_id, const char* command) {
 		execvp(args[0],(char* const*)args);
 		
 		//only when exec failed
-		std::clog << "exec failed\n";
-		return false;
+		std::cerr << "exec failed\n";
+		_Exit(1);
 	} else {
 		process_info temp_info = {pid, this->get_millis() };
 		game_id_to_pid_map[game_id] = temp_info;
 	}
 	
-	return true;
 }
 
 bool ProcessHandler::is_process_running(uint64_t game_id) {
@@ -77,9 +76,6 @@ void ProcessHandler::check_and_clean_zombie_processes() {
 }
 
 ProcessHandler::~ProcessHandler() {
-	//wait for child processes to finish executing
-	wait(NULL); 
-
 	free(cwd);
 	cwd = nullptr;
 }
