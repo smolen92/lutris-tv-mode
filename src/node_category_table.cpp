@@ -35,8 +35,10 @@ void Node_category_table::render() {
 	
 	uint64_t category_table_width = settings->window_width/2;
 	uint64_t category_table_height = settings->window_height/2;
+	uint64_t category_table_x = (settings->window_width-category_table_width)/2;
+	uint64_t category_table_y = settings->window_height/4;
 
-	renderer->set_viewport((settings->window_width-category_table_width)/2, settings->window_height/4, category_table_width, category_table_height);
+	renderer->set_viewport( category_table_x, category_table_y, category_table_width, category_table_height);
 
 	renderer->render_rect(0,0,category_table_width,category_table_height,0,0,0,0xFF);
 	renderer->render_rect(0,0,category_table_width,category_table_height,0xFF,0xFF,0xFF,0xFF,false);
@@ -69,6 +71,21 @@ void Node_category_table::render() {
 	}
 	
 	if( selection_time + settings->selection_timeout < process_handler->get_millis() ) renderer->render_rect(0,selection_box_offset*settings->font_size, category_table_width, settings->font_size, 0,0,0xFF,0x6F);
+	
+	//controls bar
+	renderer->set_viewport(category_table_x, category_table_y + category_table_height, category_table_width, settings->font_size);
+	renderer->render_rect(0,0,category_table_width, settings->font_size, 0,0,0,0xFF);
+	renderer->render_rect(0,0,category_table_width, settings->font_size, 0xFF,0xFF,0xFF,0xFF,false);
+
+	uint64_t temp_text_offset;
+
+	renderer->render_asset(GFX_X_BUTTON, 0, 0, settings->font_size, settings->font_size);
+	temp_text_offset = renderer->render_one_line_of_text(settings->font_size, 0, "Check/Uncheck Category", 0);
+
+	temp_text_offset += settings->font_size;
+
+	renderer->render_asset(GFX_A_BUTTON, temp_text_offset, 0, settings->font_size, settings->font_size);
+	renderer->render_one_line_of_text(temp_text_offset + settings->font_size, 0, "Save Categories", 0);
 
 	renderer->set_viewport();
 }

@@ -1,7 +1,7 @@
 #include "gui_manager.h"
 
 /// \file
-/// \todo render status for the rest of the nodes with gfx controls 
+/// \todo final touch-up for status bar rendering
 /// \cond
 int main(int argc, char** argv) {
 	try {

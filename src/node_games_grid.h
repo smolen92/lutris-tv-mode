@@ -21,6 +21,10 @@ class Node_games_grid : public Node {
 		 * @param settings pointer to settings
 		 * @param global_data pointer to global data structure
 		 * @param games pointer to game vector
+		 *
+		 * \ingroup improvements
+		 *
+		 * render add/remove favorite based on if the game is/isn't already in favorite category
 		 */	
 		Node_games_grid(ProcessHandler* process_handler, Settings* settings, Renderer* renderer, Global_data* global_data, std::vector<Game> *games);
 

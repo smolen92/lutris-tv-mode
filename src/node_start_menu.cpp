@@ -46,8 +46,11 @@ void Node_start_menu::logic() {
 void Node_start_menu::render() {
 	uint64_t start_menu_width = settings->window_width*0.3;
 	uint64_t start_menu_height = settings->window_height*0.3;
+	uint64_t start_menu_x = (settings->window_width-start_menu_width)/2;
+	uint64_t start_menu_y = (settings->window_height-start_menu_height)/2;
 
-	renderer->set_viewport((settings->window_width-start_menu_width)/2, (settings->window_height-start_menu_height)/2, start_menu_width, start_menu_height);	
+
+	renderer->set_viewport(start_menu_x, start_menu_y, start_menu_width, start_menu_height);	
 
 	renderer->render_rect(0,0,start_menu_width,start_menu_height,0x00,0x00,0x00,0xFF);
 	renderer->render_rect(0,0,start_menu_width,start_menu_height,0xFF,0xFF,0xFF,0xFF,false);
@@ -57,6 +60,21 @@ void Node_start_menu::render() {
 	}
 
 	if( selection_time + settings->selection_timeout < process_handler->get_millis() ) renderer->render_rect(0,settings->font_size*current_entry,start_menu_width,settings->font_size,0, 0, 0xFF, 0x6F);
+
+	renderer->set_viewport(start_menu_x, start_menu_y + start_menu_height, start_menu_width, settings->font_size);	
+
+	renderer->render_rect(0,0,start_menu_width,settings->font_size,0x00,0x00,0x00,0xFF);
+	renderer->render_rect(0,0,start_menu_width,settings->font_size,0xFF,0xFF,0xFF,0xFF,false);
+
+	uint64_t temp_text_offset;
+
+	renderer->render_asset(GFX_A_BUTTON, 0, 0, settings->font_size, settings->font_size);
+	temp_text_offset = renderer->render_one_line_of_text(settings->font_size, 0, "Select", 0);  
+
+	temp_text_offset += settings->font_size;
+
+	renderer->render_asset(GFX_START_BUTTON, temp_text_offset, 0, settings->font_size, settings->font_size);
+	renderer->render_one_line_of_text(temp_text_offset+settings->font_size, 0, "Close", 0);
 
 	renderer->set_viewport();
 }

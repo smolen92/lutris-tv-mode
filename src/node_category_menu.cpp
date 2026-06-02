@@ -23,7 +23,7 @@ void Node_category_menu::render() {
 	uint64_t category_viewport_x = settings->category_menu_x;
 	uint64_t category_viewport_y = settings->category_menu_y;
 	uint64_t category_viewport_w = settings->category_menu_width;
-	uint64_t category_viewport_h = settings->category_menu_height;
+	uint64_t category_viewport_h = settings->category_menu_height - settings->font_size;
 
 	if(category_viewport_w > settings->max_category_menu_width) category_viewport_w = settings->max_category_menu_width;
 	if(category_viewport_w < settings->min_category_menu_width) category_viewport_w = settings->min_category_menu_width;
@@ -33,8 +33,9 @@ void Node_category_menu::render() {
 	uint64_t category_selection_h = settings->font_size;
 
 	renderer->set_viewport(category_viewport_x,category_viewport_y,category_viewport_w, category_viewport_h);
-	//clear viewport
-	renderer->render_rect(category_viewport_x, category_viewport_y, category_viewport_w, category_viewport_h, 0,0,0,0xFF);
+	//clear viewport + border
+	renderer->render_rect(0, 0, category_viewport_w, category_viewport_h, 0,0,0,0xFF);
+	renderer->render_rect(0, 0, category_viewport_w, category_viewport_h, 0xFF,0xFF,0xFF,0xFF, false);
 	
 	uint64_t y = 0;
 	uint64_t start;
@@ -57,9 +58,6 @@ void Node_category_menu::render() {
 	
 	//predefined categories separation line
 	if(start == 0) renderer->render_rect(category_viewport_x, category_viewport_y, category_viewport_w, settings->font_size, 0xFF,0xFF,0xFF,0xFF, false);
-	//border
-	renderer->render_rect(category_viewport_x, category_viewport_y, category_viewport_w, category_viewport_h, 0xFF,0xFF,0xFF,0xFF, false);
-
 
 	if( selection_time + settings->selection_timeout < process_handler->get_millis() ) renderer->render_rect(category_selection_x, selection_box_offset*settings->font_size, category_selection_w, category_selection_h, 0, 0, 0xFF, 0x6F);
 
@@ -67,6 +65,21 @@ void Node_category_menu::render() {
 		renderer->render_one_line_of_text(0,y,categories->at(i).name.c_str(),category_viewport_w);
 		y += settings->font_size;
 	}
+
+	renderer->set_viewport(category_viewport_x,category_viewport_h,category_viewport_w, settings->font_size);
+
+	renderer->render_rect(0, 0, category_viewport_w, settings->font_size, 0,0,0,0xFF);
+	renderer->render_rect(0, 0, category_viewport_w, settings->font_size, 0xFF,0xFF,0xFF,0xFF, false);
+
+	uint64_t temp_text_offset;
+
+	renderer->render_asset(GFX_A_BUTTON, 0,0, settings->font_size, settings->font_size);
+	temp_text_offset = renderer->render_one_line_of_text(settings->font_size, 0, "Select", 0);
+
+	temp_text_offset += settings->font_size;
+
+	renderer->render_asset(GFX_LB_BUTTON, temp_text_offset, 0, settings->font_size, settings->font_size);
+	renderer->render_one_line_of_text(temp_text_offset+settings->font_size, 0, "Close", 0);
 
 	renderer->set_viewport();
 

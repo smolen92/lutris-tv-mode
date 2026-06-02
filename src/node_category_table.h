@@ -7,6 +7,7 @@
 /**
  * @brief category table where you can select categories for games
  * \todo option to create a category
+ *
  */
 class Node_category_table : public Node {
 	public:
@@ -16,6 +17,9 @@ class Node_category_table : public Node {
 		 * @param settings pointer to settings
 		 * @param global_data pointer to global data structure
 		 * @param categories pointer to category vector
+ 		 *
+		 * \ingroup improvements
+		 * render only Check or Uncheck text based on if the category is already selected 
 		 */
 		Node_category_table(ProcessHandler* process_handler, Renderer* renderer, Settings* settings, Global_data* global_data, std::vector<Category> *categories);
 		/// inherited from node
