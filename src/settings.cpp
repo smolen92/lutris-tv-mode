@@ -81,6 +81,9 @@ Settings::Settings(ProcessHandler *p_handler) {
 		else if(line.substr(0,first_equal_sign_location).compare("selection_timeout") == 0) {
 			selection_timeout = std::stol(line.substr(first_equal_sign_location+1));
 		}
+		else if(line.substr(0,first_equal_sign_location).compare("status_bar_controls_offset") == 0) {
+			status_bar_controls_offset = std::stol(line.substr(first_equal_sign_location+1));
+		}
 
 	}
 	
@@ -104,7 +107,7 @@ void Settings::load_defaults(const char* user) {
 	window_width = 800;
 	window_height = 600;
 
-	min_window_width = 640;
+	min_window_width = 850;
 	min_window_height = 480;
 
 	window_maximized = true;
@@ -124,6 +127,8 @@ void Settings::load_defaults(const char* user) {
 	category_menu_y = 0;
 
 	selection_timeout = 200;
+
+	status_bar_controls_offset = 350;
 }
 
 Settings::~Settings() {
@@ -147,7 +152,7 @@ Settings::~Settings() {
 
 	(window_maximized) ? (output_file << "true") : (output_file << "false");
 
-	output_file	<< "\n\n[game-tile]" 
+	output_file	<< "\n\n[game_tile]" 
 			<< "\ngame_tile_width=" << game_tile_width
 			<< "\ngame_tile_height=" << game_tile_height
 			<< "\nvertical_padding=" << vertical_padding
@@ -160,6 +165,7 @@ Settings::~Settings() {
 			<< "\nselection_timeout=" << selection_timeout
 			<< "\n\n[category]" 
 			<< "\ncategory_menu_x=" << category_menu_x
-			<< "\ncategory_menu_y=" << category_menu_y;
-
+			<< "\ncategory_menu_y=" << category_menu_y
+			<< "\n\n[status_bar]"
+			<< "\nstatus_bar_controls_offset=" << status_bar_controls_offset;
 }

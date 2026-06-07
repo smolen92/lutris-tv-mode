@@ -43,6 +43,8 @@ class Settings {
 		uint32_t category_menu_x, category_menu_y;
 		
 		uint64_t selection_timeout;
+		
+		uint64_t status_bar_controls_offset;
 
 		//these settings shouldn't be set manually, it is calculate in calculate_settings
 	        uint64_t games_per_row;

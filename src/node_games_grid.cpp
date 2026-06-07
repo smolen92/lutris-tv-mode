@@ -62,11 +62,11 @@ void Node_games_grid::render() {
 
 	//status bar
 	uint64_t status_bar_rect_x = 0; 
-	uint64_t status_bar_rect_y = settings->window_height-settings->font_size;
-	uint64_t status_bar_rect_w = settings->window_width/2;
-	uint64_t status_bar_rect_h = settings->font_size;
+	uint64_t status_bar_rect_y = settings->window_height - settings->font_size*3;
+	uint64_t status_bar_rect_w = settings->window_width;
+	uint64_t status_bar_rect_h = settings->font_size*3;
 
-	renderer->render_rect( status_bar_rect_x, status_bar_rect_y, settings->window_width, status_bar_rect_h, 0, 0, 0, 0xFF, true);
+	renderer->render_rect( status_bar_rect_x, status_bar_rect_y, status_bar_rect_w, status_bar_rect_h, 0, 0, 0, 0xFF, true);
 	
 	uint64_t temp_text_offset;
 
@@ -75,6 +75,8 @@ void Node_games_grid::render() {
 		uint64_t temp_current_game_playtime_minute = (uint64_t)( (games->at(global_data->current_game).playtime - temp_current_game_playtime_hour) * 60);
 
 		std::string temp_status_bar_text = "Playtime: " + std::to_string(temp_current_game_playtime_hour) + "h " + std::to_string(temp_current_game_playtime_minute) + "m ";
+		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), 0);
+
 		if(games->at(global_data->current_game).last_played != 0) {
 			time_t epoch_time = (time_t)games->at(global_data->current_game).last_played;
 			char human_readable[12];
@@ -83,12 +85,14 @@ void Node_games_grid::render() {
 			strncpy(human_readable+7, ctime(&epoch_time)+20,4);
 			human_readable[11] = '\0';
 
-			temp_status_bar_text += "Last Played: " + std::string(human_readable) + " ";
+			temp_status_bar_text = "Last Played: " + std::string(human_readable);
 		}
 
-		temp_status_bar_text += "Runner: " + games->at(global_data->current_game).runner;
+		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y + settings->font_size, temp_status_bar_text.c_str(), 0);
+		
+		temp_status_bar_text = "Runner: " + games->at(global_data->current_game).runner;
 
-		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y, temp_status_bar_text.c_str(), 0);
+		renderer->render_one_line_of_text(settings->horizontal_padding, status_bar_rect_y + 2*settings->font_size, temp_status_bar_text.c_str(), 0);
 	
 		char play_stop_text[5];
 		if( process_handler->is_process_running(global_data->current_game) ) {
@@ -98,36 +102,34 @@ void Node_games_grid::render() {
 			strcpy(play_stop_text, "Play");
 		}
 
-		renderer->render_asset(GFX_A_BUTTON, status_bar_rect_w, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-		temp_text_offset = renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h, status_bar_rect_y, play_stop_text, 0);
+		renderer->render_asset(GFX_A_BUTTON, settings->status_bar_controls_offset, status_bar_rect_y, settings->font_size, settings->font_size);
+		temp_text_offset = renderer->render_one_line_of_text(settings->status_bar_controls_offset + settings->font_size, status_bar_rect_y, play_stop_text, 0);
 		
-		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+		temp_text_offset += settings->font_size + settings->horizontal_padding;
 		
 		if( process_handler->is_process_running(global_data->current_game) ) {
-			renderer->render_asset(GFX_B_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-			temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Kill", 0);
-			temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+			renderer->render_asset(GFX_B_BUTTON, settings->status_bar_controls_offset + temp_text_offset, status_bar_rect_y, settings->font_size, settings->font_size);
+			renderer->render_one_line_of_text(settings->status_bar_controls_offset + settings->font_size + temp_text_offset, status_bar_rect_y, "Kill", 0);
 		}
 
-		renderer->render_asset(GFX_X_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-		temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add Category", 0);
+		renderer->render_asset(GFX_X_BUTTON, settings->status_bar_controls_offset, status_bar_rect_y + settings->font_size, settings->font_size, settings->font_size);
+		temp_text_offset = renderer->render_one_line_of_text(settings->status_bar_controls_offset + settings->font_size, status_bar_rect_y + settings->font_size, "Add Category", 0);
 	
-		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+		temp_text_offset += settings->font_size + settings->horizontal_padding;
 		
-		renderer->render_asset(GFX_Y_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-		temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Add/Remove Favorite", 0);
+		renderer->render_asset(GFX_Y_BUTTON, settings->status_bar_controls_offset + temp_text_offset, status_bar_rect_y + settings->font_size, settings->font_size, settings->font_size);
+		renderer->render_one_line_of_text(settings->status_bar_controls_offset + settings->font_size + temp_text_offset, status_bar_rect_y + settings->font_size, "Add/Remove Favorite", 0);
 
-		temp_text_offset += status_bar_rect_h + settings->vertical_padding;
 	}
 
 	//status bar controls
-	renderer->render_asset(GFX_LB_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Select Category", 0);
+	renderer->render_asset(GFX_LB_BUTTON, settings->status_bar_controls_offset, status_bar_rect_y + 2*settings->font_size, settings->font_size, settings->font_size);
+	temp_text_offset = renderer->render_one_line_of_text(settings->status_bar_controls_offset + settings->font_size, status_bar_rect_y + 2*settings->font_size, "Select Category", 0);
 
-	temp_text_offset += status_bar_rect_h + settings->vertical_padding;
+	temp_text_offset += settings->font_size + settings->horizontal_padding;
 
-	renderer->render_asset(GFX_START_BUTTON, status_bar_rect_w + temp_text_offset, status_bar_rect_y, status_bar_rect_h, status_bar_rect_h);
-	temp_text_offset += renderer->render_one_line_of_text(status_bar_rect_w + status_bar_rect_h + temp_text_offset, status_bar_rect_y, "Main Menu", 0);
+	renderer->render_asset(GFX_START_BUTTON, settings->status_bar_controls_offset + temp_text_offset, status_bar_rect_y + 2*settings->font_size, settings->font_size, settings->font_size);
+	renderer->render_one_line_of_text(settings->status_bar_controls_offset + settings->font_size + temp_text_offset, status_bar_rect_y + 2*settings->font_size, "Main Menu", 0);
 
 }
 

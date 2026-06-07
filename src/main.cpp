@@ -1,7 +1,6 @@
 #include "gui_manager.h"
 
 /// \file
-/// \todo final touch-up for status bar rendering
 /// \cond
 int main(int argc, char** argv) {
 	try {
