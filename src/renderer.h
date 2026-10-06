@@ -62,7 +62,7 @@ class Renderer {
 		 *
 		 * @return the width of rendered text in pixels
 		 *
-		 * @details if area_width is set to 0 text is not centered, 
+		 * @details if area_width is set to 0 text is not centered and not clipped, 
 		 * if area_width is not 0 and text fit within the area, text is centered to the area_width
 		 * if area_width is not 0 and text doesn't fit within the area, the end of the text is clipped
 		 *
@@ -152,6 +152,8 @@ class Renderer {
 		 *
 		 */
 		void set_viewport(int32_t x = 0, int32_t y = 0, int32_t w = 0, int32_t h = 0);
+
+		void render_text_input();
 	private:
 
 		SDL_Window* window;
@@ -166,7 +168,10 @@ class Renderer {
 		Settings* settings;
 
 		bool stick_centered_x, stick_centered_y;
-		
+	
+		char text[1024] = {0};
+		int cursor = 0;
+
 };
 
 #endif

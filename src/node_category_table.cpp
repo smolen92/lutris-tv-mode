@@ -28,7 +28,6 @@ void Node_category_table::logic() {
 	if(global_data->buttons_pressed[RUN] ) {
 		global_data->action = ACTION_ADD_CATEGORIES;
 	}
-
 }
 
 void Node_category_table::render() {
@@ -85,7 +84,12 @@ void Node_category_table::render() {
 	temp_text_offset += settings->font_size;
 
 	renderer->render_asset(GFX_A_BUTTON, temp_text_offset, 0, settings->font_size, settings->font_size);
-	renderer->render_one_line_of_text(temp_text_offset + settings->font_size, 0, "Save Categories", 0);
+	temp_text_offset += renderer->render_one_line_of_text(temp_text_offset + settings->font_size, 0, "Save Categories", 0);
+
+	temp_text_offset += settings->font_size;
+
+	renderer->render_asset(GFX_Y_BUTTON, temp_text_offset, 0, settings->font_size, settings->font_size);
+	renderer->render_one_line_of_text(temp_text_offset + settings->font_size, 0, "Create Category", 0);
 
 	renderer->set_viewport();
 }

@@ -231,6 +231,7 @@ void Gui_manager::render() {
 	for(uint64_t i=0; i < nodes.size(); i++) {
 		nodes[i]->render();
 	}
+	renderer->render_text_input();
 	renderer->draw_screen();
 }
 

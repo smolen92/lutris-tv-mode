@@ -57,6 +57,10 @@ bool Renderer::check_input(Global_data* global_data) {
 			}
 		}
 
+		if( input.type == SDL_EVENT_TEXT_INPUT) {
+			SDL_strlcat(text, input.text.text, sizeof(text));
+		}
+
 	}
 	
 	int16_t left_stick_x = SDL_GetGamepadAxis(gamepad, SDL_GAMEPAD_AXIS_LEFTX);
@@ -180,6 +184,8 @@ Renderer::Renderer(Settings* settings) {
 
 	stick_centered_x = true;
 	stick_centered_y = true;
+
+	SDL_StartTextInput(window);
 }
 		
 Renderer::~Renderer() {
@@ -335,4 +341,8 @@ void Renderer::render_asset(uint64_t index, uint64_t x, uint64_t y, uint64_t w, 
 	SDL_FRect temp = {(float)x, (float)y, (float)w, (float)h};
 
 	SDL_RenderTexture(renderer, assets[index], nullptr, &temp);
+}
+
+void Renderer::render_text_input() {
+	this->render_one_line_of_text(0,0,text,0);
 }
